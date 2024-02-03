@@ -1,0 +1,10 @@
+
+  .all-cat-image {
+   
+    transition: opacity 0.3s ease;
+  }
+  
+  .all-cat-image:hover {
+    opacity: 0.8 !important;
+  }
+  
