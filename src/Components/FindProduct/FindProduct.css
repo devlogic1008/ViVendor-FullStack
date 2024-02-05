@@ -1,0 +1,14 @@
+.image-card {
+  position: relative;
+  width: 100%;
+}
+
+.all-cat-image {
+  max-height: 250px;
+  width: 100%;
+  transition: transform 1s ease;
+}
+
+.image-card:hover .all-cat-image {
+  transform: rotateY(180deg);
+}

@@ -6,6 +6,7 @@ import sweater from "../../images/sweater.png";
 import shirt1 from "../../images/shirt1.jpg";
 import shirt2 from "../../images/shirt2.jpg";
 import shirt from "../../images/shirt.jpg";
+import { NavLink } from 'react-router-dom';
 // dfsdfasdf
 const { Search } = Input;
 const { Option } = Select;
@@ -106,7 +107,7 @@ function FindProduct() {
 
       <Row style={{ marginTop: '2%' }} gutter={16}>
        
-      <Col span={4}>
+      <Col span={4} xs={24} sm={12} md={8} lg={4}>
           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <p style={{ margin: 0 }}>Bottoms</p>
@@ -114,7 +115,7 @@ function FindProduct() {
             </div>
           </Card>
         </Col>
-        <Col span={4}>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <p style={{ margin: 0 }}>Shoes</p>
@@ -122,7 +123,7 @@ function FindProduct() {
             </div>
           </Card>
         </Col>
-        <Col span={4}>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <p style={{ margin: 0 }}>Bottoms</p>
@@ -130,7 +131,7 @@ function FindProduct() {
             </div>
           </Card>
         </Col>
-        <Col span={4}>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <p style={{ margin: 0 }}>Shoes</p>
@@ -138,7 +139,7 @@ function FindProduct() {
             </div>
           </Card>
         </Col>
-        <Col span={4}>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <p style={{ margin: 0 }}>Bottoms</p>
@@ -146,7 +147,7 @@ function FindProduct() {
             </div>
           </Card>
         </Col>
-        <Col span={4}>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <p style={{ margin: 0 }}>Shoes</p>
@@ -158,16 +159,15 @@ function FindProduct() {
       </Row>
       <Row style={{ marginTop: '2%' }} gutter={16}>
        
-       <Col span={4}>
-           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)'}}>
-
+       <Col span={4} xs={24} sm={12} md={8} lg={4}>
+           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
              <div style={{ display: 'flex', alignItems: 'center' }}>
                <p style={{ margin: 0 }}>Bottoms</p>
                <img  src={bottoms} style={{ maxWidth: '30%', marginLeft: 40 }} />
              </div>
            </Card>
          </Col>
-         <Col span={4}>
+         <Col span={4} xs={24} sm={12} md={8} lg={4}>
            <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
              <div style={{ display: 'flex', alignItems: 'center' }}>
                <p style={{ margin: 0 }}>Shoes</p>
@@ -175,7 +175,7 @@ function FindProduct() {
              </div>
            </Card>
          </Col>
-         <Col span={4}>
+         <Col span={4} xs={24} sm={12} md={8} lg={4}>
            <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
              <div style={{ display: 'flex', alignItems: 'center' }}>
                <p style={{ margin: 0 }}>Bottoms</p>
@@ -183,7 +183,7 @@ function FindProduct() {
              </div>
            </Card>
          </Col>
-         <Col span={4}>
+         <Col span={4} xs={24} sm={12} md={8} lg={4}>
            <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
              <div style={{ display: 'flex', alignItems: 'center' }}>
                <p style={{ margin: 0 }}>Shoes</p>
@@ -191,7 +191,7 @@ function FindProduct() {
              </div>
            </Card>
          </Col>
-         <Col span={4}>
+         <Col span={4} xs={24} sm={12} md={8} lg={4}>
            <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
              <div style={{ display: 'flex', alignItems: 'center' }}>
                <p style={{ margin: 0 }}>Bottoms</p>
@@ -199,7 +199,7 @@ function FindProduct() {
              </div>
            </Card>
          </Col>
-         <Col span={4}>
+         <Col span={4} xs={24} sm={12} md={8} lg={4}>
            <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
              <div style={{ display: 'flex', alignItems: 'center' }}>
                <p style={{ margin: 0 }}>Shoes</p>
@@ -209,7 +209,6 @@ function FindProduct() {
          </Col>
        
        </Row>
-
       <Divider />
 
       <Row gutter={[16, 16]}>
@@ -232,7 +231,7 @@ function FindProduct() {
       <Row gutter={[16, 16]}>
         {[...Array(4)].map((_, index) => (
           <Col key={index} xs={24} sm={12} md={12} lg={6}>
-            <Card
+           <NavLink to="/product-detail"> <Card
               style={{ width: '100%', backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
               cover={
                 <div
@@ -257,7 +256,7 @@ function FindProduct() {
               }
             >
               {renderCardBottom()}
-            </Card>
+            </Card></NavLink>
           </Col>
         ))}
       </Row>

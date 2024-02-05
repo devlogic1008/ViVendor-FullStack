@@ -82,9 +82,7 @@ const SideNav = () => {
             <Menu.Item key="4" icon={<TeamOutlined />}>
               <Link to="/order-list">Order List</Link>
             </Menu.Item>
-            <Menu.Item key="10" icon={<PieChartOutlined />}>
-              <Link to="/product-detail">Product detail</Link>
-            </Menu.Item>
+           
             <Menu.Item style={{marginTop:"95%"}} key="5" icon={<FileOutlined />}>
               <Link to="/store-settings">Store Settings</Link>
             </Menu.Item>

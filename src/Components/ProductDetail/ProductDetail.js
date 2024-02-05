@@ -52,12 +52,15 @@ export default function ProductDetail() {
     { Sizes: 'S', Bust: '82', Hem_Width: '90', Shoulder: '37', Sleeve_Length: '58', Length: '62' },
     { Sizes: 'M', Bust: '86', Hem_Width: '94', Shoulder: '38', Sleeve_Length: '59', Length: '63' },
     { Sizes: 'L', Bust: '90', Hem_Width: '98', Shoulder: '39', Sleeve_Length: '60', Length: '64' },
+    { Sizes: 'L', Bust: '90', Hem_Width: '98', Shoulder: '39', Sleeve_Length: '60', Length: '64' },
+    { Sizes: 'L', Bust: '90', Hem_Width: '98', Shoulder: '39', Sleeve_Length: '60', Length: '64' },
+    { Sizes: 'L', Bust: '90', Hem_Width: '98', Shoulder: '39', Sleeve_Length: '60', Length: '64' },
     // Add more rows as needed
   ];
 
   const descriptionData = [
     { label: 'Item No', value: 'LC2724596-P1010' },
-    { label: 'Tag', value: 'Valentines Day' },
+    { label: 'Tag', value: 'Light Pink Valentines Day Heart Jacquard Knit Sweater' },
     { label: 'Category', value: 'Knit Sweater' },
     { label: 'Color', value: 'Light Pink' },
     { label: 'Sleeve Length', value: 'Long Sleeve' },
@@ -94,10 +97,11 @@ export default function ProductDetail() {
             <p>Material: 30%Polyester+42%Acrylic+28%Nylon</p>
           </div>
           <div>
-            <span className='colorrr mt-5' style={{fontWeight:700}}>Color:</span><span>Light Pink</span>
+            <p className='colorr' style={{fontWeight:700, marginTop:'2%'}}>Color:Light Pink</p>
+           
           </div>
-          <div className="sizes ">
-            <h5>Size:</h5>
+          <div className="sizes " >
+            <h5 style={{marginTop:'2%'}}>Size:</h5>
             <div className='p_size'>
               <p className='p_sizes'>(US 4-6)S</p>
               <p className='p_sizes'>(US 4-6)S</p>
@@ -115,8 +119,9 @@ export default function ProductDetail() {
         <TabPane tab="Size Chart " key="1">
           <h4>Size Chart (CM)</h4>
           <Table bordered columns={sizeChartColumns} dataSource={sizeChartData} pagination={false} />
-          <h4 > Size Chart (INCH)</h4>
+          <h4 style={{marginTop:'5%'}}> Size Chart (INCH)</h4>
           <Table bordered columns={sizeChartColumns} dataSource={sizeChartData} pagination={false} />
+
         </TabPane>
       
         <TabPane tab="Description" key="2">
@@ -130,6 +135,15 @@ export default function ProductDetail() {
           />
         </TabPane>
       </Tabs>
+      <div className='notes'
+      >
+        <h4>Note:</h4>
+        <p>1.There maybe 1-2 cm deviation in different sizes, locations and stretch of fabrics. Size chart is for reference only, there may be a little difference with what you get.</p>
+        <p>2.There are 3 kinds of elasticity: High Elasticity (two-sided stretched), Medium Elasticity (one-sided stretched) and Nonelastic (can not stretched ).</p>
+        <p>3.Color may be lighter or darker due to the different PC display.</p>
+        <p>4.Wash it by hand in 30-degree water, hang to dry in shade, prohibit bleaching.</p>
+        <p>5.There maybe a slightly difference on detail and pattern.</p>
+      </div>
     </>
   );
 }
