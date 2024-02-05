@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
-import { Input, List, Card, Row, Col, Select, Divider, Typography, Pagination } from 'antd';
-import tops from "../../images/tops.jpg";
-import './FindProduct.css'
+import { Input, Card, Row, Col, Select, Divider, Typography, Pagination, Button } from 'antd';
+import tops from "../../images/tops.png";
+import bottoms from "../../images/bottoms.png";
+import sweater from "../../images/sweater.png";
+import shirt1 from "../../images/shirt1.jpg";
+import shirt2 from "../../images/shirt2.jpg";
+import shirt from "../../images/shirt.jpg";
+
 const { Search } = Input;
 const { Option } = Select;
-const { Meta } = Card;
 const { Title, Paragraph } = Typography;
+
 const data = [
   'Tops',
   'Bags ',
@@ -14,16 +19,14 @@ const data = [
   'Dresses',
   'Outer',
   'Inner ',
-  'Inner ',
- 
-
-  // Add more dummy data as needed
+  
 ];
 
 function FindProduct() {
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState(data);
   const [selectedFilters, setSelectedFilters] = useState([]);
+  const [hovered, setHovered] = useState(false);
 
   const handleSearch = (value) => {
     setSearchText(value);
@@ -48,32 +51,36 @@ function FindProduct() {
   const renderCardBottom = () => (
     <div>
       <Row gutter={[16, 16]}>
-      <Col span={24}>
-        <p style={{ margin: 0, marginBottom: '0px' }}>Jeans Shirt</p>
-      </Col>
-      <Col span={12} style={{ backgroundColor: 'rgba(198,126,64,.1)', padding: '10px' }}>
-        <Paragraph style={{ color: '#c67e40' }}>Product Cost</Paragraph>
-        <Title level={4} style={{ color: '#c67e40', margin: 0 }}>$30.50</Title>
-      </Col>
-      <Col span={12} style={{ backgroundColor: 'rgba(45,148,76,.1)', padding: '10px' }}>
-        <Paragraph style={{ color: '#2d944c' }}>Suggested Price</Paragraph>
-        <Title level={4} style={{ color: '#2d944c', margin: 0 }}>$46.70</Title>
-      </Col>
-    </Row>
+        <Col span={24}>
+          <p style={{ margin: 0, marginBottom: '0px' }}>Jeans Shirt</p>
+        </Col>
+        <Col span={12} style={{ backgroundColor: 'rgba(198,126,64,.1)', padding: '10px' }}>
+          <Paragraph style={{ color: '#c67e40' }}>Product Cost</Paragraph>
+          <Title level={4} style={{ color: '#c67e40', margin: 0 }}>$30.50</Title>
+        </Col>
+        <Col span={12} style={{ backgroundColor: 'rgba(45,148,76,.1)', padding: '10px' }}>
+          <Paragraph style={{ color: '#2d944c' }}>Suggest Price</Paragraph>
+          <Title level={4} style={{ color: '#2d944c', margin: 0 }}>$46.70</Title>
+        </Col>
+      </Row>
       <Divider style={{ margin: '8px 0' }} />
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <Paragraph style={{ marginBottom: 0 }}>Shipping: $9.11</Paragraph>
-      <Paragraph style={{ marginBottom: 0 }}>Profit: $16.20</Paragraph>
-    </div>
+        <Paragraph style={{ marginBottom: 0 }}>Shipping: $9.11</Paragraph>
+        <Paragraph style={{ marginBottom: 0 }}>Profit: $16.20</Paragraph>
+      </div>
     </div>
   );
+
+  const handleImageHover = () => {
+    setHovered(!hovered);
+  };
 
   return (
     <div>
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col xs={24} sm={18}>
           <Search
-            placeholder="You can also paste Shewin product Url or ID here"
+            placeholder="You can also paste Shewin product URL or ID here"
             allowClear
             enterButton="Search"
             size="default"
@@ -83,7 +90,7 @@ function FindProduct() {
         <Col xs={24} sm={6}>
           <Select
             mode="multiple"
-            style={{ width: '100%', }}
+            style={{ width: '100%' }}
             placeholder="Select filters"
             onChange={handleFilterChange}
             value={selectedFilters}
@@ -97,28 +104,114 @@ function FindProduct() {
         </Col>
       </Row>
 
-      <List
-        grid={{ gutter: 2, column: 4 }}
-        dataSource={filteredData}
-        renderItem={(item) => (
-          <List.Item>
-           
-              <Row>
-               
-                <Col span={24} >
-                  <img
-                    src={tops} // Replace with your actual image URL
-                    alt="Product Image"
-                    style={{ width: '70%', height: 'auto', borderRadius:'5px', cursor:'pointer' }}
-                  />
-                 
-                </Col>
-              </Row>
-           
-          </List.Item>
-        )}
-      />
+      <Row style={{ marginTop: '2%' }} gutter={16}>
+       
+      <Col span={4}>
+          <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <p style={{ margin: 0 }}>Bottoms</p>
+              <img  src={bottoms} style={{ maxWidth: '30%', marginLeft: 40 }} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4}>
+          <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <p style={{ margin: 0 }}>Shoes</p>
+              <img alt="example" src={sweater} style={{ maxWidth: '30%', marginLeft: 40 }} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4}>
+          <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <p style={{ margin: 0 }}>Bottoms</p>
+              <img  src={bottoms} style={{ maxWidth: '30%', marginLeft: 40 }} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4}>
+          <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <p style={{ margin: 0 }}>Shoes</p>
+              <img alt="example" src={tops} style={{ maxWidth: '30%', marginLeft: 40 }} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4}>
+          <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <p style={{ margin: 0 }}>Bottoms</p>
+              <img alt="example" src={bottoms} style={{ maxWidth: '30%', marginLeft: 40 }} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4}>
+          <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <p style={{ margin: 0 }}>Shoes</p>
+              <img alt="example" src={tops} style={{ maxWidth: '30%', marginLeft: 40 }} />
+            </div>
+          </Card>
+        </Col>
+      
+      </Row>
+      <Row style={{ marginTop: '2%' }} gutter={16}>
+       
+       <Col span={4}>
+           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)'}}>
+
+             <div style={{ display: 'flex', alignItems: 'center' }}>
+               <p style={{ margin: 0 }}>Bottoms</p>
+               <img  src={bottoms} style={{ maxWidth: '30%', marginLeft: 40 }} />
+             </div>
+           </Card>
+         </Col>
+         <Col span={4}>
+           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
+             <div style={{ display: 'flex', alignItems: 'center' }}>
+               <p style={{ margin: 0 }}>Shoes</p>
+               <img alt="example" src={sweater} style={{ maxWidth: '30%', marginLeft: 40 }} />
+             </div>
+           </Card>
+         </Col>
+         <Col span={4}>
+           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
+             <div style={{ display: 'flex', alignItems: 'center' }}>
+               <p style={{ margin: 0 }}>Bottoms</p>
+               <img  src={bottoms} style={{ maxWidth: '30%', marginLeft: 40 }} />
+             </div>
+           </Card>
+         </Col>
+         <Col span={4}>
+           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
+             <div style={{ display: 'flex', alignItems: 'center' }}>
+               <p style={{ margin: 0 }}>Shoes</p>
+               <img alt="example" src={tops} style={{ maxWidth: '30%', marginLeft: 40 }} />
+             </div>
+           </Card>
+         </Col>
+         <Col span={4}>
+           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
+             <div style={{ display: 'flex', alignItems: 'center' }}>
+               <p style={{ margin: 0 }}>Bottoms</p>
+               <img alt="example" src={bottoms} style={{ maxWidth: '30%', marginLeft: 40 }} />
+             </div>
+           </Card>
+         </Col>
+         <Col span={4}>
+           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
+             <div style={{ display: 'flex', alignItems: 'center' }}>
+               <p style={{ margin: 0 }}>Shoes</p>
+               <img alt="example" src={tops} style={{ maxWidth: '30%', marginLeft: 40 }} />
+             </div>
+           </Card>
+         </Col>
+       
+       </Row>
+
       <Divider />
+
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={18}>
           <Title level={2}>All Categories</Title>
@@ -135,40 +228,40 @@ function FindProduct() {
           </Select>
         </Col>
       </Row>
-      <Row gutter={16}>
-        <Col xs={24} sm={6}>
-          <Card 
-            hoverable
-            cover={<img className='all-cat-image' alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-          >
-            {renderCardBottom()}
-          </Card>
-        </Col>
-        <Col xs={24} sm={6}>
-          <Card
-            hoverable
-            cover={<img className='all-cat-image' alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-          >
-            {renderCardBottom()}
-          </Card>
-        </Col>
-        <Col xs={24} sm={6}>
-          <Card
-            hoverable
-            cover={<img className='all-cat-image' alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-          >
-            {renderCardBottom()}
-          </Card>
-        </Col>
-        <Col xs={24} sm={6}>
-          <Card
-            hoverable
-            cover={<img className='all-cat-image' alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-          >
-            {renderCardBottom()}
-          </Card>
-        </Col>
+
+      <Row gutter={[16, 16]}>
+        {[...Array(4)].map((_, index) => (
+          <Col key={index} xs={24} sm={12} md={12} lg={6}>
+            <Card
+              style={{ width: '100%', backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
+              cover={
+                <div
+                  className="hoverable-image-container"
+                  onMouseEnter={handleImageHover}
+                  onMouseLeave={handleImageHover}
+                >
+                  <img
+                    className='all-cat-image'
+                    style={{ maxHeight: '250px', width: '100%' }}
+                    alt="example"
+                    src={hovered ? shirt1 : shirt2}
+                  />
+                  {/* {hovered && (
+                    <div className="hover-button-container" style={{ display: 'flex', justifyContent: 'center', zIndex: '777' }} >
+                      <Button ghost>
+                        View Details
+                      </Button>
+                    </div>
+                  )} */}
+                </div>
+              }
+            >
+              {renderCardBottom()}
+            </Card>
+          </Col>
+        ))}
       </Row>
+
       <Pagination
         style={{ marginTop: '16px', textAlign: 'center' }}
         current={1}
@@ -178,5 +271,7 @@ function FindProduct() {
     </div>
   );
 }
+
+
 
 export default FindProduct;

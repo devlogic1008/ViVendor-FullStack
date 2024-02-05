@@ -1,56 +1,44 @@
+// Import necessary components and icons from Ant Design
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link , } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import {
   DesktopOutlined,
   FileOutlined,
   PieChartOutlined,
   TeamOutlined,
   UserOutlined,
-  MessageOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 import shewin from '../../images/shewin.png';
-import { Layout, Menu, theme ,Divider} from 'antd';
+import { Layout, Menu, theme, Modal, Button, Select } from 'antd';
 import FindProduct from '../FindProduct/FindProduct';
 import ImportList from '../ImportList/ImportList';
 import ProductList from '../ProductList/ProductList';
 import OrderList from '../OrderList/OrderList';
 import StoreSettings from '../StoreSettings/StoreSettings';
+import UserInfo from '../UserInfo/UserInfo';
+import ProductDetailPage from '../ProductDetail/ProductDetail';
 
 const { Header, Content, Footer, Sider } = Layout;
-
-function getItem(label, key, icon, children, path) {
-  return {
-    key,
-    icon,
-    children,
-    label,
-    path,
-  };
-}
-
-const itemsUpper = [
-  getItem('Find Product', '1', <PieChartOutlined />, null, '/find-product'),
-  getItem('Import list', '2', <DesktopOutlined />, null, '/import-list'),
-  getItem('Product List', '3', <UserOutlined />, null, '/product-list'),
-  getItem('Order List', 'sub2', <TeamOutlined />,null,'/order-list' ),
-  // getItem('Product List', 'sub1', <UserOutlined />, [
-  //   getItem('Tom', '3', null, null, '/user/tom'),
-  //   getItem('Bill', '4', null, null, '/user/bill'),
-  //   getItem('Alex', '5', null, null, '/user/alex'),
-  // ]),
-];
-
-const itemsLower = [
-
-  getItem('Store Settings', '9', <FileOutlined />, null, '/store-settings'),
-  getItem('My Message', '10', <MessageOutlined />, null, '/files'),
-  getItem('Help Center', '11', <TeamOutlined />, null, '/files'),
-  getItem('Shopify Admin', '12', <DesktopOutlined />, null, '/files'),
-  getItem('Umair500', '13', <UserOutlined />, null, '/files'),
-];
+const { Option } = Select;
 
 const SideNav = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [selectedKeys, setSelectedKeys] = useState(['1']);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleMenuClick = ({ key }) => {
+    setSelectedKeys([key]);
+    if (key === '8') {
+      // If Shopify Admin is clicked, show the modal
+      setModalVisible(true);
+    }
+  };
+
+  const handleModalCancel = () => {
+    setModalVisible(false);
+  };
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -76,23 +64,40 @@ const SideNav = () => {
               style={{ width: '100%', height: 'auto', padding: '15px' }}
             />
           </div>
-          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-            {itemsUpper.map((item) => (
-              <Menu.Item key={item.key} icon={item.icon}>
-                <Link to={item.path}>{item.label}</Link>
-              </Menu.Item>
-            ))}
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={selectedKeys}
+            mode="inline"
+            onClick={handleMenuClick}
+          >
+            <Menu.Item key="1" icon={<PieChartOutlined />}>
+              <Link to="/find-product">Find Product</Link>
+            </Menu.Item>
+            <Menu.Item key="2" icon={<DesktopOutlined />}>
+              <Link to="/import-list">Import List</Link>
+            </Menu.Item>
+            <Menu.Item key="3" icon={<UserOutlined />}>
+              <Link to="/product-list">Product List</Link>
+            </Menu.Item>
+            <Menu.Item key="4" icon={<TeamOutlined />}>
+              <Link to="/order-list">Order List</Link>
+            </Menu.Item>
+            <Menu.Item key="10" icon={<PieChartOutlined />}>
+              <Link to="/product-detail">Product detail</Link>
+            </Menu.Item>
+            <Menu.Item style={{marginTop:"95%"}} key="5" icon={<FileOutlined />}>
+              <Link to="/store-settings">Store Settings</Link>
+            </Menu.Item>
+            <Menu.Item key="7" icon={<TeamOutlined />}>
+              <Link to="/files">Help Center</Link>
+            </Menu.Item>
+            <Menu.Item key="8" icon={<DesktopOutlined />}>
+              <Link >Shopify Admin</Link>
+            </Menu.Item>
+            <Menu.Item key="9" icon={<UserOutlined />}>
+              <Link to="/user-info">Umair500</Link>
+            </Menu.Item>
           </Menu>
-          <Divider style={{ margin: '8px 0' }} />
-          <div style={{ marginTop: '70%' }}>
-            <Menu theme="dark" mode="inline">
-              {itemsLower.map((item) => (
-                <Menu.Item key={item.key} icon={item.icon}>
-                  <Link to={item.path}>{item.label}</Link>
-                </Menu.Item>
-              ))}
-            </Menu>
-          </div>
         </Sider>
 
         <Layout className="site-layout">
@@ -108,10 +113,11 @@ const SideNav = () => {
               <Routes>
                 <Route path="/find-product" element={<FindProduct />} />
                 <Route path="/import-list" element={<ImportList />} />
-                <Route path="/product-list" element={<ProductList/>} />
-                <Route path="/order-list" element={<OrderList/>} />
-                <Route path="/store-settings" element={<StoreSettings/>} />
-                {/* Add more routes as needed */}
+                <Route path="/product-list" element={<ProductList />} />
+                <Route path="/order-list" element={<OrderList />} />
+                <Route path="/store-settings" element={<StoreSettings />} />
+                <Route path="/user-info" element={<UserInfo />} />
+                <Route path="/product-detail" element={<ProductDetailPage/>} />
               </Routes>
             </div>
           </Content>
@@ -119,6 +125,40 @@ const SideNav = () => {
             Shewin ©{new Date().getFullYear()} Created by Logic Everest
           </Footer>
         </Layout>
+
+        {/* Shopify Admin Modal */}
+        <Modal
+          title="Shopify Admin"
+          visible={modalVisible}
+          onCancel={handleModalCancel}
+          footer={[
+            <Button key="cancel" onClick={handleModalCancel}>
+              Cancel
+            </Button>,
+            <Button key="ok" type="primary" onClick={handleModalCancel}>
+              OK
+            </Button>,
+          ]}
+        >
+          <h3>Choose your Store</h3>
+          <Select
+            showSearch
+            style={{ width: '50%' }}
+            placeholder="Select your store"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            <Option value="store1">Store 1</Option>
+            <Option value="store2">Store 2</Option>
+            <Option value="store2">Store 2</Option>
+            {/* Add more stores as needed */}
+          </Select>
+        <p>  <Button type="primary"  icon={<UserOutlined />} style={{ width: '50%' , marginTop: '5px' }}>
+            Add Account
+          </Button></p>
+        </Modal>
       </Layout>
     </Router>
   );
