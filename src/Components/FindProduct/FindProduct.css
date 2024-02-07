@@ -7,8 +7,25 @@
   max-height: 250px;
   width: 100%;
   transition: transform 1s ease;
+  object-fit: cover;
+  
+}
+.hoverable-image-container:hover{
+  transition: .5s ease-out;
 }
 
 .image-card:hover .all-cat-image {
   transform: rotateY(180deg);
+}
+@media only screen and (max-width: 768px) {
+  .find_p_filter{
+   margin-top: 5%;
+  }
+  .filter_by{
+    margin-bottom:10%;
+   
+  }
+  .category_card{
+    margin-top: 4%;
+  }
 }

@@ -29,7 +29,7 @@ const UserInfo = () => {
           <Input style={{ width: '50%' }} placeholder="Please enter the new password" />
 
           <p>Confirm Password</p>
-          <Input style={{ width: '50%' }} placeholder="Please enter the new password" />
+          <Input style={{ width: '50%' }} placeholder="Please enter the Confirm password" />
 
           <p>
             <Button type="primary">Save</Button>
@@ -42,7 +42,7 @@ const UserInfo = () => {
           <p>Phone number</p>
         </Col>
         <Col span={16}>
-          <Input style={{ width: '50%' }} placeholder="Please enter the new password" />
+          <Input style={{ width: '50%' }} placeholder="Please enter the new phone number" />
           <Button style={{ marginLeft: '4%' }} type="primary">
             Save
           </Button>

@@ -78,7 +78,7 @@ export default function ProductDetail() {
     <>
       <section className="product-container">
         <div className="img-card">
-          <img src={pic1} alt="featured" id="featured-image" />
+          <img src={pic4} alt="featured" id="featured-image" />
           <div className="small-Card">
             <img src={pic4} alt="small-1" className="small-Img" />
             <img src={pic2} alt="small-2" className="small-Img" />
