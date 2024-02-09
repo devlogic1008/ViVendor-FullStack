@@ -1,4 +1,3 @@
-// Import necessary components and icons from Ant Design
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import {
@@ -7,7 +6,6 @@ import {
   PieChartOutlined,
   TeamOutlined,
   UserOutlined,
-  PlusOutlined,
 } from '@ant-design/icons';
 import shewin from '../../images/shewin.png';
 import { Layout, Menu, theme, Modal, Button, Select } from 'antd';
@@ -31,7 +29,6 @@ const SideNav = () => {
   const handleMenuClick = ({ key }) => {
     setSelectedKeys([key]);
     if (key === '8') {
-      // If Shopify Admin is clicked, show the modal
       setModalVisible(true);
     }
   };
@@ -77,6 +74,11 @@ const SideNav = () => {
             <Menu.Item key="2" icon={<DesktopOutlined />}>
               <Link to="/import-list">Import List</Link>
             </Menu.Item>
+            <Menu.SubMenu key="products" icon={<UserOutlined />} title="Products">
+              <Menu.Item key="11" >  <Link to="/create-product">Create Product</Link></Menu.Item>
+              <Menu.Item key="12">Categories</Menu.Item>
+              <Menu.Item key="13">Tags</Menu.Item>
+            </Menu.SubMenu>
             <Menu.Item key="3" icon={<UserOutlined />}>
               <Link to="/product-list">Product List</Link>
             </Menu.Item>
@@ -86,15 +88,14 @@ const SideNav = () => {
             <Menu.Item key="10" icon={<DesktopOutlined />}>
               <Link to="/create-product">Create Product</Link>
             </Menu.Item>
-           
-            <Menu.Item style={{marginTop:"95%"}} key="5" icon={<FileOutlined />}>
+            <Menu.Item style={{ marginTop: '95%' }} key="5" icon={<FileOutlined />}>
               <Link to="/store-settings">Store Settings</Link>
             </Menu.Item>
             <Menu.Item key="7" icon={<TeamOutlined />}>
               <Link to="/files">Help Center</Link>
             </Menu.Item>
             <Menu.Item key="8" icon={<DesktopOutlined />}>
-              <Link >Shopify Admin</Link>
+              <Link>Shopify Admin</Link>
             </Menu.Item>
             <Menu.Item key="9" icon={<UserOutlined />}>
               <Link to="/user-info">Umair500</Link>
@@ -119,8 +120,8 @@ const SideNav = () => {
                 <Route path="/order-list" element={<OrderList />} />
                 <Route path="/store-settings" element={<StoreSettings />} />
                 <Route path="/user-info" element={<UserInfo />} />
-                <Route path="/product-detail" element={<ProductDetailPage/>} />
-                <Route path="/create-product" element={<CreateProduct/>} />
+                <Route path="/product-detail" element={<ProductDetailPage />} />
+                <Route path="/create-product" element={<CreateProduct />} />
               </Routes>
             </div>
           </Content>
@@ -158,9 +159,15 @@ const SideNav = () => {
             <Option value="store2">Store 2</Option>
             {/* Add more stores as needed */}
           </Select>
-        <p>  <Button type="primary"  icon={<UserOutlined />} style={{ width: '50%' , marginTop: '5px' }}>
-            Add Account
-          </Button></p>
+          <p>
+            <Button
+              type="primary"
+              icon={<UserOutlined />}
+              style={{ width: '50%', marginTop: '5px' }}
+            >
+              Add Account
+            </Button>
+          </p>
         </Modal>
       </Layout>
     </Router>
