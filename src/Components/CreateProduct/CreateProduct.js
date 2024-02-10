@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Form, Input, Radio, Button, Checkbox, Select, Divider, notification ,Table} from 'antd';
+import { Row, Col, Form, Input, Radio, Button, Checkbox, Select, Divider, notification, Table } from 'antd';
 import { Upload } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import JoditEditor from 'jodit-react';
@@ -12,13 +12,14 @@ const AddNewProductPage = () => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [showVariantOptions, setShowVariantOptions] = useState(false);
-  const [variantOptions, setVariantOptions] = useState([{ attributeName: '', tags: [] }]);
+  const [variantOptions, setVariantOptions] = useState([{ attributeName: '', tags: '' }]);
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
     // Generate table data whenever variantOptions change
     generateTableData();
   }, [variantOptions]);
+
   const onFinish = (values) => {
     console.log('Received values:', values);
     // Handle form submission logic here
@@ -60,27 +61,22 @@ const AddNewProductPage = () => {
         },
       });
     } else {
-      setVariantOptions([...variantOptions, { attributeName: '', tags: [] }]);
+      setVariantOptions([...variantOptions, { attributeName: '', tags: '' }]);
     }
   };
 
   const handleOptionChange = (index, field, value) => {
     setVariantOptions((prevOptions) => {
       const updatedOptions = [...prevOptions];
-      // Handle special case for tags field
-      if (field === 'tags') {
-        // Split the input string into an array of tags
-        updatedOptions[index][field] = value.split(',').map((tag) => tag.trim());
-      } else {
-        updatedOptions[index][field] = value;
-      }
+      updatedOptions[index][field] = value;
       return updatedOptions;
     });
   };
+
   const generateTableData = () => {
     // Generate table data
     const newData = variantOptions.map((option, index) => {
-      const title = `${option.attributeName} - ${option.tags}`;
+      const title = `${option.attributeName} / ${option.tags}`;
       return {
         key: index,
         title,
@@ -94,6 +90,7 @@ const AddNewProductPage = () => {
 
     setTableData(newData);
   };
+
   const columns = [
     {
       title: 'Title',
@@ -127,49 +124,11 @@ const AddNewProductPage = () => {
     },
   ];
 
-
   const handleSave = () => {
-    // Collect data from the form and log to the console
-    console.log('Title:', form.getFieldValue('title'));
-    console.log('Description:', form.getFieldValue('description'));
-    console.log('Shipping Info:', form.getFieldValue('shippingInfo'));
-    // ... (Include other fields)
-
-    // Images
-    console.log('File List:', fileList.map((file) => file.url));
-
-    // Status
-    console.log('Status:', form.getFieldValue('status'));
-
-    // Sort By
-    console.log('Sort By:', form.getFieldValue('sortBy'));
-
-    // Additional Info
-    console.log('Organization:', form.getFieldValue('organization'));
-    console.log('Product Type:', form.getFieldValue('productType'));
-    console.log('Vendor:', form.getFieldValue('vendor'));
-    console.log('Tags:', form.getFieldValue('tags'));
-
-    // Pricing / Shipping / Inventory
-    console.log('Cost Price:', form.getFieldValue('costPrice'));
-    console.log('COG:', form.getFieldValue('cog'));
-    console.log('Recommended Price:', form.getFieldValue('recommendedPrice'));
-    console.log('Quantity:', form.getFieldValue('quantity'));
-    console.log('Weight:', form.getFieldValue('weight'));
-    console.log('SKU:', form.getFieldValue('sku'));
-    console.log('Barcode:', form.getFieldValue('barcode'));
-    console.log('Length:', form.getFieldValue('length'));
-    console.log('Width:', form.getFieldValue('width'));
-    console.log('Height:', form.getFieldValue('height'));
-
-    // Variant
-    console.log('Has Variant:', showVariantOptions);
-    if (showVariantOptions) {
-      console.log('Variant Options:', variantOptions);
-    }
-
     // Implement your logic to save the data (e.g., send to server) here
+    console.log('Form values:', form.getFieldsValue());
   };
+
   return (
     <div style={{ padding: '0px 20px 0px 20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -295,13 +254,13 @@ const AddNewProductPage = () => {
               <Form.Item label={<strong>ORGANIZATION</strong>} >
 
               </Form.Item>
-              <Form.Item label={<strong>Product Type</strong>} name="productType">
+              <Form.Item  label='Product Type 'name="productType">
                 <Input placeholder='eg. Shirts' />
               </Form.Item>
-              <Form.Item label={<strong>Vendor</strong>} name="vendor">
+              <Form.Item label='Vendor' name="vendor">
                 <Input placeholder='eg. Nike' />
               </Form.Item>
-              <Form.Item label={<strong>Tags</strong>} name="tags" style={{ margin: 0 }}>
+              <Form.Item label='Tags' name="tags" style={{ margin: 0 }}>
                 <Select mode="tags" placeholder="Select or enter tags">
                   <Option key="Tag1">Tag1</Option>
                   <Option key="Tag2">Tag2</Option>
@@ -323,6 +282,7 @@ const AddNewProductPage = () => {
             <Row gutter={[18, 8]}>
               <Col span={8}>
                 <Form
+                
                   form={form}
                   name="pricingForm"
                   onFinish={onFinish}
@@ -330,10 +290,11 @@ const AddNewProductPage = () => {
                   wrapperCol={{ span: 24 }}
                 >
                   <Form.Item
-                    label={<strong>Cost Price</strong>}
+                 
+                    label='Cost Price'
                     name="costPrice"
                   >
-                    <Input placeholder='$ 0.00' />
+                    <Input  style={{marginTop:'-10%'}} placeholder='$ 0.00' />
                   </Form.Item>
                 </Form>
               </Col>
@@ -346,7 +307,7 @@ const AddNewProductPage = () => {
                   wrapperCol={{ span: 24 }}
                 >
                   <Form.Item
-                    label={<strong>COG</strong>}
+                     label='COG'
                     name="cog"
                   >
                     <Input placeholder='$ 0.00'  />
@@ -362,7 +323,8 @@ const AddNewProductPage = () => {
                   wrapperCol={{ span: 24 }}
                 >
                   <Form.Item
-                    label={<strong>Recommended Price</strong>}
+                   
+                    label='Recommended Price'
                     name="recommendedPrice"
                   >
                     <Input placeholder='$ 0.00' />
@@ -378,7 +340,8 @@ const AddNewProductPage = () => {
                   wrapperCol={{ span: 24 }}
                 >
                   <Form.Item
-                    label={<strong>Quantity</strong>}
+                   
+                    label='Quantity '
                     name="quantity"
                     type="number"
                   >
@@ -395,7 +358,7 @@ const AddNewProductPage = () => {
                   wrapperCol={{ span: 24 }}
                 >
                   <Form.Item
-                    label={<strong>Weight</strong>}
+                   label='Weight '
                     name="weight"
                     type="number"
                   >
@@ -412,7 +375,7 @@ const AddNewProductPage = () => {
                   wrapperCol={{ span: 24 }}
                 >
                   <Form.Item
-                    label={<strong>SKU</strong>}
+                     label='SKU '
                     name="sku"
                     type="number"
                   >
@@ -429,7 +392,7 @@ const AddNewProductPage = () => {
                   wrapperCol={{ span: 24 }}
                 >
                   <Form.Item
-                    label={<strong>Barcode</strong>}
+                      label='Barcode '
                     name="barcode"
                   >
                     <Input placeholder='Barcode' />
@@ -445,7 +408,7 @@ const AddNewProductPage = () => {
                   wrapperCol={{ span: 24 }}
                 >
                   <Form.Item
-                    label={<strong>Length(cm)</strong>}
+                   label='Length(cm) '
                     name="length"
                   >
                     <Input placeholder='Length' />
@@ -461,7 +424,7 @@ const AddNewProductPage = () => {
                   wrapperCol={{ span: 24 }}
                 >
                   <Form.Item
-                    label={<strong>Width(cm)</strong>}
+                    label='Width(cm) '
                     name="width"
                   >
                     <Input placeholder='Width' />
@@ -477,7 +440,7 @@ const AddNewProductPage = () => {
                   wrapperCol={{ span: 24 }}
                 >
                   <Form.Item
-                    label={<strong>Height(cm)</strong>}
+                    label='Height(cm) '
                     name="height"
                   >
                     <Input placeholder='Height' />

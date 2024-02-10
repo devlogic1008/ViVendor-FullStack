@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import {
   DesktopOutlined,
+  ProductOutlined ,
+  UnorderedListOutlined
+ ,MergeOutlined,
+ TagOutlined ,
   FileOutlined,
   PieChartOutlined,
   TeamOutlined,
-  UserOutlined,
+  UserOutlined
+  ,FileSyncOutlined,
 } from '@ant-design/icons';
 import shewin from '../../images/shewin.png';
 import { Layout, Menu, theme, Modal, Button, Select } from 'antd';
@@ -17,6 +22,9 @@ import StoreSettings from '../StoreSettings/StoreSettings';
 import UserInfo from '../UserInfo/UserInfo';
 import ProductDetailPage from '../ProductDetail/ProductDetail';
 import CreateProduct from '../CreateProduct/CreateProduct';
+import ImportCSV from '../ImportCSV/ImportCSV';
+import Categories from '../Categories/Categories';
+import Tags from '../Tags/Tags';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Option } = Select;
@@ -49,9 +57,10 @@ const SideNav = () => {
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
           style={{
-            overflow: 'auto',
+            // overflow: 'auto',
             height: '100vh',
             position: 'fixed',
+            minWidth:'240px',
             left: 0,
           }}
         >
@@ -74,14 +83,16 @@ const SideNav = () => {
             <Menu.Item key="2" icon={<DesktopOutlined />}>
               <Link to="/import-list">Import List</Link>
             </Menu.Item>
-            <Menu.SubMenu key="products" icon={<UserOutlined />} title="Products">
-              <Menu.Item key="11" >  <Link to="/create-product">Create Product</Link></Menu.Item>
-              <Menu.Item key="12">Categories</Menu.Item>
-              <Menu.Item key="13">Tags</Menu.Item>
+            <Menu.SubMenu key="products" icon={<ProductOutlined />} title="Products">
+            <Menu.Item key="3"  icon={<UnorderedListOutlined />} >  <Link to="/product-list">All Products</Link></Menu.Item>
+
+              <Menu.Item key="11"  icon=  {<ProductOutlined />}  >  <Link to="/create-product">Create Product</Link></Menu.Item>
+              <Menu.Item key="14" icon={<FileSyncOutlined />}> <Link to="/import-csv">Import CSV</Link></Menu.Item>
+              <Menu.Item key="12"  icon={<MergeOutlined />}  >  <Link to="/tags">Add Tags</Link></Menu.Item>
+              <Menu.Item key="13"  icon={<TagOutlined />}  >  <Link to="/categories">Categories</Link></Menu.Item>
+        
             </Menu.SubMenu>
-            <Menu.Item key="3" icon={<UserOutlined />}>
-              <Link to="/product-list">Product List</Link>
-            </Menu.Item>
+           
             <Menu.Item key="4" icon={<TeamOutlined />}>
               <Link to="/order-list">Order List</Link>
             </Menu.Item>
@@ -122,6 +133,9 @@ const SideNav = () => {
                 <Route path="/user-info" element={<UserInfo />} />
                 <Route path="/product-detail" element={<ProductDetailPage />} />
                 <Route path="/create-product" element={<CreateProduct />} />
+                <Route path="/import-csv" element={<ImportCSV/>} />
+                <Route path="/categories" element={<Categories/>} />
+                <Route path="/tags" element={<Tags/>} />
               </Routes>
             </div>
           </Content>

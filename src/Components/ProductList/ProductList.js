@@ -53,12 +53,15 @@ const dataSource = [
     comparedPrice: '$62.00',
     ActiveInShopify: 'no',
   },
-  // Add more data as needed
 ];
 
 const columns = [
   {
-    title: 'Select',
+    title: (
+      <Checkbox
+        // onChange={(e) => handleSelectAll(e.target.checked)}
+      />
+    ),
     dataIndex: 'select',
     key: 'select',
   },
