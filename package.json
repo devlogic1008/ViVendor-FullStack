@@ -21,6 +21,7 @@
     "react-select": "^5.8.0",
     "react-select-country": "^0.0.15",
     "react-summernote": "^2.0.2",
+    "react-tag-input-component": "^2.0.2",
     "sweetalert2": "^11.10.5",
     "web-vitals": "^2.1.4"
   },

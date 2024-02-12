@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, Card, Row, Col, Select, Divider, Typography, Pagination, Button } from 'antd';
+import { Input, Card, Row, Col, Select, Divider, Typography, Pagination, Button,Breadcrumb } from 'antd';
 import tops from "../../images/tops.png";
 import bottoms from "../../images/bottoms.png";
 import sweater from "../../images/sweater.png";
@@ -12,6 +12,8 @@ import "./FindProduct.css";
 const { Search } = Input;
 const { Option } = Select;
 const { Title, Paragraph } = Typography;
+const { Item: BreadcrumbItem } = Breadcrumb;
+
 
 
 const data = [
@@ -53,7 +55,9 @@ function FindProduct() {
 
   const renderCardBottom = () => (
     <div>
+      
       <Row gutter={[16, 16]}>
+    
         <Col span={24}>
           <p style={{ margin: 0, marginBottom: '0px' }}>Jeans Shirt</p>
         </Col>
@@ -80,6 +84,10 @@ function FindProduct() {
 
   return (
     <div>
+        <Breadcrumb style={{ margin: '5px 0 20px ' }}>
+        <BreadcrumbItem>Dashboard</BreadcrumbItem>
+        <BreadcrumbItem>FindProduct</BreadcrumbItem>
+      </Breadcrumb>
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col xs={24} sm={18}>
           <Search

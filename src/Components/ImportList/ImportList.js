@@ -46,12 +46,16 @@ const dataSource = [
     comparedPrice: '$52.00',
     variants: 'Variant ',
   },
-  // Add more data as needed
+
 ];
 
 const columns = [
   {
-    title: 'Select',
+    //when i click on this check box then select all the check box 
+    title:  <Checkbox onChange={(e) => {
+      dataSource.forEach(item => item.select = <Checkbox checked={e.target.checked} />);
+    }} />,
+
     dataIndex: 'select',
     key: 'select',
   },
@@ -119,24 +123,25 @@ const columns = [
 ];
 
 const handleAddToStore = (key) => {
-  // Handle Add to Store action
+ 
   console.log(`Add to Store clicked for key: ${key}`);
 };
 
 const handleEdit = (key) => {
-  // Handle Edit action
+
   console.log(`Edit clicked for key: ${key}`);
 };
 
 const handleDelete = (key) => {
-  // Handle Delete action
+  
   console.log(`Delete clicked for key: ${key}`);
 };
 
 const ResponsiveTable = () => {
   return (
     <>
-      <Row gutter={[16, 16]}>
+     <div style={{marginLeft:'0px'}}>
+     <Row gutter={[16, 16]}>
         <Col span={24}>
           <Title level={2}>Import List</Title>
         </Col>
@@ -154,6 +159,7 @@ const ResponsiveTable = () => {
           </Button>
         </Col>
       </Row>
+     </div>
     </>
   );
 };

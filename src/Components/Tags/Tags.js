@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Input, Button, Modal, Form, Typography, Tag, Row, Col, message, Divider } from 'antd';
+import { Input, Button, Modal, Form, Typography, Tag, Row, Col, message, Divider, Breadcrumb } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
+const { Item: BreadcrumbItem } = Breadcrumb;
 
 const TagsPage = () => {
   const [form] = Form.useForm();
@@ -44,21 +45,31 @@ const TagsPage = () => {
 
   return (
     <div>
+      {/* Breadcrumb */}
+      
+
       <Title level={2}>Tags</Title>
-      <Divider/>
+    <div style={{display:'flex', justifyContent:'end'}}>
+    <Breadcrumb style={{ margin: '16px 0' }}>
+        <BreadcrumbItem>Dashboard</BreadcrumbItem>
+        <BreadcrumbItem>Tags</BreadcrumbItem>
+      </Breadcrumb>
+    </div>
+      <Divider />
+
       {/* Input Fields Section */}
-      <div style={{ marginBottom: '16px', backgroundColor: '#f8f8fa', padding: '30px', borderRadius: '10px' }}>
+      <div style={{ marginBottom: '16px', backgroundColor: 'white', padding: '30px', borderRadius: '10px' }}>
         <Form form={form}>
           <Row gutter={[8, 8]}>
             <Col span={24}>
-              <Form.Item name="tag" label="Add Tag" style={{ width: '100%' }}>
-                <Input  size='large' placeholder="Enter Tag name here..." />
+              <Form.Item  name="tag" label="Add Tag" style={{ width: '100%' }}>
+                <Input   placeholder="Enter Tag name here..." />
               </Form.Item>
             </Col>
           </Row>
           <Row>
-            <Col span={24} style={{ textAlign: 'right' }}>
-              <Button  size='large'  type="primary" onClick={handleSave}>
+            <Col span={24} style={{ textAlign: 'end' }}>
+              <Button    type="primary" onClick={handleSave}>
                 Save
               </Button>
             </Col>
@@ -74,14 +85,15 @@ const TagsPage = () => {
             onClick={() => showModal(tag)}
             style={{
               cursor: 'pointer',
-              fontSize: '15px',
-              padding: '10px',
+              fontSize: '10px',
+              padding: '8px',
               marginBottom: '8px',
               marginRight: '8px',
+              marginTop: '28px',
               whiteSpace: 'nowrap',
               display: 'inline-block',
               background: '#1677ff',
-              color:'white'
+              color: 'white',
             }}
           >
             {tag.tag}

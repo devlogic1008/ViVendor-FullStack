@@ -139,7 +139,7 @@ const ResponsiveTable = () => {
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
         <h2>Search Products</h2>
         <Input placeholder="Search" prefix={<SearchOutlined />} style={{ width: '500px' }} />
-        <Select defaultValue="All" style={{ width: '200px', margin: '0 16px' }}>
+        <Select defaultValue="All" style={{ width: '200px', margin: '0 10px' }}>
           <Option value="All">All</Option>
           <Option value="Active">Active</Option>
           <Option value="Inactive">Inactive</Option>

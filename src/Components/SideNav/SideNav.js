@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import {
   DesktopOutlined,
-  ProductOutlined ,
-  UnorderedListOutlined
- ,MergeOutlined,
- TagOutlined ,
+  ProductOutlined,
+  UnorderedListOutlined,
+  MergeOutlined,
+  TagOutlined,
   FileOutlined,
   PieChartOutlined,
   TeamOutlined,
-  UserOutlined
-  ,FileSyncOutlined,
+  UserOutlined,
+  FileSyncOutlined,
+  MenuOutlined,
 } from '@ant-design/icons';
 import shewin from '../../images/shewin.png';
-import { Layout, Menu, theme, Modal, Button, Select } from 'antd';
+import { Layout, Menu, Drawer, Button, Select, Modal } from 'antd';
 import FindProduct from '../FindProduct/FindProduct';
 import ImportList from '../ImportList/ImportList';
 import ProductList from '../ProductList/ProductList';
@@ -30,9 +31,10 @@ const { Header, Content, Footer, Sider } = Layout;
 const { Option } = Select;
 
 const SideNav = () => {
-  const [collapsed, setCollapsed] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState(['1']);
   const [modalVisible, setModalVisible] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [siderVisible, setSiderVisible] = useState(window.innerWidth > 768);
 
   const handleMenuClick = ({ key }) => {
     setSelectedKeys([key]);
@@ -45,32 +47,107 @@ const SideNav = () => {
     setModalVisible(false);
   };
 
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
+  const showDrawer = () => {
+    setDrawerVisible(true);
+  };
+
+  const onCloseDrawer = () => {
+    setDrawerVisible(false);
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSiderVisible(window.innerWidth > 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <Router>
       <Layout style={{ minHeight: '100vh' }}>
-        <Sider
-          collapsible
-          collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
-          style={{
-            // overflow: 'auto',
-            height: '100vh',
-            position: 'fixed',
-            minWidth:'240px',
-            left: 0,
-          }}
+        {/* PC Sidebar */}
+        {siderVisible && (
+          <Sider
+            style={{
+              height: '100vh',
+              minWidth: '240px',
+              position: 'fixed',
+              overflowY: 'hidden',
+              height: '100vh',
+   
+            }}
+          >
+            <div className="demo-logo-vertical">
+              <img
+                src={shewin}
+                alt="Logo"
+                style={{ width: '100%', height: 'auto', padding: '15px' }}
+              />
+            </div>
+            <Menu
+              theme="dark"
+              defaultSelectedKeys={selectedKeys}
+              mode="inline"
+              onClick={handleMenuClick}
+            >
+              <Menu.Item key="1" icon={<PieChartOutlined />}>
+                <Link to="/find-product">Find Product</Link>
+              </Menu.Item>
+              <Menu.Item key="2" icon={<DesktopOutlined />}>
+                <Link to="/import-list">Import List</Link>
+              </Menu.Item>
+              <Menu.SubMenu key="products" icon={<ProductOutlined />} title="Products">
+                <Menu.Item key="3" icon={<UnorderedListOutlined />}>
+                  <Link to="/product-list">All Products</Link>
+                </Menu.Item>
+                <Menu.Item key="11" icon={<ProductOutlined />}>
+                  <Link to="/create-product">Create Product</Link>
+                </Menu.Item>
+                <Menu.Item key="14" icon={<FileSyncOutlined />}>
+                  <Link to="/import-csv">Import CSV</Link>
+                </Menu.Item>
+                <Menu.Item key="12" icon={<MergeOutlined />}>
+                  <Link to="/tags">Add Tags</Link>
+                </Menu.Item>
+                <Menu.Item key="13" icon={<TagOutlined />}>
+                  <Link to="/categories">Categories</Link>
+                </Menu.Item>
+              </Menu.SubMenu>
+              <Menu.Item key="4" icon={<TeamOutlined />}>
+                <Link to="/order-list">Order List</Link>
+              </Menu.Item>
+              <Menu.Item key="10" icon={<DesktopOutlined />}>
+                <Link to="/create-product">Create Product</Link>
+              </Menu.Item>
+              <Menu.Item style={{ marginTop: '95%' }} key="5" icon={<FileOutlined />}>
+                <Link to="/store-settings">Store Settings</Link>
+              </Menu.Item>
+              <Menu.Item key="7" icon={<TeamOutlined />}>
+                <Link to="/files">Help Center</Link>
+              </Menu.Item>
+              <Menu.Item key="8" icon={<DesktopOutlined />}>
+                <Link>Shopify Admin</Link>
+              </Menu.Item>
+              <Menu.Item key="9" icon={<UserOutlined />}>
+                <Link to="/user-info">Umair500</Link>
+              </Menu.Item>
+            </Menu>
+          </Sider>
+        )}
+
+        {/* Mobile Drawer */}
+        <Drawer
+          title="Menu"
+          placement="left"
+          closable={false}
+          onClose={onCloseDrawer}
+          visible={drawerVisible}
         >
-          <div className="demo-logo-vertical">
-            <img
-              src={shewin}
-              alt="Logo"
-              style={{ width: '100%', height: 'auto', padding: '15px' }}
-            />
-          </div>
           <Menu
             theme="dark"
             defaultSelectedKeys={selectedKeys}
@@ -84,22 +161,29 @@ const SideNav = () => {
               <Link to="/import-list">Import List</Link>
             </Menu.Item>
             <Menu.SubMenu key="products" icon={<ProductOutlined />} title="Products">
-            <Menu.Item key="3"  icon={<UnorderedListOutlined />} >  <Link to="/product-list">All Products</Link></Menu.Item>
-
-              <Menu.Item key="11"  icon=  {<ProductOutlined />}  >  <Link to="/create-product">Create Product</Link></Menu.Item>
-              <Menu.Item key="14" icon={<FileSyncOutlined />}> <Link to="/import-csv">Import CSV</Link></Menu.Item>
-              <Menu.Item key="12"  icon={<MergeOutlined />}  >  <Link to="/tags">Add Tags</Link></Menu.Item>
-              <Menu.Item key="13"  icon={<TagOutlined />}  >  <Link to="/categories">Categories</Link></Menu.Item>
-        
+              <Menu.Item key="3" icon={<UnorderedListOutlined />}>
+                <Link to="/product-list">All Products</Link>
+              </Menu.Item>
+              <Menu.Item key="11" icon={<ProductOutlined />}>
+                <Link to="/create-product">Create Product</Link>
+              </Menu.Item>
+              <Menu.Item key="14" icon={<FileSyncOutlined />}>
+                <Link to="/import-csv">Import CSV</Link>
+              </Menu.Item>
+              <Menu.Item key="12" icon={<MergeOutlined />}>
+                <Link to="/tags">Add Tags</Link>
+              </Menu.Item>
+              <Menu.Item key="13" icon={<TagOutlined />}>
+                <Link to="/categories">Categories</Link>
+              </Menu.Item>
             </Menu.SubMenu>
-           
             <Menu.Item key="4" icon={<TeamOutlined />}>
               <Link to="/order-list">Order List</Link>
             </Menu.Item>
             <Menu.Item key="10" icon={<DesktopOutlined />}>
               <Link to="/create-product">Create Product</Link>
             </Menu.Item>
-            <Menu.Item style={{ marginTop: '95%' }} key="5" icon={<FileOutlined />}>
+            <Menu.Item key="5" icon={<FileOutlined />}>
               <Link to="/store-settings">Store Settings</Link>
             </Menu.Item>
             <Menu.Item key="7" icon={<TeamOutlined />}>
@@ -112,18 +196,31 @@ const SideNav = () => {
               <Link to="/user-info">Umair500</Link>
             </Menu.Item>
           </Menu>
-        </Sider>
+        </Drawer>
 
+        {/* Mobile Menu Button */}
+        <Button
+          type="primary"
+          onClick={showDrawer}
+          style={{
+            display: window.innerWidth <= 768 ? 'block' : 'none',
+            margin: '10px',
+            position: 'fixed',
+            left: 0,
+          }}
+          icon={<MenuOutlined />}
+        />
+
+        {/* Content */}
         <Layout className="site-layout">
-          <Content style={{ margin: '10px 10px', marginLeft: collapsed ? 80 : 212 }}>
-            <div
-              style={{
-                padding: 24,
-                minHeight: 360,
-                background: colorBgContainer,
-                borderRadius: borderRadiusLG,
-              }}
-            >
+          <Content
+            style={{
+              margin: '10px 10px',
+              marginLeft: siderVisible ? '200px' : '0',
+              padding: '10px',
+            }}
+          >
+            <div style={{ padding: 24, minHeight: 360 }}>
               <Routes>
                 <Route path="/find-product" element={<FindProduct />} />
                 <Route path="/import-list" element={<ImportList />} />
@@ -133,9 +230,9 @@ const SideNav = () => {
                 <Route path="/user-info" element={<UserInfo />} />
                 <Route path="/product-detail" element={<ProductDetailPage />} />
                 <Route path="/create-product" element={<CreateProduct />} />
-                <Route path="/import-csv" element={<ImportCSV/>} />
-                <Route path="/categories" element={<Categories/>} />
-                <Route path="/tags" element={<Tags/>} />
+                <Route path="/import-csv" element={<ImportCSV />} />
+                <Route path="/categories" element={<Categories />} />
+                <Route path="/tags" element={<Tags />} />
               </Routes>
             </div>
           </Content>
@@ -158,7 +255,7 @@ const SideNav = () => {
             </Button>,
           ]}
         >
-          <h3>Choose your Store</h3>
+           <h3>Choose your Store</h3>
           <Select
             showSearch
             style={{ width: '50%' }}
