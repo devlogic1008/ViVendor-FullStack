@@ -26,6 +26,8 @@ import CreateProduct from '../CreateProduct/CreateProduct';
 import ImportCSV from '../ImportCSV/ImportCSV';
 import Categories from '../Categories/Categories';
 import Tags from '../Tags/Tags';
+import ShippingZones from '../ShippingZones/ShippingZones';
+import CourierService from '../CourierService/CourierService';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Option } = Select;
@@ -118,12 +120,20 @@ const SideNav = () => {
                   <Link to="/categories">Categories</Link>
                 </Menu.Item>
               </Menu.SubMenu>
+
               <Menu.Item key="4" icon={<TeamOutlined />}>
                 <Link to="/order-list">Order List</Link>
               </Menu.Item>
-              <Menu.Item key="10" icon={<DesktopOutlined />}>
-                <Link to="/create-product">Create Product</Link>
-              </Menu.Item>
+              <Menu.SubMenu key="shiping" icon={<ProductOutlined />} title="Shipping">
+                <Menu.Item key="14" icon={<UnorderedListOutlined />}>
+                  <Link to="/shipping-zones">Shipping Zones</Link>
+                </Menu.Item>
+                <Menu.Item key="15" icon={<ProductOutlined />}>
+                  <Link to="/courier-service-providers">Courier Service</Link>
+                </Menu.Item>
+               
+              </Menu.SubMenu>
+              
               <Menu.Item style={{ marginTop: '95%' }} key="5" icon={<FileOutlined />}>
                 <Link to="/store-settings">Store Settings</Link>
               </Menu.Item>
@@ -177,9 +187,20 @@ const SideNav = () => {
                 <Link to="/categories">Categories</Link>
               </Menu.Item>
             </Menu.SubMenu>
+
+
             <Menu.Item key="4" icon={<TeamOutlined />}>
               <Link to="/order-list">Order List</Link>
             </Menu.Item>
+            <Menu.SubMenu key="shiping" icon={<ProductOutlined />} title="Shipping">
+                <Menu.Item key="14" icon={<UnorderedListOutlined />}>
+                  <Link to="/shipping-zones">Shipping Zones</Link>
+                </Menu.Item>
+                <Menu.Item key="15" icon={<ProductOutlined />}>
+                  <Link to="/courier-service-providers">Courier Service</Link>
+                </Menu.Item>
+               
+              </Menu.SubMenu>
             <Menu.Item key="10" icon={<DesktopOutlined />}>
               <Link to="/create-product">Create Product</Link>
             </Menu.Item>
@@ -233,6 +254,8 @@ const SideNav = () => {
                 <Route path="/import-csv" element={<ImportCSV />} />
                 <Route path="/categories" element={<Categories />} />
                 <Route path="/tags" element={<Tags />} />
+                <Route path="/shipping-zones" element={<ShippingZones />} />
+                <Route path="/courier-service-providers" element={<CourierService />} />
               </Routes>
             </div>
           </Content>

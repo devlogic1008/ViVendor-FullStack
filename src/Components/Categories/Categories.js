@@ -1,286 +1,232 @@
 import React, { useState } from 'react';
-import { Table, Input, Button, Space, Modal, Form, Typography, message, Divider, Upload, Select } from 'antd';
-import { EditOutlined, DeleteOutlined, SaveOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
-
-const { Title } = Typography;
-const { Option } = Select;
-
+import { Table, Button, Modal, Form, Input, Select, Col, Row, Divider } from 'antd';
+import { EditOutlined, DeleteOutlined ,PlusOutlined} from '@ant-design/icons';
+import Typography from 'antd/es/typography/Typography';
+import "./Categories.css";
+import tops from "../../images/tops.png";
+import bottoms from "../../images/bottoms.png";
 const Categories = () => {
-  const [form] = Form.useForm();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [categories, setCategories] = useState([
-    { key: '1', icon: '👜', title: 'Women Clothing', parent: null, subcategories: ['Tops', 'Dresses'] },
-    { key: '2', icon: '🛍️', title: 'Children Fashion', parent: null, subcategories: ['Kids', 'Babies'] },
-    { key: '3', icon: '👚', title: 'Home Decor, Furniture & Gadgets', parent: null, subcategories: ['Furniture', 'Gadgets'] },
-    { key: '4', icon: '👠', title: 'Shoes', parent: null, subcategories: ['Casual', 'Formal'] },
-  ]);
+  const [category, setCategory] = useState('');
+  const [subcategories, setSubcategories] = useState([]);
+  const [newSubcategory, setNewSubcategory] = useState('');
+  const [categoriesList, setCategoriesList] = useState(['Electronics', 'Clothing']);
+  const [tableData, setTableData] = useState([]);
+
+  const [modalVisible, setModalVisible] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  const [categoryImage, setCategoryImage] = useState('');
 
-  const showModal = (category) => {
-    setEditingCategory(category);
-    setIsModalVisible(true);
-    form.setFieldsValue(category);
+  const handleCategoryChange = (value) => {
+    setCategory(value);
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    form.resetFields();
+  const handleAddSubcategory = () => {
+    if (newSubcategory.trim() !== '') {
+      setSubcategories([...subcategories, { key: Date.now().toString(), title: newSubcategory, image: '' }]);
+      setNewSubcategory('');
+    }
+  };
+
+  const handleSaveCategory = () => {
+    if (category.trim() !== '') {
+      const newCategory = {
+        key: Date.now().toString(),
+        category,
+        image: categoryImage,
+        subcategories: subcategories.slice(),
+      };
+
+      setTableData([...tableData, newCategory]);
+      setCategoriesList([...categoriesList, category]);
+      setCategory('');
+      setSubcategories([]);
+      setCategoryImage('');
+    }
+  };
+
+  const handleEditCategory = (record) => {
+    setEditingCategory(record);
+    setModalVisible(true);
+  };
+
+  const handleDeleteCategory = (record) => {
+    const updatedData = tableData.filter((item) => item.key !== record.key);
+    setTableData(updatedData);
+  };
+
+  const handleEditSubcategory = (parentRecord, subRecord) => {
+    // Handle subcategory editing logic here
+    console.log('Edit Subcategory:', parentRecord, subRecord);
+  };
+
+  const handleDeleteSubcategory = (parentRecord, subRecord) => {
+    // Handle subcategory deletion logic here
+    const updatedSubcategories = parentRecord.subcategories.filter((sub) => sub.key !== subRecord.key);
+    const updatedParentRecord = { ...parentRecord, subcategories: updatedSubcategories };
+    const updatedData = tableData.map((item) => (item.key === parentRecord.key ? updatedParentRecord : item));
+    setTableData(updatedData);
+  };
+
+  const handleModalOk = () => {
+    // Implement logic for saving changes in the modal (e.g., updating image)
+    setModalVisible(false);
+  };
+
+  const handleModalCancel = () => {
+    setModalVisible(false);
     setEditingCategory(null);
-  };
-
-  const handleSave = () => {
-    form.validateFields().then((values) => {
-      if (editingCategory) {
-        // Update existing category
-        setCategories((prevCategories) =>
-          prevCategories.map((category) =>
-            category.key === editingCategory.key ? { ...category, ...values } : category
-          )
-        );
-        message.success('Category updated successfully');
-      } else {
-        // Add new category
-        const newCategory = { key: String(categories.length + 1), ...values, subcategories: [] };
-        setCategories((prevCategories) => [...prevCategories, newCategory]);
-        message.success('Category added successfully');
-      }
-
-      handleCancel();
-    });
-  };
-
-  const handleDelete = (key) => {
-    setCategories((prevCategories) => prevCategories.filter((category) => category.key !== key));
-    message.success('Category deleted successfully');
-  };
-
-  const handleSubcategoryAdd = (record) => {
-    setCategories((prevCategories) =>
-      prevCategories.map((category) =>
-        category.key === record.key
-          ? { ...category, subcategories: [...category.subcategories, ''] }
-          : category
-      )
-    );
-  };
-
-  const handleSubcategoryChange = (record, index, value) => {
-    setCategories((prevCategories) =>
-      prevCategories.map((category) =>
-        category.key === record.key
-          ? {
-              ...category,
-              subcategories: category.subcategories.map((sub, i) =>
-                i === index ? value : sub
-              ),
-            }
-          : category
-      )
-    );
-  };
-
-  const handleSubcategoryDelete = (record, index) => {
-    setCategories((prevCategories) =>
-      prevCategories.map((category) =>
-        category.key === record.key
-          ? {
-              ...category,
-              subcategories: category.subcategories.filter((sub, i) => i !== index),
-            }
-          : category
-      )
-    );
-  };
-
-  const expandedRowRender = (record) => {
-    const subcategoryColumns = [
-      {
-        title: 'Subcategory',
-        dataIndex: 'subcategories',
-        key: 'subcategories',
-        render: (subcategories, record) => (
-          <Space direction="vertical">
-            {subcategories.map((sub, index) => (
-              <div key={index}>
-                <Input
-                  value={sub}
-                  onChange={(e) => handleSubcategoryChange(record, index, e.target.value)}
-                  placeholder="Subcategory"
-                  style={{ marginRight: 8, marginBottom: 8, width: '60%' }}
-                />
-                <Button
-                  type="primary"
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={() => handleSubcategoryDelete(record, index)}
-                >
-                  Delete
-                </Button>
-              </div>
-            ))}
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => handleSubcategoryAdd(record)}
-            >
-              Add Subcategory
-            </Button>
-          </Space>
-        ),
-      },
-    ];
-
-    return (
-      <Table
-        columns={subcategoryColumns}
-        dataSource={[record]}
-        pagination={false}
-        showHeader={false}
-        size="small"
-      />
-    );
-  };
-
-  const expandedRowKeysChange = (keys) => {
-    setExpandedRowKeys(keys);
+    setCategoryImage('');
   };
 
   const columns = [
     {
-      title: 'Icon',
-      dataIndex: 'icon',
-      key: 'icon',
+      title: 'Image',
+      dataIndex: 'image',
+      key: 'image',
+      render: (text, record) => <img src={tops} alt="Category" style={{ width: '50px' }} />,
     },
+    { title: 'Title', dataIndex: 'category', key: 'category' },
     {
-      title: 'Title',
-      dataIndex: 'title',
-      key: 'title',
-    },
-    {
-      title: 'Parent',
-      dataIndex: 'parent',
-      key: 'parent',
-      render: (parent, record) => (
-        <Select
-          value={parent}
-          onChange={(value) => setCategories((prevCategories) =>
-            prevCategories.map((category) =>
-              category.key === record.key ? { ...category, parent: value } : category
-            ))}
-          style={{ width: '80px' }}
-        >
-          <Option value={null}>None</Option>
-          {categories.map((category) => (
-            <Option key={category.key} value={category.key}>
-              {category.title}
-            </Option>
-          ))}
-        </Select>
-      ),
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
+      title: 'Action',
+      key: 'action',
       render: (text, record) => (
-        <Space>
-          <Button type="primary" icon={<EditOutlined />} onClick={() => showModal(record)}></Button>
-          <Button
-            icon={<DeleteOutlined />}
-            type="primary"
-            danger
-            onClick={() => handleDelete(record.key)}
-          ></Button>
-        </Space>
+        <span>
+          <Button type='primary' size='small' icon={<EditOutlined />} onClick={() => handleEditCategory(record)}>
+
+          </Button>
+          <Button type='primary'  size='small' style={{ marginLeft: '2%' }} danger  icon={<DeleteOutlined />} onClick={() => handleDeleteCategory(record)}>
+
+          </Button>
+        </span>
       ),
     },
   ];
 
-  const uploadProps = {
-    beforeUpload: (file) => {
-      // Only allow uploading one file
-      form.setFieldsValue({ icon: file });
-      return false;
-    },
+  const expandedRowRender = (record) => {
+    const subcategoriesColumns = [
+      { title: 'Image', dataIndex: 'image', key: 'image', render: (text) => <img src={bottoms} alt="Subcategory" style={{ width: '30px' }} /> },
+      { title: 'Title', dataIndex: 'title', key: 'title' },
+      {
+        title: 'Action',
+        key: 'action',
+        render: (text, subRecord) => (
+          <span>
+            <Button type='primary'  size='small' icon={<EditOutlined />} onClick={() => handleEditSubcategory(record, subRecord)}>
+              
+            </Button>
+            <Button  size='small'  style={{ marginLeft: '2%' }} type='primary' danger icon={<DeleteOutlined />} onClick={() => handleDeleteSubcategory(record, subRecord)}>
+              
+            </Button>
+          </span>
+        ),
+      },
+    ];
+
+    return <Table columns={subcategoriesColumns} dataSource={record.subcategories} pagination={false} />;
   };
 
   return (
     <div>
-      <Title level={2}>Categories</Title>
-      <Divider />
+      <h2>Categories</h2>
 
-      {/* Input Fields Section */}
-      <div style={{ marginBottom: '6px', backgroundColor: 'white', padding: '20px', borderRadius: '10px' }}>
-        <Title style={{ marginBottom: '16px' }} level={5}>
-          Add Category
-        </Title>
-        <Form form={form} layout="inline">
-          <Form.Item name="icon" label="Icon">
-            <Upload {...uploadProps} maxCount={1} listType="picture">
-              <Button icon={<UploadOutlined />}>Upload Icon</Button>
-            </Upload>
-          </Form.Item>
-          <Form.Item name="title" label="Title">
-            <Input placeholder="Category Title" />
-          </Form.Item>
-          <Form.Item name="parent" label="Parent">
-            <Select style={{ width: '100%' }} placeholder="Select parent">
-              <Option value={null}>None</Option>
-              {categories.map((category) => (
-                <Option key={category.key} value={category.key}>
-                  {category.title}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
-              Save
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+      <Row gutter={[24, 8]}>
+        <Divider />
+        {/* Add Category Section */}
+        <Col span={12} xs={24} sm={24} md={12} lg={12} >
+          <div className='category'>
+            <Form layout="vertical" >
+              <Form.Item style={{ marginTop: '2%' }}>
+                <Typography style={{ paddingBottom: '5px' }} >Add Category:</Typography>
+                <Input placeholder='Category' style={{ width: '50%' }} value={category} onChange={(e) => setCategory(e.target.value)} />
 
-      {/* Table Section */}
-      <Table
-        style={{ marginTop: '5%' }}
-        dataSource={categories}
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" onClick={handleSaveCategory}>
+                  Save
+                </Button>
+              </Form.Item>
+
+
+
+            </Form>
+          </div>
+
+        </Col>
+
+
+        {/* Add Subcategory Section */}
+        <Col span={12} xs={24} sm={24} md={12} lg={12}>
+          <div className='category'>
+            <Form layout="vertical">
+              <Form.Item >
+                <Typography style={{ paddingBottom: '5px' }} >Select Category:</Typography>
+                <Select style={{ width: '50%' }} value={category} placeholder='Select Category' onChange={handleCategoryChange}>
+                  {categoriesList.map((option) => (
+                    <Select.Option key={option} value={option}>
+                      {option}
+                    </Select.Option>
+                  ))}
+                </Select>
+               
+              </Form.Item>
+              <Form.Item >
+                <Typography  style={{marginBottom:'-2%'}}>Sub Category:</Typography>
+                {subcategories.map((sub, index) => (
+                <p>  <Input style={{ width: '50%' }} key={index} value={sub.title}  /></p>
+                ))}
+               <p> <Input
+                  style={{ width: '50%' }}
+                  value={newSubcategory}
+                  onChange={(e) => setNewSubcategory(e.target.value)}
+                  placeholder=" Sub category"
+                /> <Button type='primary' style={{ marginLeft: '2%' }} icon={<PlusOutlined/>}  onClick={handleAddSubcategory}>
+                
+              </Button></p>
+               
+              </Form.Item>
+              <Button type="primary" onClick={handleSaveCategory}>
+                  Save
+                </Button>
+            </Form>
+          
+          </div>
+        </Col>
+      </Row>
+
+      {/* Expandable Table */}
+      <Table 
+      
+      style={{marginTop:"5%" ,overflowX:'auto'}}
         columns={columns}
-        expandedRowKeys={expandedRowKeys}
-        onExpand={(expanded, record) => expandedRowKeysChange([record.key])}
-        expandable={{
-          expandedRowRender,
-          rowExpandable: (record) => record.subcategories && record.subcategories.length > 0,
-        }}
+        dataSource={tableData}
+        expandable={{ expandedRowRender }}
       />
 
       {/* Edit Category Modal */}
       <Modal
-        title={editingCategory ? 'Edit Category' : 'Add Category'}
-        visible={isModalVisible}
-        onOk={handleSave}
-        onCancel={handleCancel}
-        okText="Save"
-        cancelText="Cancel"
+        title={`Edit ${editingCategory ? 'Category' : 'Add Category'}`}
+        visible={modalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
       >
-        <Form form={form} layout="vertical">
-          <Form.Item name="icon" label="Icon">
-            <Upload {...uploadProps} maxCount={1} listType="picture">
-              <Button icon={<UploadOutlined />}>Upload Icon</Button>
-            </Upload>
+        <Form>
+          <Form.Item label="Title">
+            <Input type='text'
+              value={categoryImage}
+             
+            />
           </Form.Item>
-          <Form.Item name="title" label="Title">
-            <Input placeholder="Category Title" />
+          <Form.Item label="Image ">
+            <Input type='file'
+              value={categoryImage}
+             
+            />
           </Form.Item>
-          <Form.Item name="parent" label="Parent">
-            <Select style={{ width: '100%' }} placeholder="Select parent">
-              <Option value={null}>None</Option>
-              {categories.map((category) => (
-                <Option key={category.key} value={category.key}>
-                  {category.title}
-                </Option>
-              ))}
-            </Select>
+          <Form.Item label="Rank">
+            <Input type='number'
+              value={categoryImage}
+             
+            />
           </Form.Item>
         </Form>
       </Modal>
