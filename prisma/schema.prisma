@@ -14,10 +14,16 @@ datasource db {
 model User {
   // Unique identifier for the user
   id            String         @id @unique @default(uuid())
+//  Fist name of the user
+  firstName     String
+// Last name of the user
+  lastName      String
   // Unique email address of the user
   email         String         @unique
   // Password of the user
   password      String
+//  verify email address of the user
+  emailVerified Boolean        @default(false)
   // Array of refresh tokens associated with the user
   refreshTokens RefreshToken[]
   // Timestamp for when the user was created

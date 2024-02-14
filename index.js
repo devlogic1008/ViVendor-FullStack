@@ -1,20 +1,49 @@
-import express from 'express';
-// import auth from './api/auth/auth.routes.js';
-// import routes from './routes.js';
+const { PrismaClient } = require('@prisma/client');
+const app = require('./src/app');
+const config = require('./src/config/config');
+const logger = require('./src/config/logger');
 
-import 'dotenv/config';
+const prisma = new PrismaClient();
 
-const app = express();
+let server;
 
-const PORT = process.env.PORT;
+prisma
+  .$connect()
+  .then(() => {
+    logger.info('Connected to PostgreSQL database');
+    server = app.listen(config.port, () => {
+      logger.info(`Listening to port http://localhost:${config.port}`);
+    });
+  })
+  .catch((error) => {
+    logger.error('Error connecting to PostgreSQL database:', error);
+    process.exit(1);
+  });
 
-app.use(express.json());
+const exitHandler = () => {
+  if (server) {
+    server.close(() => {
+      logger.info('Server closed');
+      prisma.$disconnect();
+      process.exit(1);
+    });
+  } else {
+    prisma.$disconnect();
+    process.exit(1);
+  }
+};
 
-app.get('/', (req, res) => {
-  return res.json({ message: 'Welcome to the API!' });
-});
-// app.use('/api', routes);
+const unexpectedErrorHandler = (error) => {
+  logger.error(error);
+  exitHandler();
+};
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+process.on('uncaughtException', unexpectedErrorHandler);
+process.on('unhandledRejection', unexpectedErrorHandler);
+
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received');
+  if (server) {
+    server.close();
+  }
 });
