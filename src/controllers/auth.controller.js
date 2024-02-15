@@ -1,13 +1,13 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const Helper = require('../utils/Helper');
-const { authService } = require('../services');
+const { authService, userService } = require('../services');
 const api = require('../utils/messages');
 
-const registerUser = catchAsync(async (req, res) => {
+const register = catchAsync(async (req, res) => {
   // Create the user in the PostgreSQL database using Prisma
   try {
-    const user = await authService.createUser(req.body);
+    const user = await userService.createUser(req.body);
     // Check if user creation was successful
     if (!user) {
       res
@@ -28,6 +28,16 @@ const registerUser = catchAsync(async (req, res) => {
   }
 });
 
+// Login controller method to authenticate user and generate JWTs for user sessions 
+const login = catchAsync(async (req, res) => {
+  console.log( 'login body', req.body)
+  const { email, password } = req.body;
+  const user = await authService.loginUserWithEmailAndPassword(email, password);
+  // const tokens = await tokenService.generateAuthTokens(user);
+  res.send({ user });
+});
+
 module.exports = {
-  registerUser,
+  register,
+  login,
 };

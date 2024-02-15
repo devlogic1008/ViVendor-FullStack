@@ -1,72 +1,47 @@
 const { PrismaClient } = require('@prisma/client');
+const httpStatus = require('http-status');
+const ApiError = require('../utils/ApiError');
 const bcrypt = require('bcrypt');
+// const { tokenTypes } = require('../config/tokens');
+// const { roles, findRole } = require('../config/roles');
+// const { getShopByUserId } = require('./shop.service');
+// const { getByUserId } = require('./strategicSalePartners.service');
+// const { getServiceByUserId } = require('./serviceProvider.service');
 
 const prisma = new PrismaClient();
-// Function to create a new user
-async function createUser(data) {
-  try {
-    // Check if a user with the same email already exists
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        email: data.email,
-      },
-    });
 
-    if (existingUser) {
-      throw new Error('User with this email already exists');
+const loginUserWithEmailAndPassword = async (email, password) => {
+  try {
+    // Fetch user data based on the provided email
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    // If the user does not exist, throw an Unauthorized error
+    if (!user) {
+      throw new ApiError(
+        httpStatus.UNAUTHORIZED,
+        'Incorrect email or password'
+      );
     }
 
-    // Hash the password before storing it in the database
-    const hashedPassword = await bcrypt.hash(data.password, 10);
+    // Compare the provided password with the hashed password stored in the database
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
 
-    // Create the user in the database
-    const user = await prisma.user.create({
-      data: {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        password: hashedPassword,
-        emailVerified: false,
-      },
-    });
-    console.log('User created:', user);
+    // If the password does not match, throw an Unauthorized error
+    if (!isPasswordMatch) {
+      throw new ApiError(
+        httpStatus.UNAUTHORIZED,
+        'Incorrect email or password'
+      );
+    }
+
+    // Return the authenticated user
     return user;
   } catch (error) {
+    // Handle any error that might occur during the process
     throw error;
   }
-}
-
-// Function to find a user by email
-async function findUserByEmail(email) {
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-    return user;
-  } catch (error) {
-    throw error;
-  }
-}
-
-// Function to create a refresh token for a user
-async function createRefreshToken(userId, hashedToken) {
-  try {
-    const refreshToken = await prisma.refreshToken.create({
-      data: {
-        hashedToken,
-        userId,
-      },
-    });
-    return refreshToken;
-  } catch (error) {
-    throw error;
-  }
-}
+};
 
 module.exports = {
-  createUser,
-  findUserByEmail,
-  createRefreshToken,
+  loginUserWithEmailAndPassword,
 };
