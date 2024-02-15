@@ -97,11 +97,11 @@ export default function ProductDetail() {
             <p>Material: 30%Polyester+42%Acrylic+28%Nylon</p>
           </div>
           <div>
-            <p className='colorr' style={{fontWeight:700, marginTop:'2%'}}>Color:Light Pink</p>
+            <p className='product_color' >Color:Light Pink</p>
            
           </div>
           <div className="sizes " >
-            <h5 style={{marginTop:'2%'}}>Size:</h5>
+            <h5 className='size_mt' >Size:</h5>
             <div className='p_size'>
               <p className='p_sizes'>(US 4-6)S</p>
               <p className='p_sizes'>(US 4-6)S</p>
@@ -110,7 +110,7 @@ export default function ProductDetail() {
             </div>
           </div>
           <div className="quantity">
-            <Button type='primary' style={{width:'40%' , height:'50px',marginTop:'5%'}}>IMPORTED</Button>
+            <Button type='primary' className='imported_btn' >IMPORTED</Button>
           </div>
         </div>
       </section>
@@ -119,7 +119,7 @@ export default function ProductDetail() {
         <TabPane tab="Size Chart " key="1">
           <h4>Size Chart (CM)</h4>
           <Table bordered columns={sizeChartColumns} dataSource={sizeChartData} pagination={false} />
-          <h4 style={{marginTop:'5%'}}> Size Chart (INCH)</h4>
+          <h4 className='size_chart' > Size Chart (INCH)</h4>
           <Table bordered columns={sizeChartColumns} dataSource={sizeChartData} pagination={false} />
 
         </TabPane>

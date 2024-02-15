@@ -94,7 +94,7 @@ const Categories = () => {
           <Button type='primary' size='small' icon={<EditOutlined />} onClick={() => handleEditCategory(record)}>
 
           </Button>
-          <Button type='primary'  size='small' style={{ marginLeft: '2%' }} danger  icon={<DeleteOutlined />} onClick={() => handleDeleteCategory(record)}>
+          <Button type='primary'  size='small' className='delete-button' style={{ marginLeft: '2%' }} danger  icon={<DeleteOutlined />} onClick={() => handleDeleteCategory(record)}>
 
           </Button>
         </span>
@@ -114,7 +114,7 @@ const Categories = () => {
             <Button type='primary'  size='small' icon={<EditOutlined />} onClick={() => handleEditSubcategory(record, subRecord)}>
               
             </Button>
-            <Button  size='small'  style={{ marginLeft: '2%' }} type='primary' danger icon={<DeleteOutlined />} onClick={() => handleDeleteSubcategory(record, subRecord)}>
+            <Button  size='small' className='delete-button' style={{ marginLeft: '2%' }} type='primary' danger icon={<DeleteOutlined />} onClick={() => handleDeleteSubcategory(record, subRecord)}>
               
             </Button>
           </span>
@@ -135,9 +135,9 @@ const Categories = () => {
         <Col span={12} xs={24} sm={24} md={12} lg={12} >
           <div className='category'>
             <Form layout="vertical" >
-              <Form.Item style={{ marginTop: '2%' }}>
-                <Typography style={{ paddingBottom: '5px' }} >Add Category:</Typography>
-                <Input placeholder='Category' style={{ width: '50%' }} value={category} onChange={(e) => setCategory(e.target.value)} />
+              <Form.Item className='add_category' >
+                <Typography className='category_Text'  >Add Category:</Typography>
+                <Input placeholder='Category' className='category_input' value={category} onChange={(e) => setCategory(e.target.value)} />
 
               </Form.Item>
               <Form.Item>
@@ -159,8 +159,8 @@ const Categories = () => {
           <div className='category'>
             <Form layout="vertical">
               <Form.Item >
-                <Typography style={{ paddingBottom: '5px' }} >Select Category:</Typography>
-                <Select style={{ width: '50%' }} value={category} placeholder='Select Category' onChange={handleCategoryChange}>
+                <Typography  className='select_sub_category'  >Select Category:</Typography>
+                <Select className='select_cat' value={category} placeholder='Select Category' onChange={handleCategoryChange}>
                   {categoriesList.map((option) => (
                     <Select.Option key={option} value={option}>
                       {option}
@@ -170,16 +170,17 @@ const Categories = () => {
                
               </Form.Item>
               <Form.Item >
-                <Typography  style={{marginBottom:'-2%'}}>Sub Category:</Typography>
+                <Typography className='subcategory_typo' >Sub Category:</Typography>
                 {subcategories.map((sub, index) => (
-                <p>  <Input style={{ width: '50%' }} key={index} value={sub.title}  /></p>
+                <p>  <Input className='sub_input' key={index} value={sub.title}  /></p>
                 ))}
                <p> <Input
-                  style={{ width: '50%' }}
+
+                  className='sub_input'
                   value={newSubcategory}
                   onChange={(e) => setNewSubcategory(e.target.value)}
                   placeholder=" Sub category"
-                /> <Button type='primary' style={{ marginLeft: '2%' }} icon={<PlusOutlined/>}  onClick={handleAddSubcategory}>
+                /> <Button type='primary' className='delete_btn' icon={<PlusOutlined/>}  onClick={handleAddSubcategory}>
                 
               </Button></p>
                
@@ -195,8 +196,9 @@ const Categories = () => {
 
       {/* Expandable Table */}
       <Table 
+      className='category_table'
       
-      style={{marginTop:"5%" ,overflowX:'auto'}}
+     
         columns={columns}
         dataSource={tableData}
         expandable={{ expandedRowRender }}

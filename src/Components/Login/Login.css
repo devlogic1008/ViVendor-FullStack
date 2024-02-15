@@ -1,5 +1,6 @@
 .form_logo{
     max-width: 300px;
+    background: transparent !important;
 }
 .login-container {
     width: 300px;

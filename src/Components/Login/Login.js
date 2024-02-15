@@ -4,6 +4,7 @@ import { UserOutlined, LockOutlined,InboxOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import shewin from '../../images/dropship.png';
+import logo from '../../images/logo.png';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const Login = () => {
     <div className='form_body'>
       <div className="login-container">
         <div className="header">
-          <img className='form_logo'  src={shewin} alt="Shewin Logo" />
+          <img className='form_logo'  src={logo} alt="Shewin Logo" />
         </div>
         <Form
           name="normal_login"

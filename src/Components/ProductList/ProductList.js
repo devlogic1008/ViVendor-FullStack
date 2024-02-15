@@ -3,7 +3,7 @@ import { Table, Input, Select, Space, Image, Button, Checkbox, Typography } from
 import { SearchOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import shirt2 from "../../images/shirt2.jpg";
 import shirt1 from "../../images/shirt1.jpg";
-
+import "./ProductList.css"
 const { Text, Title, Paragraph } = Typography;
 const { Option } = Select;
 
@@ -132,7 +132,7 @@ const columns = [
 const ResponsiveTable = () => {
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+      <div className='search_product' >
         <h2>Search Products</h2>
         <Input placeholder="Search" prefix={<SearchOutlined />} style={{ width: '500px' }} />
         <Select defaultValue="All" style={{ width: '200px', margin: '0 10px' }}>

@@ -69,7 +69,7 @@ const CourierService = () => {
       className="hoverable-list" // Add a class for styling
      
       dataSource={data}
-      renderItem={(item) => <List.Item  style={{padding:'10px 10px 10px 20px'}}>{item}</List.Item>}
+      renderItem={(item) => <List.Item className='list_item' >{item}</List.Item>}
     />
   </div>
   </div>

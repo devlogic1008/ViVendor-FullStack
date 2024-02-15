@@ -117,119 +117,127 @@ function FindProduct() {
       </Row>
 
     
-      <Row style={{ marginTop: '2%' }} gutter={16}>
+      <Row className='category_row' gutter={16}>
        
        <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }} className='category_card'>
-             <div style={{ display: 'flex', alignItems: 'center' }}>
-               <p style={{ margin: 0 }}>Bottoms</p>
-               <img  src={bottoms} style={{ maxWidth: '30%', marginLeft: 40 }} />
+           <Card  className='category_card'>
+             <div className='category_card_head' >
+               <p className='category_card_bottom' >Bottoms</p>
+               <img className='category_card_img'  src={bottoms}  />
              </div>
            </Card>
          </Col>
          <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }} className='category_card'>
-             <div style={{ display: 'flex', alignItems: 'center' }}>
-               <p style={{ margin: 0 }}>Shoes</p>
-               <img alt="example" src={sweater} style={{ maxWidth: '30%', marginLeft: 40 }} />
+           <Card  className='category_card'>
+             <div className='category_card_head' >
+               <p className='category_card_bottom' >Sweater</p>
+               <img className='category_card_img'  src={tops}  />
              </div>
            </Card>
          </Col>
          <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }} className='category_card'>
-             <div style={{ display: 'flex', alignItems: 'center' }}>
-               <p style={{ margin: 0 }}>Bottoms</p>
-               <img  src={bottoms} style={{ maxWidth: '30%', marginLeft: 40 }} />
+           <Card  className='category_card'>
+             <div className='category_card_head' >
+               <p className='category_card_bottom' >Tops</p>
+               <img className='category_card_img'  src={bottoms}  />
              </div>
            </Card>
          </Col>
          <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }} className='category_card'>
-             <div style={{ display: 'flex', alignItems: 'center' }}>
-               <p style={{ margin: 0 }}>Shoes</p>
-               <img alt="example" src={tops} style={{ maxWidth: '30%', marginLeft: 40 }} />
+           <Card  className='category_card'>
+             <div className='category_card_head' >
+               <p className='category_card_bottom' >Bottoms</p>
+               <img className='category_card_img'  src={tops}  />
              </div>
            </Card>
          </Col>
          <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }} className='category_card'>
-             <div style={{ display: 'flex', alignItems: 'center' }}>
-               <p style={{ margin: 0 }}>Bottoms</p>
-               <img alt="example" src={bottoms} style={{ maxWidth: '30%', marginLeft: 40 }} />
+           <Card  className='category_card'>
+             <div className='category_card_head' >
+               <p className='category_card_bottom' >Sweater</p>
+               <img className='category_card_img'  src={bottoms}  />
              </div>
            </Card>
          </Col>
          <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }} className='category_card'>
-             <div style={{ display: 'flex', alignItems: 'center' }}>
-               <p style={{ margin: 0 }}>Shoes</p>
-               <img alt="example" src={tops} style={{ maxWidth: '30%', marginLeft: 40 }} />
+           <Card  className='category_card'>
+             <div className='category_card_head' >
+               <p className='category_card_bottom' >Tops</p>
+               <img className='category_card_img'  src={tops}  />
              </div>
            </Card>
          </Col>
+
        
        </Row>
-       <Row style={{ marginTop: '2%' }} gutter={16}>
+       <Row className='category_row' gutter={16}>
        
        <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }} className='category_card'>
-             <div style={{ display: 'flex', alignItems: 'center' }}>
-               <p style={{ margin: 0 }}>Bottoms</p>
-               <img  src={bottoms} style={{ maxWidth: '30%', marginLeft: 40 }} />
+           <Card  className='category_card'>
+             <div className='category_card_head' >
+               <p className='category_card_bottom' >Bottoms</p>
+               <img className='category_card_img'  src={bottoms}  />
              </div>
            </Card>
          </Col>
          <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }} className='category_card'>
-             <div style={{ display: 'flex', alignItems: 'center' }}>
-               <p style={{ margin: 0 }}>Shoes</p>
-               <img alt="example" src={sweater} style={{ maxWidth: '30%', marginLeft: 40 }} />
+           <Card  className='category_card'>
+             <div className='category_card_head' >
+               <p className='category_card_bottom' >Sweater</p>
+               <img className='category_card_img'  src={tops}  />
              </div>
            </Card>
          </Col>
          <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }} className='category_card'>
-             <div style={{ display: 'flex', alignItems: 'center' }}>
-               <p style={{ margin: 0 }}>Bottoms</p>
-               <img  src={bottoms} style={{ maxWidth: '30%', marginLeft: 40 }} />
+           <Card  className='category_card'>
+             <div className='category_card_head' >
+               <p className='category_card_bottom' >Tops</p>
+               <img className='category_card_img'  src={bottoms}  />
              </div>
            </Card>
          </Col>
          <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }} className='category_card'>
-             <div style={{ display: 'flex', alignItems: 'center' }}>
-               <p style={{ margin: 0 }}>Shoes</p>
-               <img alt="example" src={tops} style={{ maxWidth: '30%', marginLeft: 40 }} />
+           <Card  className='category_card'>
+             <div className='category_card_head' >
+               <p className='category_card_bottom' >Bottoms</p>
+               <img className='category_card_img'  src={tops}  />
              </div>
            </Card>
          </Col>
          <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }} className='category_card'>
-             <div style={{ display: 'flex', alignItems: 'center' }}>
-               <p style={{ margin: 0 }}>Bottoms</p>
-               <img alt="example" src={bottoms} style={{ maxWidth: '30%', marginLeft: 40 }} />
+           <Card  className='category_card'>
+             <div className='category_card_head' >
+               <p className='category_card_bottom' >Sweater</p>
+               <img className='category_card_img'  src={bottoms}  />
              </div>
            </Card>
          </Col>
          <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }} className='category_card'>
-             <div style={{ display: 'flex', alignItems: 'center' }}>
-               <p style={{ margin: 0 }}>Shoes</p>
-               <img alt="example" src={tops} style={{ maxWidth: '30%', marginLeft: 40 }} />
+           <Card  className='category_card'>
+             <div className='category_card_head' >
+               <p className='category_card_bottom' >Tops</p>
+               <img className='category_card_img'  src={tops}  />
              </div>
            </Card>
          </Col>
+
        
        </Row>
+       
+    
+      
       <Divider />
 
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 1]}>
         <Col xs={24} sm={18}>
-          <Title level={2}>All Categories</Title>
+        <h2 className='all_products' >
+  All Products
+</h2>
         </Col>
         <Col xs={24} sm={6} className='filter_by'>
           <Select
-            style={{ width: '100%', marginTop: '30px' }}
+          className='select_category'
+          
             placeholder="Filter by"
             onChange={handleFilterChange}
           >
@@ -238,6 +246,7 @@ function FindProduct() {
             <Option value="3">Option 3</Option>
           </Select>
         </Col>
+       
       </Row>
 
       <Row gutter={[16, 16]}>
@@ -245,7 +254,7 @@ function FindProduct() {
           <Col key={index} xs={24} sm={12} md={12} lg={6}>
            <NavLink to="/product-detail">
              <Card className='product-info-list' 
-              style={{ width: '100%', backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
+             
               cover={
                 <div
                   className="hoverable-image-container"
@@ -254,7 +263,7 @@ function FindProduct() {
                 >
                   <img
                     className='all-cat-image'
-                    style={{ maxHeight: '250px', width: '100%' }}
+                   
                     alt="example"
                     src={hovered ? shirt1 : shirt2}
                   />
@@ -269,13 +278,15 @@ function FindProduct() {
               }
             >
               {renderCardBottom()}
-            </Card></NavLink>
+            </Card>
+            </NavLink>
           </Col>
         ))}
       </Row>
 
       <Pagination
-        style={{ marginTop: '16px', textAlign: 'center' }}
+      className='pagination'
+       
         current={1}
         pageSize={8}
         total={filteredData.length}

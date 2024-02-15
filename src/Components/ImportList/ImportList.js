@@ -1,9 +1,9 @@
 import React from 'react';
-import { Table, Space, Image, Button, Checkbox, Typography, Row, Col } from 'antd';
+import { Table, Space, Image, Button, Checkbox, Typography, Row, Col, Divider } from 'antd';
 import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import shirt2 from "../../images/shirt2.jpg";
 import shirt1 from "../../images/shirt1.jpg";
-
+import "./ImportList.css"
 const { Text, Title } = Typography;
 
 const dataSource = [
@@ -64,13 +64,13 @@ const columns = [
     dataIndex: 'image',
     key: 'image',
     render: (image) => (
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div className='flex_img' >
         {image}
       </div>
     ),
   },
   {
-    title: 'Product Name',
+    title: ' Name',
     dataIndex: 'productName',
     key: 'productName',
   },
@@ -100,7 +100,7 @@ const columns = [
     key: 'profit',
   },
   {
-    title: 'Your Compared Price',
+    title: ' Compared Price',
     dataIndex: 'comparedPrice',
     key: 'comparedPrice',
   },
@@ -140,20 +140,21 @@ const handleDelete = (key) => {
 const ResponsiveTable = () => {
   return (
     <>
-     <div style={{marginLeft:'0px'}}>
+     <div >
      <Row gutter={[16, 16]}>
         <Col span={24}>
-          <Title level={2}>Import List</Title>
+          <h2 level={2}>Import List</h2>
+          <Divider/>
         </Col>
       </Row>
       <Table dataSource={dataSource} columns={columns} />
-      <Row justify="start" style={{ marginTop: '16px' }}>
+      <Row className='import_all' >
         <Col>
           <Button type="primary" icon={<PlusOutlined />} onClick={() => console.log('IMPORT ALL TO STORE clicked')}>
             IMPORT ALL TO STORE
           </Button>
         </Col>
-        <Col style={{ marginLeft: '5px' }}>
+        <Col className='delete_btn' >
           <Button danger icon={<DeleteOutlined />} onClick={() => console.log('BATCH DELETION clicked')}>
             BATCH DELETION
           </Button>

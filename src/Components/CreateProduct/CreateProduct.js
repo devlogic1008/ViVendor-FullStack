@@ -155,13 +155,13 @@ const AddNewProductPage = () => {
   ];
 
   return (
-    <div style={{ padding: '0px 20px 0px 20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-<h2 style={{ borderBottom: '1px solid rgb(235, 237, 240)', paddingBottom: '10px', fontWeight: 'bold' }}>
+    <div className='add_new_product' >
+      <div className='product_head'>
+<h2  className='Product_heading'>
   Add New Product
 </h2>
 <div>
-  <Button type="primary" ghost style={{ marginRight: '2px' }}>
+  <Button type="primary" className='discard_btn' ghost  > 
     Discard
   </Button>
   <Button type="primary">
@@ -211,7 +211,7 @@ const AddNewProductPage = () => {
       </Form.Item>
     </Form>
   </div>
-  <div className="product_images" style={{ marginTop: "4%" }}>
+  <div className="product_images" >
     <Dragger
       fileList={fileList}
       onDrop={onDrop}
@@ -243,7 +243,7 @@ const AddNewProductPage = () => {
       </Form.Item>
     </Form>
   </div>
-  <div className='product_status' style={{ marginTop: '20px' }}>
+  <div className='product_status' >
     <Form
       form={form}
       name="sortByForm"
@@ -269,7 +269,7 @@ const AddNewProductPage = () => {
       </Form.Item>
     </Form>
   </div>
-  <div className='product_status' style={{ marginTop: '20px' }}>
+  <div className='product_status' >
     <Form
       form={form}
       name="organizationform"
@@ -292,12 +292,12 @@ const AddNewProductPage = () => {
 </Row>
 <Row gutter={[18, 8]}>
 <Col span={24}>
-  <h4 style={{ fontWeight: 'bold', marginTop: "4%", marginBottom: '-2%' }}>
+  <h4 className='pricing' >
     PRICING / SHIPPING / INVENTORY
   </h4>
 </Col>
 <Col span={18}>
-  <div className='product_title' style={{ marginTop: '20px' }}>
+  <div className='product_title'>
     <Row gutter={[18, 8]}>
       <Col span={8}>
         <Form
@@ -313,7 +313,7 @@ const AddNewProductPage = () => {
             label='Cost Price'
             name="costPrice"
           >
-            <Input style={{ marginTop: '-10%' }} placeholder='$ 0.00' />
+            <Input className='cost_input' placeholder='$ 0.00' />
           </Form.Item>
         </Form>
       </Col>
@@ -472,7 +472,7 @@ const AddNewProductPage = () => {
 </Row>
       <Row gutter={[18, 8]}>
         <Col span={18}>
-          <div className='product_status' style={{ marginTop: '20px' }}>
+          <div className='product_status'>
             <Form
               form={form}
               name="variantForm"
@@ -500,11 +500,13 @@ const AddNewProductPage = () => {
                 >
                   {variantOptions.map((option, index) => (
                     <Form.Item key={index} label={<strong>{`Option${index + 1}`}</strong>}>
-                      <div style={{ display: 'flex', flexDirection: 'row', justifyContent:'space-evenly' }}>
+
+                      <div className='attribtes'  >
                         <Input
                           placeholder='Attribute name'
                           name='attributeName'
-                          style={{ width: '25%' }}
+                          className='attribute_name'
+                         
                           value={option.attributeName}
                           onChange={(e) => handleOptionChange(index, 'attributeName', e.target.value)}
                         />
@@ -525,7 +527,7 @@ const AddNewProductPage = () => {
                 </Button>
                 <Divider />
                 <div className='preview'>
-                  <h3 style={{ marginTop: '4%' }}>Preview</h3>
+                  <h3 className='preview_head' >Preview</h3>
                   <Row gutter={[18, 8]}>
                     <Col span={24}>
                       <Table columns={columns} dataSource={tableData} pagination={false} />
@@ -539,8 +541,8 @@ const AddNewProductPage = () => {
         </Col>
       </Row>
       <Divider />
-      <div style={{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}>
-        <Button type="primary" ghost style={{ marginRight: '2px' }}>
+      <div className='submit_btn' >
+        <Button type="primary" className='discard_btn' ghost style={{ marginRight: '2px' }}>
           Discard
         </Button>
         <Button type="primary" onClick={generateTableData}>

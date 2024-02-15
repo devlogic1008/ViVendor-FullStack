@@ -13,7 +13,7 @@ import {
   FileSyncOutlined,
   MenuOutlined,
   TruckOutlined,
-  ShoppingCartOutlined 
+  ShoppingCartOutlined,LoginOutlined 
 } from '@ant-design/icons';
 import shewin from '../../images/shewin.png';
 import { Layout, Menu, Drawer, Button, Select, Modal } from 'antd';
@@ -148,7 +148,7 @@ const SideNav = () => {
               <Menu.Item key="14" icon={<UserOutlined />}>
                 <Link to="/user-info">Umair500</Link>
               </Menu.Item>
-              <Menu.Item key="15" icon={<UserOutlined />}>
+              <Menu.Item key="15" icon={<LoginOutlined />}>
                 <Link to="/login">Logout</Link>
               </Menu.Item>
             </Menu>
@@ -218,7 +218,7 @@ const SideNav = () => {
               <Menu.Item key="14" icon={<UserOutlined />}>
                 <Link to="/user-info">Umair500</Link>
               </Menu.Item>
-              <Menu.Item key="15" icon={<UserOutlined />}>
+              <Menu.Item key="15" icon={<LoginOutlined />}>
                 <Link to="/login">Logout</Link>
               </Menu.Item>
           </Menu>

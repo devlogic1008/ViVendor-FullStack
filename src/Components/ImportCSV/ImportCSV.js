@@ -108,20 +108,20 @@ const ImportCSV = () => {
   };
 
   return (
-    <div style={{ padding: '0px 20px 20px 20px' }}>
+    <div className='import_csv'  >
           <Title level={3}>Product Import</Title>
           <Divider/>
       <div >
       
-        <div style={{ display: 'flex', justifyContent: 'end', alignItems: 'end' }}>
-          <Button type="primary" ghost style={{ marginRight: '5px' }} onClick={showModal}>
+        <div className='btn_end'>
+          <Button type="primary" className='upload_btn'  ghost  onClick={showModal}>
             Upload Product csv
           </Button>
           <Button type="primary">View Sample csv</Button>
         </div>
       </div>
 
-      <div className="csv_table" style={{ marginTop: '1%' }}>
+      <div className="csv_table" >
         <Table dataSource={data} columns={columns} />
       </div>
 
