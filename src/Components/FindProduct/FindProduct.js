@@ -54,26 +54,27 @@ function FindProduct() {
   };
 
   const renderCardBottom = () => (
-    <div>
+    <div >
       
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 1]}>  
+      {/* col,row gap */}
     
-        <Col span={24}>
-          <p style={{ margin: 0, marginBottom: '0px' }}>Jeans Shirt</p>
+        <Col span={24} >
+          <label className='card_label'>Jeans Shirt</label>
         </Col>
-        <Col span={12} style={{ backgroundColor: 'rgba(198,126,64,.1)', padding: '10px' }}>
-          <Paragraph style={{ color: '#c67e40' }}>Product Cost</Paragraph>
-          <Title level={4} style={{ color: '#c67e40', margin: 0 }}>$30.50</Title>
+        <Col span={12} className='card_cost' >
+          <Paragraph className='card_para' >Product Cost</Paragraph>
+          <Title level={4} className='card_title'  >$30.50</Title>
         </Col>
-        <Col span={12} style={{ backgroundColor: 'rgba(45,148,76,.1)', padding: '10px' }}>
-          <Paragraph style={{ color: '#2d944c' }}>Suggest Price</Paragraph>
-          <Title level={4} style={{ color: '#2d944c', margin: 0 }}>$46.70</Title>
+        <Col span={12} className='card_suggest_head' >
+          <Paragraph className='card_suggest' >Suggest Price</Paragraph>
+          <Title level={4} className='card_suggest_price' >$46.70</Title>
         </Col>
       </Row>
-      <Divider style={{ margin: '8px 0' }} />
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Paragraph style={{ marginBottom: 0 }}>Shipping: $9.11</Paragraph>
-        <Paragraph style={{ marginBottom: 0 }}>Profit: $16.20</Paragraph>
+      <Divider className='card_divider'  />
+      <div className='card_bottom'>
+        <Paragraph className='card_bottom_price' >Shipping: $9.11</Paragraph>
+        <Paragraph  className='card_bottom_price' >Profit: $16.20</Paragraph>
       </div>
     </div>
   );
@@ -84,7 +85,7 @@ function FindProduct() {
 
   return (
     <div>
-        <Breadcrumb style={{ margin: '5px 0 20px ' }}>
+        <Breadcrumb className='bread_crumb' >
         <BreadcrumbItem>Dashboard</BreadcrumbItem>
         <BreadcrumbItem>FindProduct</BreadcrumbItem>
       </Breadcrumb>
@@ -242,7 +243,8 @@ function FindProduct() {
       <Row gutter={[16, 16]}>
         {[...Array(4)].map((_, index) => (
           <Col key={index} xs={24} sm={12} md={12} lg={6}>
-           <NavLink to="/product-detail"> <Card
+           <NavLink to="/product-detail">
+             <Card className='product-info-list' 
               style={{ width: '100%', backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
               cover={
                 <div

@@ -71,7 +71,7 @@ const columns = [
     key: 'image',
   },
   {
-    title: 'Product Name',
+    title: 'Product ',
     dataIndex: 'productName',
     key: 'productName',
   },
@@ -91,7 +91,7 @@ const columns = [
     key: 'shippingCost',
   },
   {
-    title: 'Suggested Price',
+    title: ' Price',
     dataIndex: 'suggestedPrice',
     key: 'suggestedPrice',
   },
@@ -101,7 +101,7 @@ const columns = [
     key: 'profit',
   },
   {
-    title: 'Your Compared Price',
+    title: ' Compared Price',
     dataIndex: 'comparedPrice',
     key: 'comparedPrice',
   },
@@ -110,11 +110,7 @@ const columns = [
     dataIndex: 'inventory',
     key: 'inventory',
   },
-  {
-    title: 'Lock Inventory',
-    dataIndex: 'Lock_Inventory',
-    key: 'Lock_Inventory',
-  },
+ 
   {
     title: 'Active in Shopify?',
     dataIndex: 'ActiveInShopify',

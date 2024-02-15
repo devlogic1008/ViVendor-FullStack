@@ -1,16 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './Components/Login/Login';
 import SideNav from './Components/SideNav/SideNav';
-import ProductDetail from './Components/ProductDetail/ProductDetail';
+import ForgotPassword from './Components/ForgotPassword/ForgotPassword';
+import Signup from './Components/Signup/Signup';
 
-function App() {
+
+const App = () => {
   return (
-    <>
-   <SideNav/> 
-   {/* <ProductDetail/> */}
-    </>
+    <Router>
+      <Routes>
+      <Route path="/login" element={<Login />} />
+  <Route path="/forgotpassword" element={<ForgotPassword />} />
+  <Route path="/signup" element={<Signup/>} />
+  <Route path="/*" element={<SideNav />} />
+        
+      </Routes>
+    </Router>
+  
   );
-}
+};
 
 export default App;
-// 

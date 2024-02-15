@@ -12,6 +12,8 @@ import {
   UserOutlined,
   FileSyncOutlined,
   MenuOutlined,
+  TruckOutlined,
+  ShoppingCartOutlined 
 } from '@ant-design/icons';
 import shewin from '../../images/shewin.png';
 import { Layout, Menu, Drawer, Button, Select, Modal } from 'antd';
@@ -40,7 +42,7 @@ const SideNav = () => {
 
   const handleMenuClick = ({ key }) => {
     setSelectedKeys([key]);
-    if (key === '8') {
+    if (key === '13') {
       setModalVisible(true);
     }
   };
@@ -70,7 +72,7 @@ const SideNav = () => {
   }, []);
 
   return (
-    <Router>
+    
       <Layout style={{ minHeight: '100vh' }}>
         {/* PC Sidebar */}
         {siderVisible && (
@@ -107,44 +109,47 @@ const SideNav = () => {
                 <Menu.Item key="3" icon={<UnorderedListOutlined />}>
                   <Link to="/product-list">All Products</Link>
                 </Menu.Item>
-                <Menu.Item key="11" icon={<ProductOutlined />}>
+                <Menu.Item key="4" icon={<ProductOutlined />}>
                   <Link to="/create-product">Create Product</Link>
                 </Menu.Item>
-                <Menu.Item key="14" icon={<FileSyncOutlined />}>
+                <Menu.Item key="5" icon={<FileSyncOutlined />}>
                   <Link to="/import-csv">Import CSV</Link>
                 </Menu.Item>
-                <Menu.Item key="12" icon={<MergeOutlined />}>
+                <Menu.Item key="6" icon={< TagOutlined/>}>
                   <Link to="/tags">Add Tags</Link>
                 </Menu.Item>
-                <Menu.Item key="13" icon={<TagOutlined />}>
+                <Menu.Item key="7" icon={<MergeOutlined />}>
                   <Link to="/categories">Categories</Link>
                 </Menu.Item>
               </Menu.SubMenu>
 
-              <Menu.Item key="4" icon={<TeamOutlined />}>
+              <Menu.Item key="8" icon={<TeamOutlined />}>
                 <Link to="/order-list">Order List</Link>
               </Menu.Item>
-              <Menu.SubMenu key="shiping" icon={<ProductOutlined />} title="Shipping">
-                <Menu.Item key="14" icon={<UnorderedListOutlined />}>
+              <Menu.SubMenu key="shiping" icon={<ShoppingCartOutlined />} title="Shipping">
+                <Menu.Item key="9" icon={<ShoppingCartOutlined />}>
                   <Link to="/shipping-zones">Shipping Zones</Link>
                 </Menu.Item>
-                <Menu.Item key="15" icon={<ProductOutlined />}>
+                <Menu.Item key="10" icon={<TruckOutlined />}>
                   <Link to="/courier-service-providers">Courier Service</Link>
                 </Menu.Item>
                
               </Menu.SubMenu>
               
-              <Menu.Item style={{ marginTop: '95%' }} key="5" icon={<FileOutlined />}>
+              <Menu.Item style={{ marginTop: '70%' }} key="11" icon={<FileOutlined />}>
                 <Link to="/store-settings">Store Settings</Link>
               </Menu.Item>
-              <Menu.Item key="7" icon={<TeamOutlined />}>
+              <Menu.Item key="12" icon={<TeamOutlined />}>
                 <Link to="/files">Help Center</Link>
               </Menu.Item>
-              <Menu.Item key="8" icon={<DesktopOutlined />}>
+              <Menu.Item key="13" icon={<DesktopOutlined />}>
                 <Link>Shopify Admin</Link>
               </Menu.Item>
-              <Menu.Item key="9" icon={<UserOutlined />}>
+              <Menu.Item key="14" icon={<UserOutlined />}>
                 <Link to="/user-info">Umair500</Link>
+              </Menu.Item>
+              <Menu.Item key="15" icon={<UserOutlined />}>
+                <Link to="/login">Logout</Link>
               </Menu.Item>
             </Menu>
           </Sider>
@@ -154,7 +159,7 @@ const SideNav = () => {
         <Drawer
           title="Menu"
           placement="left"
-          closable={false}
+          closable={true}
           onClose={onCloseDrawer}
           visible={drawerVisible}
         >
@@ -165,75 +170,79 @@ const SideNav = () => {
             onClick={handleMenuClick}
           >
             <Menu.Item key="1" icon={<PieChartOutlined />}>
-              <Link to="/find-product">Find Product</Link>
-            </Menu.Item>
-            <Menu.Item key="2" icon={<DesktopOutlined />}>
-              <Link to="/import-list">Import List</Link>
-            </Menu.Item>
-            <Menu.SubMenu key="products" icon={<ProductOutlined />} title="Products">
-              <Menu.Item key="3" icon={<UnorderedListOutlined />}>
-                <Link to="/product-list">All Products</Link>
+                <Link to="/find-product">Find Product</Link>
               </Menu.Item>
-              <Menu.Item key="11" icon={<ProductOutlined />}>
-                <Link to="/create-product">Create Product</Link>
+              <Menu.Item key="2" icon={<DesktopOutlined />}>
+                <Link to="/import-list">Import List</Link>
               </Menu.Item>
-              <Menu.Item key="14" icon={<FileSyncOutlined />}>
-                <Link to="/import-csv">Import CSV</Link>
-              </Menu.Item>
-              <Menu.Item key="12" icon={<MergeOutlined />}>
-                <Link to="/tags">Add Tags</Link>
-              </Menu.Item>
-              <Menu.Item key="13" icon={<TagOutlined />}>
-                <Link to="/categories">Categories</Link>
-              </Menu.Item>
-            </Menu.SubMenu>
+              <Menu.SubMenu key="products" icon={<ProductOutlined />} title="Products">
+                <Menu.Item key="3" icon={<UnorderedListOutlined />}>
+                  <Link to="/product-list">All Products</Link>
+                </Menu.Item>
+                <Menu.Item key="4" icon={<ProductOutlined />}>
+                  <Link to="/create-product">Create Product</Link>
+                </Menu.Item>
+                <Menu.Item key="5" icon={<FileSyncOutlined />}>
+                  <Link to="/import-csv">Import CSV</Link>
+                </Menu.Item>
+                <Menu.Item key="6" icon={< TagOutlined/>}>
+                  <Link to="/tags">Add Tags</Link>
+                </Menu.Item>
+                <Menu.Item key="7" icon={<MergeOutlined />}>
+                  <Link to="/categories">Categories</Link>
+                </Menu.Item>
+              </Menu.SubMenu>
 
-
-            <Menu.Item key="4" icon={<TeamOutlined />}>
-              <Link to="/order-list">Order List</Link>
-            </Menu.Item>
-            <Menu.SubMenu key="shiping" icon={<ProductOutlined />} title="Shipping">
-                <Menu.Item key="14" icon={<UnorderedListOutlined />}>
+              <Menu.Item key="8" icon={<TeamOutlined />}>
+                <Link to="/order-list">Order List</Link>
+              </Menu.Item>
+              <Menu.SubMenu key="shiping" icon={<ShoppingCartOutlined />} title="Shipping">
+                <Menu.Item key="9" icon={<ShoppingCartOutlined />}>
                   <Link to="/shipping-zones">Shipping Zones</Link>
                 </Menu.Item>
-                <Menu.Item key="15" icon={<ProductOutlined />}>
+                <Menu.Item key="10" icon={<TruckOutlined />}>
                   <Link to="/courier-service-providers">Courier Service</Link>
                 </Menu.Item>
                
               </Menu.SubMenu>
-            <Menu.Item key="10" icon={<DesktopOutlined />}>
-              <Link to="/create-product">Create Product</Link>
-            </Menu.Item>
-            <Menu.Item key="5" icon={<FileOutlined />}>
-              <Link to="/store-settings">Store Settings</Link>
-            </Menu.Item>
-            <Menu.Item key="7" icon={<TeamOutlined />}>
-              <Link to="/files">Help Center</Link>
-            </Menu.Item>
-            <Menu.Item key="8" icon={<DesktopOutlined />}>
-              <Link>Shopify Admin</Link>
-            </Menu.Item>
-            <Menu.Item key="9" icon={<UserOutlined />}>
-              <Link to="/user-info">Umair500</Link>
-            </Menu.Item>
+              
+              <Menu.Item  key="11" icon={<FileOutlined />}>
+                <Link to="/store-settings">Store Settings</Link>
+              </Menu.Item>
+              <Menu.Item key="12" icon={<TeamOutlined />}>
+                <Link to="/files">Help Center</Link>
+              </Menu.Item>
+              <Menu.Item key="13" icon={<DesktopOutlined />}>
+                <Link>Shopify Admin</Link>
+              </Menu.Item>
+              <Menu.Item key="14" icon={<UserOutlined />}>
+                <Link to="/user-info">Umair500</Link>
+              </Menu.Item>
+              <Menu.Item key="15" icon={<UserOutlined />}>
+                <Link to="/login">Logout</Link>
+              </Menu.Item>
           </Menu>
         </Drawer>
 
         {/* Mobile Menu Button */}
         <Button
-          type="primary"
+         
           onClick={showDrawer}
           style={{
             display: window.innerWidth <= 768 ? 'block' : 'none',
             margin: '10px',
             position: 'fixed',
             left: 0,
+            background:'none',
+            borderColor:'Background',
+            zIndex:'7777'
           }}
           icon={<MenuOutlined />}
         />
 
         {/* Content */}
         <Layout className="site-layout">
+          
           <Content
             style={{
               margin: '10px 10px',
@@ -304,7 +313,7 @@ const SideNav = () => {
           </p>
         </Modal>
       </Layout>
-    </Router>
+   
   );
 };
 
