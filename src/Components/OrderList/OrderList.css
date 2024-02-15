@@ -1,0 +1,28 @@
+/* TabsLayoutTable.css */
+
+/* Style for the search container */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px; /* Adjust the gap as needed */
+    margin-bottom: 16px; /* Add margin for better spacing */
+  }
+  
+  /* Responsive styles */
+  @media screen and (max-width: 768px) {
+    /* Adjust styles for smaller screens */
+    .search-container {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .search-container .ant-typography {
+      margin-bottom: 8px; /* Add spacing between title and input on smaller screens */
+    }
+  
+    .search-container .ant-input {
+      width: 100%; /* Make the input full width on smaller screens */
+    }
+  }
+  

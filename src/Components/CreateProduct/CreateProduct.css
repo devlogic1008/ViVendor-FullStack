@@ -1,0 +1,18 @@
+.product_title{
+    background-color:white;
+    padding: 20px;
+}
+.product_status{
+    background-color: white;
+    padding: 20px;
+}
+/* .product_title{
+    border-radius: 0px;
+    background-color: #f8f8fa;
+    box-shadow:  -12px -12px 24px #d9d9d9,
+                 12px 12px 24px #e7e7e7;
+} */
+
+.ant-col-24.ant-form-item-label{
+    padding: 0px !important;
+}
