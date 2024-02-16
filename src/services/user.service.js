@@ -1,7 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const httpStatus = require('http-status');
 const ApiError = require('../utils/ApiError');
-
+const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 
 /**
@@ -9,14 +9,38 @@ const prisma = new PrismaClient();
  * @param {Object} userBody
  * @returns {Promise<User>}
  */
+// const createUser = async (userBody) => {
+//   const existingUser = await prisma.user.findUnique({
+//     where: { email: userBody.email },
+//   });
+//   if (existingUser) {
+//     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+//   }
+//   return prisma.user.create({ data: userBody });
+// };
+
 const createUser = async (userBody) => {
+  const { email, password, ...userData } = userBody; // Extract email and password from userBody
+
   const existingUser = await prisma.user.findUnique({
-    where: { email: userBody.email },
+    where: { email },
   });
+
   if (existingUser) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
-  return prisma.user.create({ data: userBody });
+
+  // Hash the password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Create the user with the hashed password
+  return prisma.user.create({
+    data: { ...userData, email, password: hashedPassword },
+  });
+};
+
+module.exports = {
+  createUser,
 };
 
 // /**
