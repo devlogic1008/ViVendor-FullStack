@@ -1,0 +1,41 @@
+.search_product{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    margin-top: 16px;
+}
+@media only screen and (max-width: 768px) {
+    .search_product{
+        display: block;
+    }
+    .search_input{
+        max-width: 210px;
+       
+    }
+    .select_input{
+        margin-top: 2% !important;
+       margin-left:0px !important;
+    }
+    .product_table{
+        margin-top: 5%;
+    }
+}
+
+
+.search_head{
+    display: flex;
+    justify-content: start !important;
+}
+.select_input{
+  
+    width: 200px;
+    margin: 0 10px;
+}
+.search_input{
+    width: 500px;
+   
+}
+.batch_btn{
+    margin-top: 16px;
+}

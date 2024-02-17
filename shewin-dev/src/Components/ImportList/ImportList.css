@@ -1,0 +1,25 @@
+.flex_img{
+    display: flex;
+    align-items: center;
+}
+
+.import_all{
+    margin-top: 16px !important;
+}
+.delete_btn{
+    margin-left: 5px !important;
+}
+
+
+@media only screen and (max-width: 768px) {
+
+    .import_all{
+        margin-top: 1px;
+    }
+    .delete_btn{
+        margin-left: 0px;
+        margin-top: 15px;
+        /* width: 500px !important; */
+    }
+
+} 
