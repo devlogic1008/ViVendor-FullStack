@@ -109,7 +109,8 @@ const ImportCSV = () => {
 
   return (
     <div className='import_csv'  >
-          <Title level={3}>Product Import</Title>
+        
+          <h2>Product Import</h2>
           <Divider/>
       <div >
       

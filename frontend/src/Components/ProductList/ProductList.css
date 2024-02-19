@@ -8,18 +8,28 @@
 @media only screen and (max-width: 768px) {
     .search_product{
         display: block;
+        margin-top: 50px;
     }
     .search_input{
-        max-width: 210px;
+        max-width: 100%;
+
        
     }
     .select_input{
         margin-top: 2% !important;
-       margin-left:0px !important;
+        margin-left: 1px !important;
+      
+       width: 100% !important;
     }
     .product_table{
         margin-top: 5%;
+
     }
+}
+.product_table{
+   
+    overflow-x: auto;
+    
 }
 
 

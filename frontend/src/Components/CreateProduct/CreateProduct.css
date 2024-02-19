@@ -7,12 +7,7 @@
     padding: 20px;
     margin-top: 20px;
 }
-/* .product_title{
-    border-radius: 0px;
-    background-color: #f8f8fa;
-    box-shadow:  -12px -12px 24px #d9d9d9,
-                 12px 12px 24px #e7e7e7;
-} */
+
 
 .ant-col-24.ant-form-item-label{
     padding: 0px !important;
@@ -73,4 +68,13 @@
     padding: 5px;
     margin-left: 10px;
     border-radius: 0px;
+}
+.variant_table{
+    overflow-y: auto;
+}
+@media only screen and (max-width: 768px) {
+    .add_new_product{
+        padding: 0;
+    }
+
 }

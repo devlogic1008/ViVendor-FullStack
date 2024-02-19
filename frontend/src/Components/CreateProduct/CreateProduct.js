@@ -196,7 +196,7 @@ const AddNewProductPage = () => {
         </div>
       </div>
       <Row gutter={[18, 8]}>
-        <Col span={18}>
+        <Col xs={24} sm={24} md={18} lg={18}>
           <div className='product_title'>
             <Form
               form={form}
@@ -442,7 +442,7 @@ const AddNewProductPage = () => {
 
 
         </Col>
-        <Col span={6}>
+        <Col xs={24} sm={24} md={6} lg={6}>
           <div className='product_status'>
             <Form
               form={form}
@@ -539,7 +539,7 @@ const AddNewProductPage = () => {
         </Col>
         
        
-        <Col span={18}>
+        <Col xs={24} sm={24} md={18} lg={18}>
           <div className='product_status'>
             <Form
               form={form}
@@ -599,7 +599,7 @@ const AddNewProductPage = () => {
                   <h3 className='preview_head' >Preview</h3>
                   <Row gutter={[18, 8]}>
                     <Col span={24}>
-                      <Table columns={columns} dataSource={tableData} pagination={false} />
+                      <Table className='variant_table' columns={columns} dataSource={tableData} pagination={false} />
                     </Col>
                     <Divider />
                   </Row>

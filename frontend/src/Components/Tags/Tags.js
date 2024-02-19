@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input, Button, Modal, Form, Typography, Tag, Row, Col, message, Divider, Breadcrumb } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
-
+import "./Tags.css"
 const { Title } = Typography;
 const { Item: BreadcrumbItem } = Breadcrumb;
 
@@ -44,31 +44,26 @@ const TagsPage = () => {
   };
 
   return (
-    <div>
+    <div className='tags_main'>
       {/* Breadcrumb */}
       
 
      <h2>Tags</h2>
-    <div style={{display:'flex', justifyContent:'end'}}>
-    <Breadcrumb style={{ margin: '16px 0' }}>
-        <BreadcrumbItem>Dashboard</BreadcrumbItem>
-        <BreadcrumbItem>Tags</BreadcrumbItem>
-      </Breadcrumb>
-    </div>
+   
       <Divider />
 
       {/* Input Fields Section */}
-      <div style={{ marginBottom: '16px', backgroundColor: 'white', padding: '30px', borderRadius: '10px' }}>
+      <div className='tags_header' >
         <Form form={form}>
           <Row gutter={[8, 8]}>
             <Col span={24}>
-              <Form.Item  name="tag" label="Add Tag" style={{ width: '100%' }}>
+              <Form.Item  name="tag" className='add_tag' label="Add Tag" >
                 <Input   placeholder="Enter Tag name here..." />
               </Form.Item>
             </Col>
           </Row>
           <Row>
-            <Col span={24} style={{ textAlign: 'end' }}>
+            <Col span={24} className='btn_end'>
               <Button    type="primary" onClick={handleSave}>
                 Save
               </Button>
@@ -80,21 +75,11 @@ const TagsPage = () => {
       {/* Tags Section */}
       <div>
         {tags.map((tag) => (
-          <Tag
+          <Tag 
+          className='all_tags'
             key={tag.key}
             onClick={() => showModal(tag)}
-            style={{
-              cursor: 'pointer',
-              fontSize: '10px',
-              padding: '8px',
-              marginBottom: '8px',
-              marginRight: '8px',
-              marginTop: '28px',
-              whiteSpace: 'nowrap',
-              display: 'inline-block',
-              background: '#1677ff',
-              color: 'white',
-            }}
+          
           >
             {tag.tag}
           </Tag>
