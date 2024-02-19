@@ -1,6 +1,13 @@
+.search_product_row{
+  margin-top: 10px;
+}
 .image-card {
   position: relative;
   width: 100%;
+}
+.card_label{
+  padding-top: 5px !important;
+  font-weight: 500 !important;
 }
 
 .all-cat-image {
@@ -10,6 +17,9 @@
   object-fit: cover;
   border-radius: 0px !important;
   
+}
+.hoverable-image-container{
+  position: relative;
 }
 .hoverable-image-container:hover{
   transition: .5s ease-out;
@@ -29,8 +39,18 @@
   .category_card{
     margin-top: 4%;
   }
+  .search_product_row{
+    margin-top: 10px;
+  }
+  .bread_crumb{
+    margin: 40px 0 20px !important;
+  }
 }
-.ant-card-body{padding: 15px !important;}
+
+
+.ant-card-body{
+  padding: 0px 15px 15px 12px !important;
+}
 
 
 .card_cost{
@@ -74,13 +94,13 @@
 .category_card_head{
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 .category_card_bottom{
   margin: 0;
 }
 .category_card_img{
-  max-width: 30%;
-  margin-left: 40px;
+  height: 80px;
 }
 .category_row{
   margin-top: 2%;
@@ -108,4 +128,49 @@
 .all_products{
   padding-bottom: 10px;
 }
-
+.category_card .ant-card-body {
+  padding: 0 !important;
+}
+.category_card .ant-card-body {
+  padding: 0 0 0 10px !important;
+}
+.category_card {
+  margin-bottom: 16px;
+}
+.add_to_import {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: calc(100% - 24px);
+  left: 12px;
+  height: 40px;
+  border-radius: 3px;
+  background: rgba(255,255,255,.9);
+  font-size: 13px;
+  color: rgba(0,0,0,.9);
+  position: absolute;
+  bottom: 0px;
+  opacity: 0;
+  text-transform: uppercase;
+  -webkit-transition: all .5s;
+  transition: all .5s;
+  cursor: pointer;
+  z-index: 3;
+  
+}
+.product-info-list:hover .add_to_import {
+  bottom: 30px;
+  opacity: 1;
+  color: gray;
+  border-color: gray;
+  background: #ffffff;
+}
+div:where(.css-dev-only-do-not-override-1rqnfsa).ant-typography, :where(.css-dev-only-do-not-override-1rqnfsa).ant-typography p {
+  margin-bottom: 1px !important;
+}

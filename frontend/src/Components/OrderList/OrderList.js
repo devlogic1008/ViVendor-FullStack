@@ -120,17 +120,16 @@ const TabsLayoutTable = () => {
 
   return (
     <>
-    <div  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '40px' }}>
-    <Title style={{marginBottom:'30px'}} level={4}>Search Orders
-</Title>
-      <Input
-        placeholder="Search"
-        prefix={<SearchOutlined />}
-        style={{ width: '500px' }}
-        onChange={(e) => handleSearch(e.target.value)}
-      />
-    </div>
-     
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '40px' }}>
+        <Title style={{ marginBottom: '30px' }} level={4}>Search Orders</Title>
+        <Input
+          placeholder="Search"
+          prefix={<SearchOutlined />}
+          style={{ width: '500px' }}
+          onChange={(e) => handleSearch(e.target.value)}
+        />
+      </div>
+
       <Tabs defaultActiveKey="1">
         <TabPane tab="All" key="1">
           <Table dataSource={data} columns={columns} />

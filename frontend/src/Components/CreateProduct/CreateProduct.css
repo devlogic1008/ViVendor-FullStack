@@ -68,3 +68,9 @@
     justify-content: end;
     align-items: center;
 }
+.attribtes .rti--container {
+    width: 100%;
+    padding: 5px;
+    margin-left: 10px;
+    border-radius: 0px;
+}

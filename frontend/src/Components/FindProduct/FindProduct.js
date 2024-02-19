@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, Card, Row, Col, Select, Divider, Typography, Pagination, Button,Breadcrumb } from 'antd';
+import { Input, Card, Row, Col, Select, Divider, Typography, Pagination, Button, Breadcrumb } from 'antd';
 import tops from "../../images/tops.png";
 import bottoms from "../../images/bottoms.png";
 import sweater from "../../images/sweater.png";
@@ -14,7 +14,8 @@ import shirt8 from "../../images/shirt8.jpg";
 import shirt from "../../images/shirt.jpg";
 import { NavLink } from 'react-router-dom';
 import "./FindProduct.css";
-// dfsdfasdf
+import { PlusOutlined } from '@ant-design/icons';
+
 const { Search } = Input;
 const { Option } = Select;
 const { Title, Paragraph } = Typography;
@@ -30,7 +31,7 @@ const data = [
   'Dresses',
   'Outer',
   'Inner ',
-  
+
 ];
 
 function FindProduct() {
@@ -61,10 +62,10 @@ function FindProduct() {
 
   const renderCardBottom = () => (
     <div >
-      
-      <Row gutter={[16, 1]}>  
-      {/* col,row gap */}
-    
+
+      <Row gutter={[16, 1]}>
+        {/* col,row gap */}
+
         <Col span={24} >
           <label className='card_label'>Jeans Shirt</label>
         </Col>
@@ -77,10 +78,10 @@ function FindProduct() {
           <Title level={4} className='card_suggest_price' >$46.70</Title>
         </Col>
       </Row>
-      <Divider className='card_divider'  />
+      <Divider className='card_divider' />
       <div className='card_bottom'>
         <Paragraph className='card_bottom_price' >Shipping: $9.11</Paragraph>
-        <Paragraph  className='card_bottom_price' >Profit: $16.20</Paragraph>
+        <Paragraph className='card_bottom_price' >Profit: $16.20</Paragraph>
       </div>
     </div>
   );
@@ -90,12 +91,12 @@ function FindProduct() {
   };
   return (
     <div>
-        <Breadcrumb className='bread_crumb' >
+      <Breadcrumb className='bread_crumb' >
         <BreadcrumbItem>Dashboard</BreadcrumbItem>
         <BreadcrumbItem>FindProduct</BreadcrumbItem>
       </Breadcrumb>
-      <Row gutter={16} style={{ marginBottom: 16 }}>
-        <Col xs={24} sm={18}>
+      <Row gutter={16} className='search_product_row' style={{ marginBottom: 16 }}>
+        <Col xs={24} sm={18} >
           <Search
             placeholder="You can also paste Shewin product URL or ID here"
             allowClear
@@ -121,128 +122,124 @@ function FindProduct() {
         </Col>
       </Row>
 
-  
+
       <Row className='category_row' gutter={16}>
-       
-       <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card  className='category_card'>
-             <div className='category_card_head' >
-               <p className='category_card_bottom' >Bottoms</p>
-               <img className='category_card_img'  src={bottoms}  />
-             </div>
-           </Card>
-         </Col>
-         <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card  className='category_card'>
-             <div className='category_card_head' >
-               <p className='category_card_bottom' >Sweater</p>
-               <img className='category_card_img'  src={tops}  />
-             </div>
-           </Card>
-         </Col>
-         <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card  className='category_card'>
-             <div className='category_card_head' >
-               <p className='category_card_bottom' >Tops</p>
-               <img className='category_card_img'  src={bottoms}  />
-             </div>
-           </Card>
-         </Col>
-         <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card  className='category_card'>
-             <div className='category_card_head' >
-               <p className='category_card_bottom' >Bottoms</p>
-               <img className='category_card_img'  src={tops}  />
-             </div>
-           </Card>
-         </Col>
-         <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card  className='category_card'>
-             <div className='category_card_head' >
-               <p className='category_card_bottom' >Sweater</p>
-               <img className='category_card_img'  src={bottoms}  />
-             </div>
-           </Card>
-         </Col>
-         <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card  className='category_card'>
-             <div className='category_card_head' >
-               <p className='category_card_bottom' >Tops</p>
-               <img className='category_card_img'  src={tops}  />
-             </div>
-           </Card>
-         </Col>
 
-       
-       </Row>
-       <Row className='category_row' gutter={16}>
-       
-       <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card  className='category_card'>
-             <div className='category_card_head' >
-               <p className='category_card_bottom' >Bottoms</p>
-               <img className='category_card_img'  src={bottoms}  />
-             </div>
-           </Card>
-         </Col>
-         <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card  className='category_card'>
-             <div className='category_card_head' >
-               <p className='category_card_bottom' >Sweater</p>
-               <img className='category_card_img'  src={tops}  />
-             </div>
-           </Card>
-         </Col>
-         <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card  className='category_card'>
-             <div className='category_card_head' >
-               <p className='category_card_bottom' >Tops</p>
-               <img className='category_card_img'  src={bottoms}  />
-             </div>
-           </Card>
-         </Col>
-         <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card  className='category_card'>
-             <div className='category_card_head' >
-               <p className='category_card_bottom' >Bottoms</p>
-               <img className='category_card_img'  src={tops}  />
-             </div>
-           </Card>
-         </Col>
-         <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card  className='category_card'>
-             <div className='category_card_head' >
-               <p className='category_card_bottom' >Sweater</p>
-               <img className='category_card_img'  src={bottoms}  />
-             </div>
-           </Card>
-         </Col>
-         <Col span={4} xs={24} sm={12} md={8} lg={4}>
-           <Card  className='category_card'>
-             <div className='category_card_head' >
-               <p className='category_card_bottom' >Tops</p>
-               <img className='category_card_img'  src={tops}  />
-             </div>
-           </Card>
-         </Col>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
+          <Card className='category_card'>
+            <div className='category_card_head' >
+              <p className='category_card_bottom' >Bottoms</p>
+              <img className='category_card_img' src={bottoms} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
+          <Card className='category_card'>
+            <div className='category_card_head' >
+              <p className='category_card_bottom' >Sweater</p>
+              <img className='category_card_img' src={tops} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
+          <Card className='category_card'>
+            <div className='category_card_head' >
+              <p className='category_card_bottom' >Tops</p>
+              <img className='category_card_img' src={bottoms} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
+          <Card className='category_card'>
+            <div className='category_card_head' >
+              <p className='category_card_bottom' >Bottoms</p>
+              <img className='category_card_img' src={tops} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
+          <Card className='category_card'>
+            <div className='category_card_head' >
+              <p className='category_card_bottom' >Sweater</p>
+              <img className='category_card_img' src={bottoms} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
+          <Card className='category_card'>
+            <div className='category_card_head' >
+              <p className='category_card_bottom' >Tops</p>
+              <img className='category_card_img' src={tops} />
+            </div>
+          </Card>
+        </Col>
 
-       
-       </Row>
-       
-    
-      
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
+          <Card className='category_card'>
+            <div className='category_card_head' >
+              <p className='category_card_bottom' >Bottoms</p>
+              <img className='category_card_img' src={bottoms} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
+          <Card className='category_card'>
+            <div className='category_card_head' >
+              <p className='category_card_bottom' >Sweater</p>
+              <img className='category_card_img' src={tops} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
+          <Card className='category_card'>
+            <div className='category_card_head' >
+              <p className='category_card_bottom' >Tops</p>
+              <img className='category_card_img' src={bottoms} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
+          <Card className='category_card'>
+            <div className='category_card_head' >
+              <p className='category_card_bottom' >Bottoms</p>
+              <img className='category_card_img' src={tops} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
+          <Card className='category_card'>
+            <div className='category_card_head' >
+              <p className='category_card_bottom' >Sweater</p>
+              <img className='category_card_img' src={bottoms} />
+            </div>
+          </Card>
+        </Col>
+        <Col span={4} xs={24} sm={12} md={8} lg={4}>
+          <Card className='category_card'>
+            <div className='category_card_head' >
+              <p className='category_card_bottom' >Tops</p>
+              <img className='category_card_img' src={tops} />
+            </div>
+          </Card>
+        </Col>
+
+
+      </Row>
+
+
+
       <Divider />
 
       <Row gutter={[16, 1]}>
         <Col xs={24} sm={18}>
-        <h2 className='all_products' >
-  All Products
-</h2>
+          <h2 className='all_products' >
+            All Products
+          </h2>
         </Col>
         <Col xs={24} sm={6} className='filter_by'>
           <Select
-          className='select_category'
-          
+            className='select_category'
+
             placeholder="Filter by"
             onChange={handleFilterChange}
           >
@@ -251,7 +248,7 @@ function FindProduct() {
             <Option value="3">Tops</Option>
           </Select>
         </Col>
-       
+
       </Row>
 
       <Row gutter={[16, 16]}>
@@ -268,9 +265,11 @@ function FindProduct() {
                     alt="shirt1"
                     src={hovered[0] ? shirt6 : shirt5}
                   />
+                  <Button  className="add_to_import">add to import</Button>
                 </div>
               }
             >
+              
               {renderCardBottom()}
             </Card>
           </NavLink>
@@ -278,7 +277,7 @@ function FindProduct() {
         <Col xs={24} sm={12} md={12} lg={6}>
           <NavLink to="/product-detail">
             <Card
-              className={`product-info-list ${hovered[1] ? 'hovered' : ''}`}
+              className={`product-info-list`}
               onMouseEnter={() => handleImageHover(1)}
               onMouseLeave={() => handleImageHover(1)}
               cover={
@@ -288,6 +287,7 @@ function FindProduct() {
                     alt="shirt2"
                     src={hovered[1] ? shirt7 : shirt8}
                   />
+                    <Button  className="add_to_import">add to import</Button>
                 </div>
               }
             >
@@ -308,6 +308,7 @@ function FindProduct() {
                     alt="shirt3"
                     src={hovered[2] ? shirt1 : shirt2}
                   />
+                    <Button  className="add_to_import">add to import</Button>
                 </div>
               }
             >
@@ -326,8 +327,9 @@ function FindProduct() {
                   <img
                     className='all-cat-image'
                     alt="shirt4"
-                    src={hovered[3] ? shirt1 : shirt2}
+                    src={hovered[3] ? shirt3 : shirt4}
                   />
+                    <Button  className="add_to_import">add to import</Button>
                 </div>
               }
             >
@@ -338,8 +340,8 @@ function FindProduct() {
       </Row>
 
       <Pagination
-      className='pagination'
-       
+        className='pagination'
+
         current={1}
         pageSize={8}
         total={filteredData.length}
