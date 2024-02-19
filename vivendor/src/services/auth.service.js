@@ -4,9 +4,7 @@ const ApiError = require('../utils/ApiError');
 const bcrypt = require('bcrypt');
 // const { tokenTypes } = require('../config/tokens');
 // const { roles, findRole } = require('../config/roles');
-// const { getShopByUserId } = require('./shop.service');
-// const { getByUserId } = require('./strategicSalePartners.service');
-// const { getServiceByUserId } = require('./serviceProvider.service');
+
 
 const prisma = new PrismaClient();
 
@@ -42,6 +40,43 @@ const loginUserWithEmailAndPassword = async (email, password) => {
   }
 };
 
+
+
+/**
+ * Logout
+ * @param {string} refreshToken
+ * @returns {Promise<void>}
+ */
+const logout = async (refreshToken) => {
+  try {
+    // Find the refresh token in the database
+    const refreshTokenDoc = await prisma.token.findFirst({
+      where: {
+        token: refreshToken,
+        type: 'REFRESH',
+        blacklisted: false,
+      }
+    });
+
+    // If refresh token exists, delete it
+    if (refreshTokenDoc) {
+      await prisma.token.delete({
+        where: {
+          id: refreshTokenDoc.id,
+          msg: 'Refresh token deleted successfully'
+        }
+      });
+    } else {
+      throw new Error('Refresh token not found');
+    }
+  } catch (error) {
+    throw new Error(`Error logging out: ${error.message}`);
+  }
+};
+
+
+
 module.exports = {
   loginUserWithEmailAndPassword,
+  logout,
 };

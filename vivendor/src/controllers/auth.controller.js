@@ -40,7 +40,20 @@ const login = catchAsync(async (req, res) => {
   res.send({ user, tokens });
 });
 
+const logout = catchAsync(async (req, res) => {
+  await authService.logout(req.body.refreshToken);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+const verifyEmail = catchAsync(async (req, res) => {
+  await authService.verifyEmail(req.query.token);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
+
+
 module.exports = {
   register,
   login,
+  logout,
+  verifyEmail,
 };
