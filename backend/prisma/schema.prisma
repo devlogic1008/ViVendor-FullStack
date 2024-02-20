@@ -10,6 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// schema.prisma
+
+model Category {
+  id                 Int      @id @default(autoincrement())
+  title              String
+  image              String?   
+  rank               Int?
+  parentCategoryId   Int?
+  parentCategory     Category? @relation("Subcategory", fields: [parentCategoryId], references: [id])
+  subcategories      Category[] @relation("Subcategory")
+}
 
 model User {
   // Unique identifier for the user

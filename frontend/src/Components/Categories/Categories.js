@@ -183,7 +183,7 @@ const Categories = () => {
           <Form layout="vertical">
             <Form.Item >
               <Typography  className='select_sub_category'  >Select Category:</Typography>
-              <Select className='select_cat' value={category} placeholder='Select Category' onChange={handleCategoryChange}>
+              <Select className='select_cat' value={category} placeholder='Select Category' onChange={handleCategoryChange} >
                 {categoriesList.map((option) => (
                   <Select.Option key={option} value={option}>
                     {option}
