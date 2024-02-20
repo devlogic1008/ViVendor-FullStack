@@ -8,6 +8,11 @@
     /* border-radius: 10px; */
   
   }
-  .list_item{
-    padding: 10px 10px 10px 20px;
+.list_item{
+    padding: 10px 10px 10px 20px !important;
   }
+
+
+  @media only screen and (max-width: 768px) {
+    
+    }

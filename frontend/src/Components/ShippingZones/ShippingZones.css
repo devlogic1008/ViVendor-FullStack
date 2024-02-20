@@ -5,3 +5,38 @@
 .add_rate_modal{
     padding: 40px;
 }
+.primary_btn{
+    margin-right: 8px;
+}
+.create_btn{
+    display: flex;
+    justify-content: end;
+}
+.label_mb{
+    margin-bottom: 20px !important;
+}
+.input_mb{
+    margin-bottom: 16px !important;
+}
+.select_country{
+    margin-bottom: 10px;
+}
+.check_box{
+    overflow-y: auto !important;
+    max-height: 300px; 
+     margin-bottom:16px;
+}
+.flat_select{
+    width: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+    .shipping_main{
+        margin-top: 50px;
+    }
+}
+
+
+.shipping_table_sub,.shipping_table{
+    overflow-x: auto !important;
+}

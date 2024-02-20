@@ -58,3 +58,27 @@
     margin-left: 2%;
   }
   
+  @media only screen and (max-width: 768px) {
+
+  .categories_main{
+margin-top: 50px;
+  }
+  .category_input {
+    width: 100%;
+  }
+
+  .sub_input,.select_cat{
+    width: 100% !important;
+  }
+
+}
+
+.upload_btn{
+  width: 100% !important;
+}
+.thumbnail{
+  width: 100% !important;
+}
+.rank,.title{
+  width:100% !important;
+}
