@@ -8,7 +8,7 @@ const passport = require('passport');
 const httpStatus = require('http-status');
 const config = require('./config/config');
 const { jwtStrategy } = require('./config/passport');
-// const { authLimiter } = require('./middlewares/rateLimiter');
+const { authLimiter } = require('./middlewares/rateLimiter');
 const routes = require('./routes/v1');
 const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
@@ -63,6 +63,7 @@ app.get('/', (req, res) => {
 app.use((req, res, next) => {
   next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
 });
+app.get('/favicon.ico', (req, res) => res.status(204));
 
 // convert error to ApiError, if needed
 app.use(errorConverter);

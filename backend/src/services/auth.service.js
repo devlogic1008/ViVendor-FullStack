@@ -2,7 +2,9 @@ const { PrismaClient } = require('@prisma/client');
 const httpStatus = require('http-status');
 const ApiError = require('../utils/ApiError');
 const bcrypt = require('bcrypt');
-// const { tokenTypes } = require('../config/tokens');
+const tokenService = require('./token.service');
+const userService = require('./user.service');
+const { tokenTypes } = require('../config/tokens');
 // const { roles, findRole } = require('../config/roles');
 
 
@@ -74,9 +76,49 @@ const logout = async (refreshToken) => {
   }
 };
 
+/**
+ * Refresh auth tokens
+ * @param {string} refreshToken
+ * @returns {Promise<Object>}
+ */
+const refreshAuth = async (refreshToken) => {
+  try {
+    // Verify the refresh token using Prisma
+    const refreshTokenDoc = await tokenService.verifyToken(
+      refreshToken,
+      tokenTypes.REFRESH
+    );
+    console.log("🚀 ~ refreshAuth ~ refreshTokenDoc: line 91 file auth.service.js ", refreshTokenDoc)
+
+    // If refresh token not found, throw an error
+    if (!refreshTokenDoc) {
+      throw new Error('Invalid refresh token');
+    }
+
+    // Get the user associated with the refresh token using Prisma
+    const user = await userService.getUserById(refreshTokenDoc.user);
+
+    // If user not found, throw an error
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Remove the refresh token
+        await refreshTokenDoc.remove();
+
+    // await tokenService.deleteToken(refreshTokenDoc.id);
+
+    // Generate new authentication tokens using Prisma
+    return tokenService.generateAuthTokens(user);
+  } catch (error) {
+    // Throw an error with status code 401 if authentication fails
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');
+  }
+};
 
 
 module.exports = {
   loginUserWithEmailAndPassword,
   logout,
+  refreshAuth,
 };

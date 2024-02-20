@@ -46,27 +46,46 @@ const saveToken = async (token, userId, expires, type, blacklisted = false) => {
   });
 };
 
-
 /**
  * Verify token and return token doc (or throw an error if it is not valid)
  * @param {string} token
  * @param {string} type
  * @returns {Promise}
  */
+
 const verifyToken = async (token, type) => {
-  const payload = jwt.verify(token, config.jwt.secret);
-  const tokenDoc = await prisma.token.findFirst({
-    where: {
-      token,
-      type,
-      userId: payload.sub,
-      blacklisted: false,
-    },
-  });
-  if (!tokenDoc) {
-    throw new Error('Token not found');
+  console.log('token', token, 'type', type);
+  console.log('token', typeof token, 'type', typeof type);
+  const secretkey = config.jwt.secret;
+  console.log('🚀 ~ verifyToken ~ config: jtw secret: ', secretkey); 
+
+  try {
+    // const payload = jwt.verify(token, secretkey);
+    const tokenString = token.token; // Extract the token string from the object
+    const payload = jwt.verify(tokenString, secretkey); // Verify the token string
+
+    // console.log('🚀 ~ verifyToken ~ payload:', payload);
+
+    const tokenDoc = await prisma.token.findFirst({
+      where: {
+        token: tokenString,
+        type,
+        userId: payload.sub,
+        blacklisted: false,
+      },
+    });
+
+    // console.log('🚀 ~ verifyToken ~ tokenDoc:', tokenDoc); 
+
+    if (!tokenDoc) {
+      throw new Error('Token not found');
+    }
+
+    return tokenDoc;
+  } catch (error) {
+    console.error('Error verifying token:', error);
+    throw new Error('Token verification failed');
   }
-  return tokenDoc;
 };
 
 /**
