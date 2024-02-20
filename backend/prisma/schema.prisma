@@ -1,25 +1,11 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+//🧩Don't Edit this file.✨Generated in Tue Feb 20 2024 15:14:35 GMT+0500 (Pakistan Standard Time)✨
 
 generator client {
-  provider = "prisma-client-js"
+provider = "prisma-client-js"
 }
-
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-// schema.prisma
-
-model Category {
-  id                 Int      @id @default(autoincrement())
-  title              String
-  image              String?   
-  rank               Int?
-  parentCategoryId   Int?
-  parentCategory     Category? @relation("Subcategory", fields: [parentCategoryId], references: [id])
-  subcategories      Category[] @relation("Subcategory")
+provider = "postgresql"
+url      = env("DATABASE_URL")
 }
 
 model User {
@@ -64,3 +50,88 @@ model Token {
   updatedAt   DateTime      @updatedAt
 }
 
+// schema.prisma
+
+// Define the Category model
+model Category {
+  id            String         @id @unique @default(uuid())
+  title         String
+  image         String?   // Assuming the image is stored as a URL
+  rank          Int?      // Assuming rank is an integer
+
+  // Define the one-to-many relationship with Subcategory
+  subcategories Subcategory[]
+}
+
+// Define the Subcategory model
+model Subcategory {
+  id            String         @id @unique @default(uuid())
+  title      String
+  image      String?  // Assuming the image is stored as a URL
+
+  // Define the many-to-one relationship with Category
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+}
+
+model Product {
+  id          String        @id @default(uuid())
+  product_id       String?
+  store_id         String?
+  parent_id        String?
+  title            String?
+  handle           String?
+  vendor           String?
+  product_type     String?
+  tags             String?
+  body_html        String?
+  template_suffix  String?
+  published_scope  String?
+  image            String?
+  images           String?
+  option1          String?
+  option2          String?
+  option3          String?
+  options          String?
+  site_url         String?
+  created_at       DateTime?
+  updated_at       DateTime?
+
+  // Define the relation to product variants
+  variants         ProductVariant[]
+}
+
+
+
+model ProductVariant {
+  id          String        @id @default(uuid())
+  store_id           String
+  product_id         String
+  variant_id         String?
+  parent_variant_id  String?
+  title              String?
+  sku                String?
+  cost               Float?
+  price              Float?
+  compare_at_price   Float?
+  position           Int?
+  inventory_policy   String?
+  fulfillment_service String?
+  inventory_management String?
+  option1            String?
+  option2            String?
+  option3            String?
+  taxable            Boolean?
+  barcode            String?
+  weight             Float?
+  weight_unit        String?
+  inventory_item_id  String?
+  inventory_quantity Int?
+  requires_shipping  Boolean?
+  image_id           Int?
+  created_at         DateTime?
+  updated_at         DateTime?
+
+  // Define the relation to the product
+  product            Product  @relation(fields: [product_id], references: [id])
+}
