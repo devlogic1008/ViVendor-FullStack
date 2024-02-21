@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
  * @returns {Promise<User>}
  */
 const createUser = async (userBody) => {
-  const { email, password, ...userData } = userBody; // Extract email and password from userBody
+  const { email, password, role, ...userData } = userBody; // Extract email and password from userBody
 
   const existingUser = await prisma.user.findUnique({
     where: { email },
@@ -25,7 +25,7 @@ const createUser = async (userBody) => {
 
   // Create the user with the hashed password
   return prisma.user.create({
-    data: { ...userData, email, password: hashedPassword },
+    data: { ...userData, email, password: hashedPassword, role },
   });
 };
 

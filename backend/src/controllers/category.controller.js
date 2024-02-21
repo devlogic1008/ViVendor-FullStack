@@ -8,7 +8,7 @@ const createCategory = catchAsync(async (req, res) => {
   console.log('createCategory body', req.body);
   try {
     const category = await categoryService.createCategory(req.body);
-    console.log("🚀 ~ createCategory ~ category:", category)
+    // console.log("🚀 ~ createCategory ~ category:", category)
     if (!category) {
       res
         .status(httpStatus.BAD_REQUEST)

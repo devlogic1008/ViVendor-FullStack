@@ -54,28 +54,24 @@ const saveToken = async (token, userId, expires, type, blacklisted = false) => {
  */
 
 const verifyToken = async (token, type) => {
-  console.log('token', token, 'type', type);
-  console.log('token', typeof token, 'type', typeof type);
   const secretkey = config.jwt.secret;
-  console.log('🚀 ~ verifyToken ~ config: jtw secret: ', secretkey); 
 
   try {
-    // const payload = jwt.verify(token, secretkey);
-    const tokenString = token.token; // Extract the token string from the object
-    const payload = jwt.verify(tokenString, secretkey); // Verify the token string
+    // Extract the token string from the object
+    const tokenString = token.token;
 
-    // console.log('🚀 ~ verifyToken ~ payload:', payload);
+    // Verify the token string
+    const payload = jwt.verify(tokenString, secretkey);
 
+    // Query the database for the token
     const tokenDoc = await prisma.token.findFirst({
       where: {
         token: tokenString,
-        type,
+        type: type.toUpperCase(), // Ensure that type matches the expected token type
         userId: payload.sub,
         blacklisted: false,
       },
     });
-
-    // console.log('🚀 ~ verifyToken ~ tokenDoc:', tokenDoc); 
 
     if (!tokenDoc) {
       throw new Error('Token not found');

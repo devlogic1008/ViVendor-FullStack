@@ -8,6 +8,11 @@ provider = "postgresql"
 url      = env("DATABASE_URL")
 }
 
+enum RoleType {
+  USER 
+  ADMIN
+  // Add more roles if needed
+}
 model User {
   // Unique identifier for the user
   id            String         @id @unique @default(uuid())
@@ -27,6 +32,8 @@ model User {
   createdAt     DateTime       @default(now())
   // Timestamp for when the user was last updated
   updatedAt     DateTime       @updatedAt
+  // Role of the user
+  role          RoleType     @default(USER) 
 }
 
 // Define the available token types
@@ -57,8 +64,9 @@ model Category {
   id            String         @id @unique @default(uuid())
   title         String
   image         String?   // Assuming the image is stored as a URL
-  rank          Int?      // Assuming rank is an integer
-
+  rank          Int?    // Assuming the rank is an integer
+  parentId      String?   // Assuming parentId is a string
+     
   // Define the one-to-many relationship with Subcategory
   subcategories Subcategory[]
 }

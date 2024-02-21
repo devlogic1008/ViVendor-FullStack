@@ -81,6 +81,7 @@ const logout = async (refreshToken) => {
  * @param {string} refreshToken
  * @returns {Promise<Object>}
  */
+
 const refreshAuth = async (refreshToken) => {
   try {
     // Verify the refresh token using Prisma
@@ -88,7 +89,7 @@ const refreshAuth = async (refreshToken) => {
       refreshToken,
       tokenTypes.REFRESH
     );
-    console.log("🚀 ~ refreshAuth ~ refreshTokenDoc: line 91 file auth.service.js ", refreshTokenDoc)
+  
 
     // If refresh token not found, throw an error
     if (!refreshTokenDoc) {
@@ -96,7 +97,8 @@ const refreshAuth = async (refreshToken) => {
     }
 
     // Get the user associated with the refresh token using Prisma
-    const user = await userService.getUserById(refreshTokenDoc.user);
+    const user = await userService.getUserById(refreshTokenDoc.userId);
+   
 
     // If user not found, throw an error
     if (!user) {
@@ -104,19 +106,22 @@ const refreshAuth = async (refreshToken) => {
     }
 
     // Remove the refresh token
-        await refreshTokenDoc.remove();
-
-    // await tokenService.deleteToken(refreshTokenDoc.id);
+    await prisma.token.delete({
+      where: {
+        id: refreshTokenDoc.id,
+      },
+    });
 
     // Generate new authentication tokens using Prisma
-    return tokenService.generateAuthTokens(user);
+    return tokenService.generateAuthTokens(user.id);
   } catch (error) {
     // Throw an error with status code 401 if authentication fails
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');
+    throw new ApiError(
+      httpStatus.UNAUTHORIZED,
+      'Please authenticate here is the error: ' + error.message
+    );
   }
 };
-
-
 module.exports = {
   loginUserWithEmailAndPassword,
   logout,

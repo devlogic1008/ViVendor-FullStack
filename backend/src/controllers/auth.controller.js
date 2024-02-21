@@ -1,15 +1,24 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const Helper = require('../utils/Helper');
-const { authService, userService, tokenService } = require('../services');
+const {
+  authService,
+  userService,
+  tokenService,
+  emailService,
+} = require('../services');
 const api = require('../utils/messages');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
+// Register controller method to create a new user
 const register = catchAsync(async (req, res) => {
   // Create the user in the PostgreSQL database using Prisma
   try {
     const user = await userService.createUser(req.body);
-    const userId = user.id; // Extract user ID
-    const tokens = await tokenService.generateAuthTokens(userId); // Pass user ID
+
+    // const userId = user.id; // Extract user ID
+    // const tokens = await tokenService.generateAuthTokens(userId); // Pass user ID
 
     // Check if user creation was successful
     if (!user) {
@@ -19,7 +28,7 @@ const register = catchAsync(async (req, res) => {
     } else {
       res
         .status(httpStatus.OK)
-        .send(Helper.apiResponse(httpStatus.CREATED, user, tokens));
+        .send(Helper.apiResponse(httpStatus.CREATED, user));
     }
   } catch (error) {
     // Handle any errors that occur during user creation
@@ -35,31 +44,59 @@ const login = catchAsync(async (req, res) => {
   console.log('login body', req.body);
   const { email, password } = req.body;
   const user = await authService.loginUserWithEmailAndPassword(email, password);
-  const userId = user.id; // Extract user ID
-  const tokens = await tokenService.generateAuthTokens(userId); // Pass user ID
+  // const userId = user.id; // Extract user ID
+  // const tokens = await tokenService.generateAuthTokens(userId); // Pass user ID
   res.send({ user, tokens });
 });
 
+// Logout the user by blacklisting the refresh token
 const logout = catchAsync(async (req, res) => {
   await authService.logout(req.body.refreshToken);
   res.status(httpStatus.NO_CONTENT).send();
 });
+// Refresh the access token using the refresh token
 const refreshTokens = catchAsync(async (req, res) => {
   const tokens = await authService.refreshAuth(req.body);
   res.send({ ...tokens });
 });
 
+// Send verification email to the user
+const sendVerificationEmail = catchAsync(async (req, res) => {
+  console.log('sendVerificationEmail', req.body);
+  try {
+    const email = req.body.email;
+    // Generate verify email token
+    // const emailVerified = tokenService.generateVerifyEmailToken();  //add (req.user) in the function call
+
+    // Save verify email token to the user record in the database
+    // await prisma.user.update({
+    //   where: { id: req.user.id },
+    //   data: { emailVerified },
+    // });
+
+    // Send verification email
+    await emailService.sendVerificationEmail(email);  //send emailVerified in the function call to sendVerificationEmail
+
+    res.status(httpStatus.NO_CONTENT).send();
+  } catch (error) {
+    console.error('Error sending verification email:', error);
+    res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .send('Error sending verification email');
+  }
+});
+
+// Verify the user's email
 const verifyEmail = catchAsync(async (req, res) => {
   await authService.verifyEmail(req.query.token);
   res.status(httpStatus.NO_CONTENT).send();
 });
-
-
 
 module.exports = {
   register,
   login,
   logout,
   refreshTokens,
+  sendVerificationEmail,
   verifyEmail,
 };
