@@ -44,8 +44,8 @@ const login = catchAsync(async (req, res) => {
   console.log('login body', req.body);
   const { email, password } = req.body;
   const user = await authService.loginUserWithEmailAndPassword(email, password);
-  // const userId = user.id; // Extract user ID
-  // const tokens = await tokenService.generateAuthTokens(userId); // Pass user ID
+  const userId = user.id; // Extract user ID
+  const tokens = await tokenService.generateAuthTokens(userId); // Pass user ID
   res.send({ user, tokens });
 });
 
