@@ -52,27 +52,15 @@ model Token {
 
 // schema.prisma
 
-// Define the Category model
 model Category {
-  id            String         @id @unique @default(uuid())
-  title         String
-  image         String?   // Assuming the image is stored as a URL
-  rank          Int?      // Assuming rank is an integer
-
-  // Define the one-to-many relationship with Subcategory
-  subcategories Subcategory[]
+  id                 Int      @id @default(autoincrement())
+  title              String
+  image              String?   
+  rank               Int?
+  parentCategoryId   Int?
+  // parentCategory     Category? @relation("parentCategory", fields: [parentCategoryId], references: [id])
 }
 
-// Define the Subcategory model
-model Subcategory {
-  id            String         @id @unique @default(uuid())
-  title      String
-  image      String?  // Assuming the image is stored as a URL
-
-  // Define the many-to-one relationship with Category
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId String
-}
 
 model Product {
   id          String        @id @default(uuid())

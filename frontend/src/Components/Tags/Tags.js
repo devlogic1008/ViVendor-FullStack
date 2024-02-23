@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input, Button, Modal, Form, Typography, Tag, Row, Col, message, Divider, Breadcrumb } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
-import "./Tags.css"
+import "./Tags.css";
 const { Title } = Typography;
 const { Item: BreadcrumbItem } = Breadcrumb;
 
