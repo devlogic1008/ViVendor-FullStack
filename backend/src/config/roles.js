@@ -1,15 +1,16 @@
-const allRoles = {
-  user: ['all'],
-  admin: ['all'],
+const roles = {
+  superAdmin: {
+    permissions: ['read', 'write', 'edit', 'delete'],
+  },
+  admin: {
+    permissions: ['read', 'write'],
+  },
+  user: {
+    permissions: ['read', 'write'],
+  },
+  editor: {
+    permissions: ['read', 'edit'],
+  },
 };
 
-const roles = Object.keys(allRoles);
-const roleRights = new Map(Object.entries(allRoles));
-const findRole = (userRole) => {
-  return roles.find((role) => role === userRole);
-};
-module.exports = {
-  roles,
-  roleRights,
-  findRole,
-};
+module.exports = roles;

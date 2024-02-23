@@ -8,9 +8,26 @@ provider = "postgresql"
 url      = env("DATABASE_URL")
 }
 
+
+model Role {
+  id            String         @id @unique @default(uuid())
+  name        String      @unique
+  permissions Permission[]
+}
+
+model Permission {
+  id            String         @id @unique @default(uuid())
+  type  String  @unique
+  roles Role[]
+}
+
+
 enum RoleType {
-  USER 
-  ADMIN
+  super_admin
+  admin
+  super_user
+  user
+  editor
   // Add more roles if needed
 }
 model User {
@@ -33,14 +50,14 @@ model User {
   // Timestamp for when the user was last updated
   updatedAt     DateTime       @updatedAt
   // Role of the user
-  role          RoleType     @default(USER) 
+  role          RoleType     @default(user) 
 }
 
 // Define the available token types
 enum TokenType {
-  REFRESH
-  RESET_PASSWORD
-  VERIFY_EMAIL
+  refresh
+  reset_password
+  verify_email
   // Add more token types if needed
 }
 
@@ -102,8 +119,8 @@ model Product {
   option3          String?
   options          String?
   site_url         String?
-  created_at       DateTime?
-  updated_at       DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   // Define the relation to product variants
   variants         ProductVariant[]
@@ -137,8 +154,8 @@ model ProductVariant {
   inventory_quantity Int?
   requires_shipping  Boolean?
   image_id           Int?
-  created_at         DateTime?
-  updated_at         DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   // Define the relation to the product
   product            Product  @relation(fields: [product_id], references: [id])
