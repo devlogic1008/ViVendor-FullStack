@@ -13,8 +13,10 @@ const prisma = new PrismaClient();
 
 // Register controller method to create a new user
 const register = catchAsync(async (req, res) => {
+  console.log("🚀 ~ register ~ req:", req.body)
   // Create the user in the PostgreSQL database using Prisma
   try {
+    
     const user = await userService.createUser(req.body);
 
     // const userId = user.id; // Extract user ID
