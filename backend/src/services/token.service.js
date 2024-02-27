@@ -40,7 +40,7 @@ const saveToken = async (token, userId, expires, type, blacklisted = false) => {
       token,
       userId,
       expires: expires.toDate(),
-      type: 'REFRESH', // Or use the correct token type based on your application logic
+      type: type, // Or use the correct token type based on your application logic
       blacklisted,
     },
   });

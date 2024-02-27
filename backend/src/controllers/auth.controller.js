@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const Helper = require('../utils/Helper');
+const { validationResult } = require('express-validator');
 const {
   authService,
   userService,
@@ -13,15 +14,17 @@ const prisma = new PrismaClient();
 
 // Register controller method to create a new user
 const register = catchAsync(async (req, res) => {
-  console.log("🚀 ~ register ~ req:", req.body)
-  // Create the user in the PostgreSQL database using Prisma
   try {
-    
+    // Validate request body
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res
+        .status(400)
+        .json({ success: false, msg: 'Errors', errors: errors.array() });
+    }
+
     const user = await userService.createUser(req.body);
-
-    // const userId = user.id; // Extract user ID
-    // const tokens = await tokenService.generateAuthTokens(userId); // Pass user ID
-
+    
     // Check if user creation was successful
     if (!user) {
       res
@@ -77,7 +80,7 @@ const sendVerificationEmail = catchAsync(async (req, res) => {
     // });
 
     // Send verification email
-    await emailService.sendVerificationEmail(email);  //send emailVerified in the function call to sendVerificationEmail
+    await emailService.sendVerificationEmail(email); //send emailVerified in the function call to sendVerificationEmail
 
     res.status(httpStatus.NO_CONTENT).send();
   } catch (error) {

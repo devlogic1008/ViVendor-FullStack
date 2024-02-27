@@ -1,1 +1,1 @@
-module.exports.userRoleValidation = require("./userRole.validation")
+module.exports.validation = require('./validation');

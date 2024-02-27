@@ -84,7 +84,6 @@ model Token {
   @@map("tokens")
 }
 
-
 // Define the Category model
 model Category {
   id       String  @id @unique @default(uuid())

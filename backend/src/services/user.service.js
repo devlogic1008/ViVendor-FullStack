@@ -10,7 +10,18 @@ const prisma = new PrismaClient();
  * @returns {Promise<User>}
  */
 const createUser = async (userBody) => {
-  const { email, password, role, ...userData } = userBody; // Extract email and password from userBody
+  // fetching default role user from role model
+  const defaultUserRole = await prisma.role.findFirst({
+    where: {
+      name: 'user', // Assuming 'user' is the name of the default role
+    },
+  });
+  console.log('🚀 ~ createUser ~ defaultUserRole:', defaultUserRole);
+  if (!defaultUserRole) {
+    throw new Error('Default role "user" not found.');
+  }
+
+  const { email, password, ...userData } = userBody; // Extract email and password from userBody
 
   const existingUser = await prisma.user.findUnique({
     where: { email },
@@ -24,11 +35,19 @@ const createUser = async (userBody) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // Create the user with the hashed password
-  return prisma.user.create({
-    data: { ...userData, email, password: hashedPassword, role },
+  const user = await prisma.user.create({
+    data: {
+      ...userData,
+      email,
+      password: hashedPassword,
+      roles: {
+        create: [{ role: { connect: { id: defaultUserRole.id } } }],
+      },
+    },
   });
+  
+  return user;
 };
-
 
 /**
  * Query for users
