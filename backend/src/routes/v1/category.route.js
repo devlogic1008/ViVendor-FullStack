@@ -14,8 +14,10 @@ router.get('/get-category/:id', categoryController.getCategoryById);
  
 // Update category by ID
 router.put('/update-category/:id', categoryController.updateCategory);
+router.put('/update-sub-category/:id', categoryController.updateSubCategory);
 
 // Delete category by ID
 router.delete('/delete-category/:id', categoryController.deleteCategory);
+router.delete('/delete-sub-category/:id', categoryController.deleteSubCategory);
 
 module.exports = router;

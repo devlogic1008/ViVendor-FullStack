@@ -21,11 +21,20 @@ export const deleteCategory = createAsyncThunk('category/deleteCategory', async 
   return key;
 });
 
+export const deleteSubCategory = createAsyncThunk('category/deleteSubCategory', async (key) => {
+  await axios.delete(`http://localhost:5000/v1/category/delete-sub-category/${key}`);
+  return key;
+});
+
 export const createSubCategory = createAsyncThunk('category/createSubCategory', async ({ title, parentCategoryId }) => {
   const response = await axios.post('http://localhost:5000/v1/category/create-sub-category', { title, parentCategoryId });
   return response.data;
 });
 
+export const updateSubCategory = createAsyncThunk('category/updateSubCategory', async ({ key, formData }) => {
+  const response = await axios.put(`http://localhost:5000/v1/category/update-sub-category/${key}`, formData);
+  return response.data;
+});
 
 const categorySlice = createSlice({
   name: 'category',
@@ -66,7 +75,21 @@ const categorySlice = createSlice({
       })
       .addCase(createSubCategory.fulfilled, (state, action) => {
         state.categories.push(action.payload);
+      })
+      .addCase(deleteSubCategory.fulfilled, (state, action) => {
+        state.categories = state.categories.filter((category) => category.id !== action.payload);
+      })
+      .addCase(updateSubCategory.fulfilled, (state, action) => {
+        const updatedSubCategory = action.payload;
+        const updatedSubCategoryId = updatedSubCategory.id;
+
+        const updatedSubCategoryIndex = state.categories.findIndex((category) => category.id === updatedSubCategoryId);
+
+        if (updatedSubCategoryIndex !== -1) {
+          state.categories[updatedSubCategoryIndex] = updatedSubCategory;
+        }
       });
+
   },
 });
 

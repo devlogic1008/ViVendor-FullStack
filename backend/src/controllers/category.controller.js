@@ -32,21 +32,25 @@ const createCategory = async (req, res) => {
 const createSubCategory = async (req, res) => {
   try {
     const { title, parentCategoryId } = req.body;
+    console.log("🚀 ~ createSubCategory ~ title:", title);
 
-    // Assuming title is an array, join it into a single string
-    const subCategory = await prisma.category.create({
-      data: {
-        title: title.join(', '), // Assuming title is an array, join it into a single string
-        parentCategoryId: parentCategoryId,
-      },
-    });
+    // Assuming title is an array, create a new row for each element
+    for (const name of title) {
+      await prisma.category.create({
+        data: {
+          title: name,
+          parentCategoryId: parentCategoryId,
+        },
+      });
+    }
 
-    res.status(201).json(subCategory);
+    res.status(201).json({ message: 'Subcategories created successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 
 const getAllCategories = async (req, res) => {
@@ -128,7 +132,55 @@ const updateCategory = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+const updateSubCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, parentCategoryId } = req.body;
 
+    const updateData = { title, parentCategoryId };
+
+    // Check if image is provided
+    if (req.files && req.files.image) {
+      const file = req.files.image;
+
+      cloudinary.uploader.upload(file.tempFilePath, async (err, result) => {
+        if (err) {
+          console.error('Error uploading image to Cloudinary:', err);
+          return res.status(500).json({ error: 'Error uploading image to Cloudinary' });
+        }
+
+        updateData.image = result.url || '';
+
+        try {
+          const updatedSubCategory = await prisma.category.update({
+            where: {
+              id: parseInt(id),
+            },
+            data: updateData,
+          });
+
+          res.status(200).json(updatedSubCategory);
+        } catch (error) {
+          console.error('Error updating subcategory in database:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
+        }
+      });
+    } else {
+      // If image is not provided, update subcategory without image
+      const updatedSubCategory = await prisma.category.update({
+        where: {
+          id: parseInt(id),
+        },
+        data: updateData,
+      });
+
+      res.status(200).json(updatedSubCategory);
+    }
+  } catch (error) {
+    console.error('Error processing request:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 
 
@@ -150,6 +202,20 @@ const deleteCategory = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+const deleteSubCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await prisma.category.delete({
+      where: { id: parseInt(id) },
+    });
+
+    res.status(204).send();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 module.exports = {
   createCategory,
@@ -157,7 +223,9 @@ module.exports = {
   getCategoryById,
   updateCategory,
   deleteCategory,
-  createSubCategory
+  createSubCategory,
+  deleteSubCategory,
+  updateSubCategory
 };
 
 

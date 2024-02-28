@@ -1,264 +1,266 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, Select, Col, Row, Divider, Upload, message } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { Table, Button, Modal, Form, Input, Select, Col, Row, Divider, notification, Upload } from 'antd';
+import { EditOutlined, DeleteOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import Typography from 'antd/es/typography/Typography';
-import axios from 'axios';
-import "./Categories.css";
-import tops from "../../images/tops.png";
-import bottoms from "../../images/bottoms.png";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCategories, addCategory, updateCategory, deleteCategory, createSubCategory } from '../../Redux/Slices/CategorySlice';
+import './Categories.css';
 
 const Categories = () => {
-  const [category, setCategory] = useState('');
-  const [subcategories, setSubcategories] = useState([]);
-  const [newSubcategory, setNewSubcategory] = useState('');
-  const [categoriesList, setCategoriesList] = useState([]);
-  const [selectCategory, setSelectCategory] = useState([]);
-  const [tableData, setTableData] = useState([]);
+  const dispatch = useDispatch();
+  const categories = useSelector((state) => state.category.categories);
+  const status = useSelector((state) => state.category.status);
 
+  const [category, setCategory] = useState('');
+  const [tableData, setTableData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-  const [categoryImage, setCategoryImage] = useState('');
+  const [image, setImage] = useState(null);
+  const [selectCategory, setSelectCategory] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [subCategories, setSubCategories] = useState([]);
+  const [newSubCategory, setNewSubCategory] = useState('');
+  const [loadingModal, setLoadingModal] = useState(false);
+  const [expandedKeys, setExpandedKeys] = useState([]);
 
-  // State for subcategory editing
-  const [editingSubcategory, setEditingSubcategory] = useState(null);
-
-  // Fetch categories from the server on component mount
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    setTableData(
+      categories
+        .filter(category => !category.parentCategoryId) // Filter only parent categories
+        .map(category => ({
+          key: category.id,
+          category: category.title,
+          image: category.image,
+          rank: category.rank,
+          subCategories: categories.filter(subCategory => subCategory.parentCategoryId === category.id),
+        }))
+    );
+  }, [categories]);
 
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/v1/category/get-all-categories');
-      setCategoriesList(response.data);
-      setTableData(response.data);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-  };
+  useEffect(() => {
+    setTableData((prevTableData) =>
+      [...prevTableData].sort((a, b) => a.rank - b.rank)
+    );
+  }, [categories]);
 
-  const handleCategoryChange = (value) => {
-    setCategory(value);
-  };
+  const parentCategoriesList = categories
+    .filter(category => !category.parentCategoryId)
+    .map(category => ({
+      id: category.id,
+      title: category.title,
+    }));
+
   const handleSelectCategoryChange = (value) => {
     setSelectCategory(value);
   };
-  const handleAddSubcategory = () => {
-    if (newSubcategory.trim() !== '') {
-      setSubcategories([...subcategories, { key: Date.now().toString(), title: newSubcategory, image: '' }]);
-      setNewSubcategory('');
+  
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchCategories());
     }
-  };
-  const normFile = (e) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
-  };
+  }, [status, dispatch]);
+
+
   const handleSaveCategory = async () => {
     if (category.trim() !== '') {
       try {
-        const response = await axios.post('http://localhost:5000/v1/category/create-category', {
-          title: category,
-          image: categoryImage,
-          subcategories: subcategories.map((sub) => ({ title: sub.title })),
+        await dispatch(addCategory({ title: category }));
+
+        notification.success({
+          message: 'Category Saved',
+          description: 'Category has been successfully saved.',
         });
-
-        const newCategory = response.data;
-
-        const formattedCategory = {
-          key: newCategory.id.toString(),  // Make sure 'id' is available
-          title: newCategory.title,
-          image: newCategory.image,
-          subcategories: newCategory.subcategories || [],
-        };
-
-        setTableData([...tableData, formattedCategory]);
-        setCategoriesList([...categoriesList, formattedCategory]);  // Change 'category' to 'formattedCategory' here
         setCategory('');
-        setSubcategories([]);
-        setCategoryImage('');
-        message.success('Category created successfully');
       } catch (error) {
-        console.error('Error creating category:', error);
-        message.error('Error creating category');
+        console.error('Error saving category:', error);
+        notification.error({
+          message: 'Error',
+          description: 'Failed to save category. Please try again.',
+        });
       }
     }
   };
 
-  // New function for saving subcategories
-  const handleSaveSubcategory = () => {
-    // Implement logic for saving subcategories
-    // You can use a similar approach as in handleSaveCategory
-  };
-
-  const handleEditCategory = async (record) => {
-    try {
-      const response = await axios.get(`http://localhost:5000/v1/category/get-category/${record.id}`);
-      const editingCategoryData = response.data;
-
-      setEditingCategory(editingCategoryData);
-      setModalVisible(true);
-    } catch (error) {
-      console.error('Error fetching category details for editing:', error);
-    }
-  };
-
-  const handleDeleteCategory = async (categoryId) => {
-    try {
-      console.log('Deleting category with id:', categoryId);
-
-      await axios.delete(`http://localhost:5000/v1/category/delete-category/${categoryId}`);
-
-      console.log('Category deleted successfully');
-
-      const updatedData = tableData.filter((item) => item.key !== categoryId);
-      console.log('Updated data after deletion:', updatedData);
-
-      setTableData(updatedData);
-
-      const updatedCategoriesList = categoriesList.filter((category) => category.id !== categoryId);
-      console.log('Updated categoriesList after deletion:', updatedCategoriesList);
-
-      setCategoriesList(updatedCategoriesList);
-
-      message.success('Category deleted successfully');
-    } catch (error) {
-      console.error('Error deleting category:', error);
-      message.error('Error deleting category');
-    }
-  };
-
-
-  const handleEditSubcategory = (parentRecord, subRecord) => {
-    setEditingSubcategory({
-      parentRecord,
-      subRecord,
-    });
+  const handleEditCategory = (record) => {
+    setEditingCategory(record);
     setModalVisible(true);
   };
 
-  const handleDeleteSubcategory = (parentRecord, subRecord) => {
-    const updatedSubcategories = parentRecord.subcategories.filter((sub) => sub.key !== subRecord.key);
-    const updatedParentRecord = { ...parentRecord, subcategories: updatedSubcategories };
-    const updatedData = tableData.map((item) => (item.key === parentRecord.key ? updatedParentRecord : item));
-    setTableData(updatedData);
-  };
-  const handleModalOk = async () => {
+  const handleDeleteCategory = async (record) => {
     try {
-      // Update category data on the client side
-      const updatedCategoryData = {
-        ...editingCategory,
-        image: categoryImage, // Update with the new image data
-        // reank:
-      };
-
-      const updatedTableData = tableData.map((item) =>
-        item.key === editingCategory.id.toString() ? { ...item, image: categoryImage } : item
-      );
-
-      setTableData(updatedTableData);
-      setModalVisible(false);
-      setEditingCategory(null);
-      setCategoryImage('');
-
-      // Send updated category data to the server for persistence
-      await axios.put(`http://localhost:5000/v1/category/update-category/${editingCategory.id}`, {
-        title: updatedCategoryData.title,
-        image: updatedCategoryData.image,
-        rank: updatedCategoryData.rank,
-        parentCategoryId: updatedCategoryData.parentCategoryId,
-        // Include other fields as needed
+      await dispatch(deleteCategory(record.key));
+      notification.success({
+        message: 'Category Deleted',
+        description: 'Category has been successfully deleted.',
       });
-
-      message.success('Category updated successfully');
     } catch (error) {
-      console.error('Error updating category:', error);
-      message.error('Error updating category');
+      console.error('Error deleting category:', error);
+      notification.error({
+        message: 'Error',
+        description: 'Failed to delete category. Please try again.',
+      });
     }
   };
 
+  const handleModalOk = async () => {
+    try {
+      setLoadingModal(true);
+
+      if (editingCategory) {
+        const { key, category, rank } = editingCategory;
+        const formData = new FormData();
+        formData.append('title', category);
+        formData.append('rank', rank);
+        if (image) {
+          formData.append('image', image);
+        }
+
+        await dispatch(updateCategory({ key, formData }));
+        notification.success({
+          message: 'Category Updated',
+          description: 'Category has been successfully updated.',
+        });
+      }
+
+      setModalVisible(false);
+      setEditingCategory(null);
+      setImage(null);
+    } catch (error) {
+      console.error('Error handling category:', error);
+      notification.error({
+        message: 'Error',
+        description: 'Failed to handle category. Please try again.',
+      });
+    } finally {
+      setLoadingModal(false);
+    }
+  };
 
   const handleModalCancel = () => {
     setModalVisible(false);
     setEditingCategory(null);
-    setCategoryImage('');
+    setImage(null);
   };
 
+  const handleGenerateSubCategory = () => {
+    if (newSubCategory.trim() !== '') {
+      setSubCategories(prevSubCategories => [...prevSubCategories, newSubCategory]);
+      setNewSubCategory('');
+    }
+  };
 
-  const handleEditSubcategoryChange = (value) => {
-    // Handle changes in subcategory title during editing
-    const updatedSubcategories = editingSubcategory.parentRecord.subcategories.map((sub) =>
-      sub.key === editingSubcategory.subRecord.key ? { ...sub, title: value } : sub
-    );
-    const updatedParentRecord = { ...editingSubcategory.parentRecord, subcategories: updatedSubcategories };
-    const updatedData = tableData.map((item) => (item.key === editingSubcategory.parentRecord.key ? updatedParentRecord : item));
-    setTableData(updatedData);
+  const handleSaveSubCategory = async () => {
+    if (subCategories.length > 0 && selectCategory) {
+      try {
+        await dispatch(createSubCategory({ title: subCategories, parentCategoryId: selectCategory }));
+
+        notification.success({
+          message: 'Sub Category Saved',
+          description: 'Sub Category has been successfully saved.',
+        });
+        setSubCategories([]);
+        setNewSubCategory('');
+      } catch (error) {
+        console.error('Error saving subcategory:', error);
+        notification.error({
+          message: 'Error',
+          description: 'Failed to save subcategory. Please try again.',
+        });
+      }
+    } else {
+      notification.warning({
+        message: 'Validation Error',
+        description: 'Please select a category and add at least one subcategory.',
+      });
+    }
+  };
+
+  const handleEditSubCategory = (parentCategory, subCategory) => {
+    // Handle edit subcategory action
+    console.log(`Edit subcategory ${subCategory.title} of category ${parentCategory.category}`);
+  };
+
+  const handleDeleteSubCategory = (parentCategory, subCategory) => {
+    // Handle delete subcategory action
+    console.log(`Delete subcategory ${subCategory.title} of category ${parentCategory.category}`);
+  };
+
+  const handleExpandRowToggle = (expanded, record) => {
+    const keys = [...expandedKeys];
+
+    if (expanded) {
+      keys.push(record.key);
+    } else {
+      const index = keys.indexOf(record.key);
+      if (index !== -1) {
+        keys.splice(index, 1);
+      }
+    }
+
+    setExpandedKeys(keys);
   };
   const columns = [
     {
       title: 'Image',
       dataIndex: 'image',
       key: 'image',
-      render: (text, record) => (
-        <img src={editingCategory ? categoryImage : record.image} alt="Category" style={{ width: '50px' }} />
-      ),
+      render: (text, record) => {
+        const imageUrl = typeof record.image === 'string' ? record.image.replace(/\\/g, '/') : null;
+        return imageUrl ? <img src={`${imageUrl}`} style={{ width: '50px' }} /> : null;
+      },
     },
-
-    { title: 'Title', dataIndex: 'title', key: 'title' }, // Change 'category' to 'title' here
+    { title: 'Title', dataIndex: 'category', key: 'category' },
+    { title: 'Rank', dataIndex: 'rank', key: 'rank' },
     {
       title: 'Action',
       key: 'action',
       render: (text, record) => (
         <span>
           <Button type='primary' size='small' icon={<EditOutlined />} onClick={() => handleEditCategory(record)}></Button>
-          <Button
-            type='primary'
-            size='small'
-            className='delete-button'
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => handleDeleteCategory(record.id)}  // Assuming 'id' is the correct identifier
-          ></Button>
-
+          <Button type='primary' size='small' className='delete-button' danger icon={<DeleteOutlined />} onClick={() => handleDeleteCategory(record)}></Button>
         </span>
       ),
     },
   ];
+  
 
   const expandedRowRender = (record) => {
-    const subcategoriesColumns = [
-      { title: 'Image', dataIndex: 'image', key: 'image', render: (text) => <img src={bottoms} alt="Subcategory" style={{ width: '30px' }} /> },
+    const subCategoriesColumns = [
       { title: 'Title', dataIndex: 'title', key: 'title' },
       {
         title: 'Action',
         key: 'action',
-        render: (text, subRecord) => (
+        render: (text, subCategory) => (
           <span>
-            <Button type='primary' size='small' icon={<EditOutlined />} onClick={() => handleEditSubcategory(record, subRecord)}></Button>
-            <Button size='small' className='delete-button' type='primary' danger icon={<DeleteOutlined />} onClick={() => handleDeleteSubcategory(record, subRecord)}></Button>
+            <Button type='primary' size='small' icon={<EditOutlined />} onClick={() => handleEditSubCategory(record, subCategory)}></Button>
+            <Button type='primary' size='small' className='delete-button' danger icon={<DeleteOutlined />} onClick={() => handleDeleteSubCategory(record, subCategory)}></Button>
           </span>
         ),
       },
     ];
-
-    return <Table columns={subcategoriesColumns} dataSource={record.subcategories} pagination={false} />;
+  
+    return (
+      <Table
+        columns={subCategoriesColumns}
+        dataSource={record.subCategories}
+        pagination={false}
+        rowKey="id"
+      />
+    );
   };
+  
 
   return (
     <div className='categories_main'>
       <h2>Categories</h2>
-
       <Row gutter={[24, 8]}>
         <Divider />
-        {/* Add Category Section */}
         <Col span={12} xs={24} sm={24} md={12} lg={12} >
           <div className='category'>
             <Form layout="vertical" >
               <Form.Item className='add_category' >
                 <Typography className='category_Text'  >Add Category:</Typography>
                 <Input placeholder='Category' className='category_input' value={category} onChange={(e) => setCategory(e.target.value)} />
-
               </Form.Item>
               <Form.Item>
                 <Button type="primary" onClick={handleSaveCategory}>
@@ -268,77 +270,74 @@ const Categories = () => {
             </Form>
           </div>
         </Col>
-
-        {/* Add Subcategory Section */}
         <Col span={12} xs={24} sm={24} md={12} lg={12}>
           <div className='category'>
             <Form layout="vertical">
               <Form.Item >
-                <Typography className='select_sub_category'  >Select Category:</Typography>
-                <Select className='select_cat' value={selectCategory} placeholder='Select Category' onChange={handleSelectCategoryChange}>
-                  {categoriesList.map((option) => (
-                    <Select.Option key={option.id} value={option.title}>
+                <Typography  className='select_sub_category'>Select Category :</Typography>
+                <Select className='select_cat' value={selectCategory} placeholder='Select Category' onChange={handleSelectCategoryChange} >
+                  {parentCategoriesList.map((option) => (
+                    <Select.Option key={option.id} value={option.id}>
                       {option.title}
                     </Select.Option>
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item >
-                <Typography className='subcategory_typo' >Sub Category:</Typography>
-                {subcategories.map((sub, index) => (
-                  <p key={index}>  <Input className='sub_input' value={sub.title} onChange={(e) => handleEditSubcategoryChange(e.target.value)} /></p>
-                ))}
-                <p>
-                  <Input
-                    className='sub_input'
-                    value={newSubcategory}
-                    onChange={(e) => setNewSubcategory(e.target.value)}
-                    placeholder=" Sub category"
-                  />
-                  <Button type='primary' className='delete_btn' icon={<PlusOutlined />} onClick={handleAddSubcategory}>
-                  </Button>
-                </p>
+              <label>Sub Category :</label>
+              {subCategories.map((subCategory, index) => (
+                <Form.Item key={index} className='title'>
+                  <Input type='text' value={subCategory}  />
+                </Form.Item>
+              ))}
+              <Form.Item className='title'>
+                <Input type='text' value={newSubCategory} onChange={(e) => setNewSubCategory(e.target.value)} style={{ width: '50%' }} />
+                <Button type='primary' className='delete_btn' icon={<PlusOutlined />} onClick={handleGenerateSubCategory}></Button>
               </Form.Item>
-              <Button type="primary" onClick={handleSaveCategory}>
-                Save
+              <Button type="primary" loading={loading} onClick={handleSaveSubCategory}>
+                Save 
               </Button>
             </Form>
           </div>
         </Col>
       </Row>
-
-      {/* Expandable Table */}
       <Table
         className='category_table'
         columns={columns}
         dataSource={tableData}
-        expandable={{ expandedRowRender }}
+        expandable={{ expandedRowRender, expandedRowKeys: expandedKeys, onExpand: handleExpandRowToggle }}
       />
-
-      {/* Edit Category Modal */}
-
       <Modal
         title={`Edit ${editingCategory ? 'Category' : 'Add Category'}`}
         visible={modalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
+        confirmLoading={loadingModal}
       >
-        <Form initialValues={editingCategory}>
-          <Form.Item className='title' name="title" label="Title">
-            <Input type='text' />
+        <Form>
+          <Form.Item >
+          <Typography className='category_Text'  >Title:</Typography>
+            <Input type='text' value={editingCategory ? editingCategory.category : ''} onChange={(e) => setEditingCategory({ ...editingCategory, category: e.target.value })} />
           </Form.Item>
-
-          <Form.Item name="categoryImage" label="" valuePropName="fileList" getValueFromEvent={normFile}>
-            <Upload className='thumbnail' name="logo" listType="picture" beforeUpload={() => false}>
-              <Button className='upload_btn' icon={<UploadOutlined />}>Click to upload</Button>
+          <Form.Item >
+          <Typography className='category_Text'  >Image:</Typography>
+            <Upload 
+              name="image"
+              listType="picture"
+              showUploadList={true}
+              beforeUpload={(file) => {
+                setImage(file);
+                return false; // Prevent upload
+              }}
+            >
+              <Button icon={<UploadOutlined />}>Select Thumbnail</Button>
             </Upload>
           </Form.Item>
-          <Form.Item className='rank' name="rank" label="Rank">
-            <Input type='number' />
+          <Form.Item className='rank'>
+          <Typography className='category_Text'  >Rank:</Typography>
+            <Input type='number' value={editingCategory ? editingCategory.rank : ''} onChange={(e) => setEditingCategory({ ...editingCategory, rank: e.target.value })} />
           </Form.Item>
         </Form>
       </Modal>
-
     </div>
   );
 };
