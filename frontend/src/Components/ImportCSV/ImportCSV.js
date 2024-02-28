@@ -115,7 +115,7 @@ const ImportCSV = () => {
       <div >
       
         <div className='btn_end'>
-          <Button type="primary" className='upload_btn'  ghost  onClick={showModal}>
+          <Button type="primary" className='upload_btn_2'  ghost  onClick={showModal}>
             Upload Product csv
           </Button>
           <Button type="primary">View Sample csv</Button>

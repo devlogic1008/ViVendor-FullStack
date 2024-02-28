@@ -14,8 +14,27 @@ const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const path = require('path');
+
+// ----------------------------------------------
+const fileUload=require('express-fileupload')
+// ---------------------------------------------------
 
 const app = express();
+
+app.use(fileUload({
+  useTempFiles:true
+}))
+
+
+
+
+
+
+
+
+
+
 
 // set security HTTP headers
 app.use(helmet());
@@ -26,6 +45,8 @@ app.use(morgan('dev'));
 
 // parse urlencoded request body
 // app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
+
 
 app.use(bodyParser.json({ limit: '50mb' }));
 

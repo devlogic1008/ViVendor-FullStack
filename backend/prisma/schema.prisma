@@ -55,11 +55,19 @@ model Token {
 model Category {
   id                 Int      @id @default(autoincrement())
   title              String
-  image              String?   
-  rank               Int?
+  image              String?  
+  rank               Int?     
   parentCategoryId   Int?
-  // parentCategory     Category? @relation("parentCategory", fields: [parentCategoryId], references: [id])
+  created_at       DateTime?
+  updated_at       DateTime?
 }
+model Tag {
+  id                 Int      @id @default(autoincrement())
+  title              String
+   created_at       DateTime?
+  updated_at       DateTime?
+}
+
 
 
 model Product {
