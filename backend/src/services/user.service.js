@@ -9,27 +9,35 @@ const prisma = new PrismaClient();
  * @param {Object} userBody
  * @returns {Promise<User>}
  */
+
 const createUser = async (userBody) => {
-  // fetching default role user from role model
-  const defaultUserRole = await prisma.role.findFirst({
+  const { email, password, role, ...userData } = userBody;
+
+  // finding requested role from role model
+  const selectedRole = await prisma.role.findFirst({
     where: {
-      name: 'user', // Assuming 'user' is the name of the default role
+      name: role, // Use the provided role name to find the role
     },
   });
-  console.log('🚀 ~ createUser ~ defaultUserRole:', defaultUserRole);
-  if (!defaultUserRole) {
-    throw new Error('Default role "user" not found.');
+  if (!selectedRole) {
+    throw new Error('"user" role not found.');
   }
-
-  const { email, password, ...userData } = userBody; // Extract email and password from userBody
-
-  const existingUser = await prisma.user.findUnique({
-    where: { email },
+  const getPermissions = await prisma.permission.findFirst({
+    where: {
+      name: permission, // Use the provided role name to find the role
+    },
   });
-
-  if (existingUser) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+  if (!getPermissions) {
+    throw new Error('"user" role not found.');
   }
+
+  // const existingUser = await prisma.user.findUnique({
+  //   where: { email },
+  // });
+
+  // if (existingUser) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+  // }
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -41,11 +49,20 @@ const createUser = async (userBody) => {
       email,
       password: hashedPassword,
       roles: {
+        create: [{ role: { connect: { id: selectedRole.id } } }],
+      },
+      permissions: {
         create: [{ role: { connect: { id: defaultUserRole.id } } }],
       },
+      // permissions: {
+      //   // Create permissions for the user
+      //   create: permissions.map((permissionId) => ({
+      //     permission: { connect: { id: permissionId } },
+      //   })),
+      // },
     },
   });
-  
+
   return user;
 };
 

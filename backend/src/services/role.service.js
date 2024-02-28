@@ -1,6 +1,8 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const { validationResult } = require('express-validator');
+const ApiError = require('../utils/ApiError');
+// const Helper = require('../utils/Helper');
+const httpStatus = require('http-status');
 
 const createRole = async (userBody) => {
   const { name } = userBody; // Extract name form req body

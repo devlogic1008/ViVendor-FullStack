@@ -3,6 +3,7 @@ const authRoute = require('./auth.route');
 const categoryRoute = require('./category.route');
 const userRoute = require('./user.route');
 const roleRoute = require('./role.route');
+const permissionRoute = require('./permission.route');
 const router = express.Router();
 
 const defaultRoutes = [
@@ -19,8 +20,12 @@ const defaultRoutes = [
     route: userRoute,
   },
   {
-    path: '/user-role',
+    path: '/role',
     route: roleRoute,
+  },
+  {
+    path: '/permission',
+    route: permissionRoute,
   },
 ];
 defaultRoutes.forEach((route) => {

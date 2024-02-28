@@ -19,6 +19,15 @@ module.exports = {
       saveSuccess: 'Post Saved Successfully',
       deleteSuccess: 'Role Deleted Successfully',
     },
+    permission: {
+      storeSuccess: 'Role Stored Successfully',
+      storeError: 'Unable to store Role',
+      NotFound: 'Role Not Found',
+      updateSuccess: 'Role Updated Successfully',
+      updateError: 'Unable to update Role',
+      saveSuccess: 'Post Saved Successfully',
+      deleteSuccess: 'Role Deleted Successfully',
+    },
     auth: {
       loginSuccess: 'User Logged in Successfully',
       loginError: 'Unable to login User',

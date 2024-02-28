@@ -1,13 +1,12 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
 const httpStatus = require('http-status');
 const { validationResult } = require('express-validator');
 const catchAsync = require('../utils/catchAsync');
 const Helper = require('../utils/Helper');
-const { roleService } = require('../services');
+const { permissionService } = require('../services');
 
 // Function to create a new role
-const createRole = catchAsync(async (req, res) => {
+const createPermission = catchAsync(async (req, res) => {
+  // console.log("🚀 ~ createPermission ~ req:", req.body)
   try {
     // Validate request body
     const errors = validationResult(req);
@@ -16,15 +15,17 @@ const createRole = catchAsync(async (req, res) => {
         .status(400)
         .json({ success: false, msg: 'Errors', errors: errors.array() });
     }
-    const role = await roleService.createRole(req.body);
-    if (!role) {
+    const permission = await permissionService.createPermission(req.body);
+    if (!permission) {
       res
         .status(httpStatus.BAD_REQUEST)
-        .send(Helper.apiResponse(httpStatus.BAD_REQUEST, api.role.storeError));
+        .send(
+          Helper.apiResponse(httpStatus.BAD_REQUEST, api.permission.storeError)
+        );
     } else {
       res
         .status(httpStatus.OK)
-        .send(Helper.apiResponse(httpStatus.CREATED, role));
+        .send(Helper.apiResponse(httpStatus.CREATED, permission));
     }
   } catch (error) {
     console.error('Error creating role:', error);
@@ -35,11 +36,11 @@ const createRole = catchAsync(async (req, res) => {
 });
 
 // Function to get a role by its ID
-const getRoleById = catchAsync(async (req, res) => {
-  console.log('get id by query ', req.query.id);
+const getPermissionById = catchAsync(async (req, res) => {
+  // console.log('get id by query ', req.query.id);
   try {
-    const role = await roleService.getRoleById(req.query.id);
-    return res.status(httpStatus.OK).json(role);
+    const permission = await permissionService.getPermissionById(req.query.id);
+    return res.status(httpStatus.OK).json(permission);
   } catch (error) {
     console.error('Error getting role by ID:', error);
     return res
@@ -49,11 +50,11 @@ const getRoleById = catchAsync(async (req, res) => {
 });
 
 // Function to get all roles
-const getAllRoles = catchAsync(async (req, res) => {
-  console.log('get all role', req);
+const getAllPermission = catchAsync(async (req, res) => {
+  // console.log('get all role', req);
   try {
-    const roles = await roleService.getAllRoles();
-    return res.status(httpStatus.OK).json(roles);
+    const permissions = await permissionService.getAllPermission();
+    return res.status(httpStatus.OK).json(permissions);
   } catch (error) {
     console.error('Error getting all roles:', error);
     return res
@@ -63,7 +64,7 @@ const getAllRoles = catchAsync(async (req, res) => {
 });
 
 module.exports = {
-  createRole,
-  getRoleById,
-  getAllRoles,
+  createPermission,
+  getPermissionById,
+  getAllPermission,
 };
