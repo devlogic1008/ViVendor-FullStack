@@ -24,7 +24,8 @@ const register = catchAsync(async (req, res) => {
     }
 
     const user = await userService.createUser(req.body);
-    
+    console.log('🚀 ~ register ~ user:', user);
+
     // Check if user creation was successful
     if (!user) {
       res

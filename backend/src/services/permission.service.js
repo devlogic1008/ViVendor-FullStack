@@ -6,9 +6,22 @@ const httpStatus = require('http-status');
 
 const createPermission = async (userBody) => {
   const { name } = userBody; // Extract name form req body
-  return prisma.permission.create({
-    data: { name },
+
+  // Check if the permission already exists
+  const existingPermission = await prisma.permission.findFirst({
+    where: { name: name },
   });
+
+  if (existingPermission) {
+    throw new ApiError(httpStatus[403], `Permission "${name}" already exists.`);
+  }
+
+  // Create the permission
+  const permission = await prisma.permission.create({
+    data: { name: name },
+  });
+
+  return permission;
 };
 
 // Function to get a role by its ID

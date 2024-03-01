@@ -13,36 +13,35 @@ const prisma = new PrismaClient();
 const createUser = async (userBody) => {
   const { email, password, role, ...userData } = userBody;
 
-  // finding requested role from role model
+  // Find the requested role from the role model
   const selectedRole = await prisma.role.findFirst({
     where: {
-      name: role, // Use the provided role name to find the role
+      name: role,
     },
   });
   if (!selectedRole) {
-    throw new Error('"user" role not found.');
-  }
-  const getPermissions = await prisma.permission.findFirst({
-    where: {
-      name: permission, // Use the provided role name to find the role
-    },
-  });
-  if (!getPermissions) {
-    throw new Error('"user" role not found.');
+    throw new ApiError(`Role "${role}" not found.`);
   }
 
-  // const existingUser = await prisma.user.findUnique({
-  //   where: { email },
-  // });
-
-  // if (existingUser) {
-  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  // }
+  // Get permissions based on the role
+  let userPermissions = [];
+  if (role === 'admin') {
+    userPermissions = await prisma.permission.findMany();
+  } else if (role === 'user') {
+    // For a user role, assign only specific permissions (e.g., read and write)
+    userPermissions = await prisma.permission.findMany({
+      where: {
+        name: { in: ['create', 'read'] },
+      },
+    });
+    console.log('🚀 ~ createUser ~ permissions:', userPermissions);
+  }
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Create the user with the hashed password
+  // Create the user with the hashed password and assigned permissions
+  // Create the user with the hashed password and assigned permissions
   const user = await prisma.user.create({
     data: {
       ...userData,
@@ -52,16 +51,14 @@ const createUser = async (userBody) => {
         create: [{ role: { connect: { id: selectedRole.id } } }],
       },
       permissions: {
-        create: [{ role: { connect: { id: defaultUserRole.id } } }],
+        create: userPermissions.map((permission) => ({
+          permission: { connect: { id: permission.id } },
+        })),
       },
-      // permissions: {
-      //   // Create permissions for the user
-      //   create: permissions.map((permissionId) => ({
-      //     permission: { connect: { id: permissionId } },
-      //   })),
-      // },
     },
   });
+
+  // console.log('Here is new user data:', user);
 
   return user;
 };

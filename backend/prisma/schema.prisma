@@ -57,7 +57,7 @@ model userPermissions {
   id          String     @id @unique @default(uuid())
   user        User       @relation(fields: [userId], references: [id])
   userId      String
-  permision   Permission @relation(fields: [permisionId], references: [id])
+  permission  Permission @relation(fields: [permisionId], references: [id])
   permisionId String
 }
 
