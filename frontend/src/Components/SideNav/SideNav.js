@@ -144,7 +144,7 @@ const SideNav = () => {
 
             </Menu.SubMenu>
 
-            <Menu.Item style={{ marginTop: '70%' }} key="11" icon={<FileOutlined />}>
+            <Menu.Item style={{ marginTop: '40%' }} key="11" icon={<FileOutlined />}>
               <Link to="/store-settings">Store Settings</Link>
             </Menu.Item>
             <Menu.Item key="12" icon={<TeamOutlined />}>

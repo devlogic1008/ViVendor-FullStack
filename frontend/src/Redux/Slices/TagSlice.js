@@ -3,19 +3,19 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const fetchTags = createAsyncThunk('tags/fetchTags', async () => {
-  const response = await axios.get('http://localhost:5000/v1/tag/getAllTags');
+  const response = await axios.get('http://localhost:5000/v1/tag/tags');
   return response.data;
 });
 
 export const addTag = createAsyncThunk('tag/addTag', async (TagData) => {
-  const response = await axios.post('http://localhost:5000/v1/tag/createTag', TagData);
+  const response = await axios.post('http://localhost:5000/v1/tag/tags', TagData);
   return response.data;
 });
 
 
 
 export const deleteTag = createAsyncThunk('tag/deleteTag', async (key) => {
-    await axios.delete(`http://localhost:5000/v1/tag/deleteTag/${key}`);
+    await axios.delete(`http://localhost:5000/v1/tag/tags/${key}`);
     return key;
   });
 

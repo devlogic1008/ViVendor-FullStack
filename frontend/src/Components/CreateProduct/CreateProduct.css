@@ -7,6 +7,9 @@
     padding: 20px;
     margin-top: 20px;
 }
+.status{
+    margin-top: 10px;
+}
 
 
 .ant-col-24.ant-form-item-label{
@@ -26,9 +29,14 @@
 .discard_btn{
     margin-right: 2px;
 }
-.product_images{
+.product_images {
     margin-top: 4%;
+    border: 1px solid #ddd;  /* Add your preferred border style */
+    width: 100%;
+    padding: 20px;
+    background-color: white;
 }
+
 .pricing{
     font-weight: bold;
     margin-top: 4%;
@@ -38,8 +46,8 @@
     margin-top: 20px;
 }
 
-.cost_input{
-    margin-top: -10%;
+.cost_input {
+    margin-top: 1%;
 }
 .attribtes{
     display: flex;
@@ -78,3 +86,8 @@
     }
 
 }
+.new-line-checkbox {
+    display: block;
+  
+    
+  }

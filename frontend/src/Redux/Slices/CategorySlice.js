@@ -2,38 +2,38 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const fetchCategories = createAsyncThunk('category/fetchCategories', async () => {
-  const response = await axios.get('http://localhost:5000/v1/category/get-all-categories');
+  const response = await axios.get('http://localhost:5000/v1/category/categories');
   return response.data;
 });
 
 export const addCategory = createAsyncThunk('category/addCategory', async (categoryData) => {
-  const response = await axios.post('http://localhost:5000/v1/category/create-category', categoryData);
+  const response = await axios.post('http://localhost:5000/v1/category/categories', categoryData);
   return response.data;
 });
 
 export const updateCategory = createAsyncThunk('category/updateCategory', async ({ key, formData }) => {
-  const response = await axios.put(`http://localhost:5000/v1/category/update-category/${key}`, formData);
+  const response = await axios.put(`http://localhost:5000/v1/category/categories/${key}`, formData);
   return response.data;
 });
 
 export const deleteCategory = createAsyncThunk('category/deleteCategory', async (key) => {
-  await axios.delete(`http://localhost:5000/v1/category/delete-category/${key}`);
+  await axios.delete(`http://localhost:5000/v1/category/categories/${key}`);
   return key;
 });
 
-export const deleteSubCategory = createAsyncThunk('category/deleteSubCategory', async (key) => {
-  await axios.delete(`http://localhost:5000/v1/category/delete-sub-category/${key}`);
-  return key;
-});
 
 export const createSubCategory = createAsyncThunk('category/createSubCategory', async ({ title, parentCategoryId }) => {
-  const response = await axios.post('http://localhost:5000/v1/category/create-sub-category', { title, parentCategoryId });
+  const response = await axios.post('http://localhost:5000/v1/category/sub-categories', { title, parentCategoryId });
   return response.data;
 });
 
 export const updateSubCategory = createAsyncThunk('category/updateSubCategory', async ({ key, formData }) => {
-  const response = await axios.put(`http://localhost:5000/v1/category/update-sub-category/${key}`, formData);
+  const response = await axios.put(`http://localhost:5000/v1/category/sub-categories/${key}`, formData);
   return response.data;
+});
+export const deleteSubCategory = createAsyncThunk('category/deleteSubCategory', async (key) => {
+  await axios.delete(`http://localhost:5000/v1/category/sub-categories/${key}`);
+  return key;
 });
 
 const categorySlice = createSlice({

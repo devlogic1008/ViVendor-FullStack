@@ -1,133 +1,123 @@
-//🧩Don't Edit this file.✨Generated in Tue Feb 20 2024 15:14:35 GMT+0500 (Pakistan Standard Time)✨
+// schema.prisma
 
 generator client {
-provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
+
 datasource db {
-provider = "postgresql"
-url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  // Unique identifier for the user
-  id            String         @id @unique @default(uuid())
-//  Fist name of the user
+  id            String   @id @unique @default(uuid())
   firstName     String
-// Last name of the user
   lastName      String
-  // Unique email address of the user
-  email         String         @unique
-  // Password of the user
+  email         String   @unique
   password      String
-//  verify email address of the user
-  emailVerified Boolean        @default(false)
-  // Array of refresh tokens associated with the user
+  emailVerified Boolean  @default(false)
   refreshTokens Token[]
-  // Timestamp for when the user was created
-  createdAt     DateTime       @default(now())
-  // Timestamp for when the user was last updated
-  updatedAt     DateTime       @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
-// Define the available token types
 enum TokenType {
   REFRESH
   RESET_PASSWORD
   VERIFY_EMAIL
-  // Add more token types if needed
 }
 
-// Define the Token model
 model Token {
-  id          String        @id @default(uuid())
-  token       String        @unique
-  user        User          @relation(fields: [userId], references: [id])
-  userId      String        // Assuming User model has id of type String
+  id          String   @id @default(uuid())
+  token       String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
   type        TokenType
   expires     DateTime
-  blacklisted Boolean       @default(false)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  blacklisted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
-
-// schema.prisma
 
 model Category {
-  id                 Int      @id @default(autoincrement())
-  title              String
-  image              String?  
-  rank               Int?     
-  parentCategoryId   Int?
-  created_at       DateTime?
-  updated_at       DateTime?
+   id               Int      @id @default(autoincrement())
+  // product_id      String
+  title            String
+  image            String?
+  rank             Int?
+  parentCategoryId Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  //  product     Product  @relation(fields: [product_id], references: [id])
+  
 }
+
 model Tag {
-  id                 Int      @id @default(autoincrement())
-  title              String
-   created_at       DateTime?
-  updated_at       DateTime?
+
+  id               Int      @id @default(autoincrement())
+  // product_id String
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+//  product     Product  @relation(fields: [product_id], references: [id])
+ 
 }
-
-
 
 model Product {
-  id          String        @id @default(uuid())
-  product_id       String?
-  store_id         String?
-  parent_id        String?
-  title            String?
-  handle           String?
-  vendor           String?
-  product_type     String?
-  tags             String?
-  body_html        String?
-  template_suffix  String?
-  published_scope  String?
+  id          String   @id @default(uuid())
+  title            String
+  body_html        String
+  status           String?
+  sortBy           String?
   image            String?
-  images           String?
-  option1          String?
-  option2          String?
-  option3          String?
-  options          String?
-  site_url         String?
-  created_at       DateTime?
-  updated_at       DateTime?
-
-  // Define the relation to product variants
+  product_type     String?
+  vendor           String?
+  costPrice        Int?
+  cog              Int?
+  recommendedPrice Int?
+  quantity         Int?
+  weight           Int?
+  sku              String?
+  barcode          String?
+  length           Int?
+  width            Int?
+  height           Int?
+  tags             String?
+  categories       String?
+     
   variants         ProductVariant[]
+  
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 }
+ 
+ model ProductCategries {
+      id          String   @id @default(uuid())
+      product_id String?
 
+ }
+  model ProductTags {
+      id          String   @id @default(uuid())
+      product_id String?
 
+ }
 
 model ProductVariant {
-  id          String        @id @default(uuid())
-  store_id           String
-  product_id         String
-  variant_id         String?
-  parent_variant_id  String?
-  title              String?
-  sku                String?
-  cost               Float?
-  price              Float?
-  compare_at_price   Float?
-  position           Int?
-  inventory_policy   String?
-  fulfillment_service String?
-  inventory_management String?
-  option1            String?
-  option2            String?
-  option3            String?
-  taxable            Boolean?
-  barcode            String?
-  weight             Float?
-  weight_unit        String?
-  inventory_item_id  String?
-  inventory_quantity Int?
-  requires_shipping  Boolean?
-  image_id           Int?
-  created_at         DateTime?
-  updated_at         DateTime?
+  id          String   @id @default(uuid())
+  product_id  String
+  title       String
+  sku         String?
+  cost        Int?
+  cog         Int?
+  quantity    Int?
+  price       Int?
+  option1     String?
+  option2     String?
+  option3     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Define the relation to the product
-  product            Product  @relation(fields: [product_id], references: [id])
+  product     Product  @relation(fields: [product_id], references: [id])
 }
