@@ -4,7 +4,14 @@ const categoryRoute = require('./category.route');
 const userRoute = require('./user.route');
 const roleRoute = require('./role.route');
 const permissionRoute = require('./permission.route');
+const tagRoute = require('./tags.route');
 const router = express.Router();
+const app = express();
+const cors = require('cors');
+const bodyParser = require('body-parser');
+app.use(cors());
+app.use(bodyParser.urlencoded({exteded:false}));
+app.use(bodyParser.json())
 
 const defaultRoutes = [
   {
@@ -26,6 +33,10 @@ const defaultRoutes = [
   {
     path: '/permission',
     route: permissionRoute,
+  },
+  {
+    path: '/tag',
+    route: tagRoute,
   },
 ];
 defaultRoutes.forEach((route) => {

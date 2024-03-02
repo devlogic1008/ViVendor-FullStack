@@ -109,12 +109,13 @@ const ImportCSV = () => {
 
   return (
     <div className='import_csv'  >
-          <Title level={3}>Product Import</Title>
+        
+          <h2>Product Import</h2>
           <Divider/>
       <div >
       
         <div className='btn_end'>
-          <Button type="primary" className='upload_btn'  ghost  onClick={showModal}>
+          <Button type="primary" className='upload_btn_2'  ghost  onClick={showModal}>
             Upload Product csv
           </Button>
           <Button type="primary">View Sample csv</Button>

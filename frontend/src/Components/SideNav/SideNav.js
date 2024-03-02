@@ -88,6 +88,7 @@ const SideNav = () => {
             minWidth: '240px',
             position: 'fixed',
             overflowY: 'hidden',
+            overflowX:'auto',
             height: '100vh',
 
           }}
@@ -260,7 +261,7 @@ const SideNav = () => {
             padding: '10px',
           }}
         >
-          <div style={{ padding: 24, minHeight: 360 }}>
+          <div className='side_nav_wrapper'>
             <Routes>
               <Route path="/find-product" element={<FindProduct />} />
               <Route path="/import-list" element={<ImportList />} />

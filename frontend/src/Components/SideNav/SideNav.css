@@ -5,3 +5,13 @@
     position: fixed !important;
 
 }
+.side_nav_wrapper{
+    padding: 10px;
+}
+
+@media only screen and (max-width: 768px) {
+    .side_nav_wrapper{
+        padding: 5px !important;
+    }
+
+}

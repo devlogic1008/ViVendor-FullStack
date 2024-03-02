@@ -139,15 +139,15 @@ const handleDelete = (key) => {
 
 const ResponsiveTable = () => {
   return (
-    <>
+   
     <div className="import-list-container">
-      <Row gutter={[16, 16]}>
+      <Row gutter={[8, 8]}>
         <Col span={24}>
           <h2 level={2}>Import List</h2>
           <Divider />
         </Col>
       </Row>
-      <Table dataSource={dataSource} columns={columns} />
+      <Table className='import_list_table' dataSource={dataSource} columns={columns} />
       <Row className='list_btns'>
         <Col xs={24} sm={12} className='import_all'>
           <Button  type="primary" icon={<PlusOutlined />} onClick={() => console.log('IMPORT ALL TO STORE clicked')}>
@@ -160,7 +160,7 @@ const ResponsiveTable = () => {
       
       </Row>
     </div>
-  </>
+
   );
 };
 

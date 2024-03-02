@@ -1,46 +1,86 @@
-import React, { useState } from 'react';
-import { Table, Button, Modal, Form, Input, Select, Col, Row, Divider } from 'antd';
-import { EditOutlined, DeleteOutlined ,PlusOutlined} from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Modal, Form, Input, Select, Col, Row, Divider, notification, Upload } from 'antd';
+import { EditOutlined, DeleteOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import Typography from 'antd/es/typography/Typography';
-import "./Categories.css";
-import tops from "../../images/tops.png";
-import bottoms from "../../images/bottoms.png";
-const Categories = () => {
-  const [category, setCategory] = useState('');
-  const [subcategories, setSubcategories] = useState([]);
-  const [newSubcategory, setNewSubcategory] = useState('');
-  const [categoriesList, setCategoriesList] = useState(['Electronics', 'Clothing']);
-  const [tableData, setTableData] = useState([]);
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCategories, addCategory, updateCategory, deleteCategory, createSubCategory, deleteSubCategory, updateSubCategory } from '../../Redux/Slices/CategorySlice';
+import './Categories.css';
 
+
+
+const Categories = () => {
+  const dispatch = useDispatch();
+  const categories = useSelector((state) => state.category.categories);
+  const status = useSelector((state) => state.category.status);
+
+  const [category, setCategory] = useState('');
+  const [tableData, setTableData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-  const [categoryImage, setCategoryImage] = useState('');
+  const [image, setImage] = useState(null);
+  const [selectCategory, setSelectCategory] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [subCategories, setSubCategories] = useState([]);
+  const [newSubCategory, setNewSubCategory] = useState('');
+  const [loadingModal, setLoadingModal] = useState(false);
+  const [expandedKeys, setExpandedKeys] = useState([]);
+  const [editSubCategoryModalVisible, setEditSubCategoryModalVisible] = useState(false);
+  const [editingSubCategory, setEditingSubCategory] = useState(null);
 
-  const handleCategoryChange = (value) => {
-    setCategory(value);
+  useEffect(() => {
+    setTableData(
+      categories
+        .filter(category => !category.parentCategoryId)
+        .map(category => ({
+          key: category.id,
+          category: category.title,
+          image: category.image,
+          rank: category.rank,
+          subCategories: categories.filter(subCategory => subCategory.parentCategoryId === category.id),
+        }))
+    );
+  }, [categories]);
+
+  useEffect(() => {
+    setTableData((prevTableData) =>
+      [...prevTableData].sort((a, b) => a.rank - b.rank)
+    );
+  }, [categories]);
+
+  const parentCategoriesList = categories
+    .filter(category => !category.parentCategoryId)
+    .map(category => ({
+      id: category.id,
+      title: category.title,
+    }));
+
+  const handleSelectCategoryChange = (value) => {
+    setSelectCategory(value);
   };
 
-  const handleAddSubcategory = () => {
-    if (newSubcategory.trim() !== '') {
-      setSubcategories([...subcategories, { key: Date.now().toString(), title: newSubcategory, image: '' }]);
-      setNewSubcategory('');
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchCategories());
     }
-  };
+  }, [status, dispatch]);
 
-  const handleSaveCategory = () => {
+  const handleSaveCategory = async () => {
     if (category.trim() !== '') {
-      const newCategory = {
-        key: Date.now().toString(),
-        category,
-        image: categoryImage,
-        subcategories: subcategories.slice(),
-      };
+      try {
+        await dispatch(addCategory({ title: category }));
 
-      setTableData([...tableData, newCategory]);
-      setCategoriesList([...categoriesList, category]);
-      setCategory('');
-      setSubcategories([]);
-      setCategoryImage('');
+        notification.success({
+          message: 'Category Saved',
+          description: 'Category has been successfully saved.',
+        });
+        setCategory('');
+      } catch (error) {
+        console.error('Error saving category:', error);
+        notification.error({
+          message: 'Error',
+          description: 'Failed to save category. Please try again.',
+        });
+      }
     }
   };
 
@@ -49,33 +89,158 @@ const Categories = () => {
     setModalVisible(true);
   };
 
-  const handleDeleteCategory = (record) => {
-    const updatedData = tableData.filter((item) => item.key !== record.key);
-    setTableData(updatedData);
+  const handleDeleteCategory = async (record) => {
+    try {
+      await dispatch(deleteCategory(record.key));
+      notification.success({
+        message: 'Category Deleted',
+        description: 'Category has been successfully deleted.',
+      });
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      notification.error({
+        message: 'Error',
+        description: 'Failed to delete category. Please try again.',
+      });
+    }
   };
 
-  const handleEditSubcategory = (parentRecord, subRecord) => {
-    // Handle subcategory editing logic here
-    console.log('Edit Subcategory:', parentRecord, subRecord);
-  };
+  const handleModalOk = async () => {
+    try {
+      setLoadingModal(true);
 
-  const handleDeleteSubcategory = (parentRecord, subRecord) => {
-    // Handle subcategory deletion logic here
-    const updatedSubcategories = parentRecord.subcategories.filter((sub) => sub.key !== subRecord.key);
-    const updatedParentRecord = { ...parentRecord, subcategories: updatedSubcategories };
-    const updatedData = tableData.map((item) => (item.key === parentRecord.key ? updatedParentRecord : item));
-    setTableData(updatedData);
-  };
+      if (editingCategory) {
+        const { key, category, rank } = editingCategory;
+        const formData = new FormData();
+        formData.append('title', category);
+        formData.append('rank', rank);
+        if (image) {
+          formData.append('image', image);
+        }
 
-  const handleModalOk = () => {
-    // Implement logic for saving changes in the modal (e.g., updating image)
-    setModalVisible(false);
+        await dispatch(updateCategory({ key, formData }));
+        notification.success({
+          message: 'Category Updated',
+          description: 'Category has been successfully updated.',
+        });
+      }
+
+      setModalVisible(false);
+      setEditingCategory(null);
+      setImage(null);
+    } catch (error) {
+      console.error('Error handling category:', error);
+      notification.error({
+        message: 'Error',
+        description: 'Failed to handle category. Please try again.',
+      });
+    } finally {
+      setLoadingModal(false);
+    }
   };
 
   const handleModalCancel = () => {
     setModalVisible(false);
     setEditingCategory(null);
-    setCategoryImage('');
+    setImage(null);
+  };
+
+  const handleGenerateSubCategory = () => {
+    if (newSubCategory.trim() !== '') {
+      setSubCategories(prevSubCategories => [...prevSubCategories, newSubCategory]);
+      setNewSubCategory('');
+    }
+  };
+
+  const handleSaveSubCategory = async () => {
+    if (subCategories.length > 0 && selectCategory) {
+      try {
+        await dispatch(createSubCategory({ title: subCategories, parentCategoryId: selectCategory }));
+
+        notification.success({
+          message: 'Sub Category Saved',
+          description: 'Sub Category has been successfully saved.',
+        });
+        setSubCategories([]);
+        setNewSubCategory('');
+      } catch (error) {
+        console.error('Error saving subcategory:', error);
+        notification.error({
+          message: 'Error',
+          description: 'Failed to save subcategory. Please try again.',
+        });
+      }
+    } else {
+      notification.warning({
+        message: 'Validation Error',
+        description: 'Please select a category and add at least one subcategory.',
+      });
+    }
+  };
+
+  const handleDeleteSubCategory = async (parentCategory, subCategory) => {
+    try {
+      await dispatch(deleteSubCategory(subCategory.id));
+      notification.success({
+        message: 'Subcategory Deleted',
+        description: 'Subcategory has been successfully deleted.',
+      });
+    } catch (error) {
+      console.error('Error deleting subcategory:', error);
+      notification.error({
+        message: 'Error',
+        description: 'Failed to delete subcategory. Please try again.',
+      });
+    }
+  };
+
+  const showEditSubCategoryModal = (subCategory) => {
+    setEditingSubCategory(subCategory);
+    setEditSubCategoryModalVisible(true);
+  };
+
+  const handleEditSubCategoryOk = async () => {
+    try {
+      setLoadingModal(true);
+
+      // Assuming you have formData with updated details for the subcategory
+      const formData = { title: editingSubCategory.title }; // Replace this with your formData
+
+      await dispatch(updateSubCategory({ key: editingSubCategory.id, formData }));
+      notification.success({
+        message: 'Subcategory Updated',
+        description: 'Subcategory has been successfully updated.',
+      });
+    } catch (error) {
+      console.error('Error updating subcategory:', error);
+      notification.error({
+        message: 'Error',
+        description: 'Failed to update subcategory. Please try again.',
+      });
+    } finally {
+      setLoadingModal(false);
+      setEditSubCategoryModalVisible(false);
+    }
+  };
+
+  const handleEditSubCategoryCancel = () => {
+    setEditSubCategoryModalVisible(false);
+    setEditingSubCategory(null);
+  };
+
+  const handleExpandRowToggle = (expanded, record) => {
+    const keys = [...expandedKeys];
+
+    if (expanded) {
+      keys.push(record.key);
+    } else {
+      const index = keys.indexOf(record.key);
+      if (index !== -1) {
+        keys.splice(index, 1);
+      }
+    }
+
+    setExpandedKeys(keys);
   };
 
   const columns = [
@@ -83,156 +248,179 @@ const Categories = () => {
       title: 'Image',
       dataIndex: 'image',
       key: 'image',
-      render: (text, record) => <img src={tops} alt="Category" style={{ width: '50px' }} />,
+      render: (text, record) => {
+        const imageUrl = typeof record.image === 'string' ? record.image.replace(/\\/g, '/') : null;
+        return imageUrl ? <img src={`${imageUrl}`} style={{ width: '50px' }} alt="Category Thumbnail" /> : null;
+      },
     },
     { title: 'Title', dataIndex: 'category', key: 'category' },
+    { title: 'Rank', dataIndex: 'rank', key: 'rank' },
     {
       title: 'Action',
       key: 'action',
       render: (text, record) => (
         <span>
-          <Button type='primary' size='small' icon={<EditOutlined />} onClick={() => handleEditCategory(record)}>
-
-          </Button>
-          <Button type='primary'  size='small' className='delete-button' style={{ marginLeft: '2%' }} danger  icon={<DeleteOutlined />} onClick={() => handleDeleteCategory(record)}>
-
-          </Button>
+          <Button type='primary' size='small' icon={<EditOutlined />} onClick={() => handleEditCategory(record)}></Button>
+          <Button type='primary' size='small' className='delete-button' danger icon={<DeleteOutlined />} onClick={() => handleDeleteCategory(record)}></Button>
         </span>
       ),
     },
   ];
 
   const expandedRowRender = (record) => {
-    const subcategoriesColumns = [
-      { title: 'Image', dataIndex: 'image', key: 'image', render: (text) => <img src={bottoms} alt="Subcategory" style={{ width: '30px' }} /> },
+    const subCategoriesColumns = [
       { title: 'Title', dataIndex: 'title', key: 'title' },
       {
         title: 'Action',
         key: 'action',
-        render: (text, subRecord) => (
+        render: (text, subCategory) => (
           <span>
-            <Button type='primary'  size='small' icon={<EditOutlined />} onClick={() => handleEditSubcategory(record, subRecord)}>
-              
-            </Button>
-            <Button  size='small' className='delete-button' style={{ marginLeft: '2%' }} type='primary' danger icon={<DeleteOutlined />} onClick={() => handleDeleteSubcategory(record, subRecord)}>
-              
-            </Button>
+            <Button type='primary' size='small' icon={<EditOutlined />} onClick={() => showEditSubCategoryModal(subCategory)}></Button>
+            <Button type='primary' size='small' className='delete-button' danger icon={<DeleteOutlined />} onClick={() => handleDeleteSubCategory(record, subCategory)}></Button>
           </span>
         ),
       },
     ];
 
-    return <Table columns={subcategoriesColumns} dataSource={record.subcategories} pagination={false} />;
+    return (
+      <Table
+        columns={subCategoriesColumns}
+        dataSource={record.subCategories}
+        pagination={false}
+        rowKey="id"
+      />
+    );
   };
 
   return (
-    <div>
+    <div className='categories_main'>
       <h2>Categories</h2>
-
       <Row gutter={[24, 8]}>
         <Divider />
-        {/* Add Category Section */}
         <Col span={12} xs={24} sm={24} md={12} lg={12} >
           <div className='category'>
             <Form layout="vertical" >
               <Form.Item className='add_category' >
                 <Typography className='category_Text'  >Add Category:</Typography>
-                <Input placeholder='Category' className='category_input' value={category} onChange={(e) => setCategory(e.target.value)} />
-
+                <Input placeholder='Category' type='text' className='category_input' value={category} onChange={(e) => setCategory(e.target.value)} />
               </Form.Item>
               <Form.Item>
                 <Button type="primary" onClick={handleSaveCategory}>
                   Save
                 </Button>
               </Form.Item>
-
-
-
             </Form>
           </div>
-
         </Col>
-
-
-        {/* Add Subcategory Section */}
         <Col span={12} xs={24} sm={24} md={12} lg={12}>
           <div className='category'>
             <Form layout="vertical">
               <Form.Item >
-                <Typography  className='select_sub_category'  >Select Category:</Typography>
-                <Select className='select_cat' value={category} placeholder='Select Category' onChange={handleCategoryChange}>
-                  {categoriesList.map((option) => (
-                    <Select.Option key={option} value={option}>
-                      {option}
+                <Typography  className='select_sub_category'>Select Category :</Typography>
+                <Select className='select_cat' value={selectCategory} placeholder='Select Category' onChange={handleSelectCategoryChange} >
+                  {parentCategoriesList.map((option) => (
+                    <Select.Option key={option.id} value={option.id}>
+                      {option.title}
                     </Select.Option>
                   ))}
                 </Select>
-               
               </Form.Item>
-              <Form.Item >
-                <Typography className='subcategory_typo' >Sub Category:</Typography>
-                {subcategories.map((sub, index) => (
-                <p>  <Input className='sub_input' key={index} value={sub.title}  /></p>
-                ))}
-               <p> <Input
-
-                  className='sub_input'
-                  value={newSubcategory}
-                  onChange={(e) => setNewSubcategory(e.target.value)}
-                  placeholder=" Sub category"
-                /> <Button type='primary' className='delete_btn' icon={<PlusOutlined/>}  onClick={handleAddSubcategory}>
-                
-              </Button></p>
-               
+              <label>Sub Category :</label>
+              {subCategories.map((subCategory, index) => (
+                <Form.Item key={index} className='title'>
+                  <Input type='text' value={subCategory} style={{width:'50%'}} />
+                </Form.Item>
+              ))}
+              <Form.Item className='title'>
+                <Input type='text' value={newSubCategory} onChange={(e) => setNewSubCategory(e.target.value)} style={{ width: '50%' }} />
+                <Button type='primary' className='delete_btn' icon={<PlusOutlined />} onClick={handleGenerateSubCategory}></Button>
               </Form.Item>
-              <Button type="primary" onClick={handleSaveCategory}>
-                  Save
-                </Button>
+              <Button type="primary" loading={loading} onClick={handleSaveSubCategory}>
+                Save 
+              </Button>
             </Form>
-          
           </div>
         </Col>
       </Row>
-
-      {/* Expandable Table */}
-      <Table 
-      className='category_table'
-      
-     
+      <Table
+        className='category_table'
         columns={columns}
         dataSource={tableData}
-        expandable={{ expandedRowRender }}
+        expandable={{ expandedRowRender, expandedRowKeys: expandedKeys, onExpand: handleExpandRowToggle }}
       />
-
-      {/* Edit Category Modal */}
       <Modal
         title={`Edit ${editingCategory ? 'Category' : 'Add Category'}`}
         visible={modalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
+        confirmLoading={loadingModal}
       >
         <Form>
-          <Form.Item label="Title">
-            <Input type='text'
-              value={categoryImage}
-             
-            />
+          <Form.Item >
+            <Typography className='category_Text'  >Title:</Typography>
+            <Input type='text' value={editingCategory ? editingCategory.category : ''} onChange={(e) => setEditingCategory({ ...editingCategory, category: e.target.value })} />
           </Form.Item>
-          <Form.Item label="Image ">
-            <Input type='file'
-              value={categoryImage}
-             
-            />
-          </Form.Item>
-          <Form.Item label="Rank">
-            <Input type='number'
-              value={categoryImage}
-             
-            />
+          <Form.Item >
+            <Form.Item className='rank'>
+              <Typography className='category_Text'  >Rank:</Typography>
+              <Input type='number' value={editingCategory ? editingCategory.rank : ''} onChange={(e) => setEditingCategory({ ...editingCategory, rank: e.target.value })} />
+            </Form.Item>
+            <Typography className='category_Text'  >Image:</Typography>
+            <Upload 
+              name="image"
+              listType="picture"
+              showUploadList={false}
+              beforeUpload={(file) => {
+                setImage(file);
+                return false; // Prevent upload
+              }}
+            >
+              <Button icon={<UploadOutlined />}>Select Thumbnail</Button>
+            </Upload>
           </Form.Item>
         </Form>
       </Modal>
+      <EditSubCategoryModal
+        visible={editSubCategoryModalVisible}
+        onCancel={handleEditSubCategoryCancel}
+        onOk={handleEditSubCategoryOk}
+        loading={loadingModal}
+        subCategory={editingSubCategory}
+        setSubCategory={setEditingSubCategory}
+      />
     </div>
+  );
+};
+
+
+
+const EditSubCategoryModal = ({ visible, onCancel, onOk, loading, subCategory, setSubCategory }) => {
+  const handleOk = () => {
+    onOk();
+  };
+
+  const handleCancel = () => {
+    onCancel();
+  };
+
+  const handleTitleChange = (e) => {
+    setSubCategory({ ...subCategory, title: e.target.value });
+  };
+  return (
+    <Modal
+    title={`Edit Subcategory`}
+    visible={visible}
+    onOk={handleOk}
+    onCancel={handleCancel}
+    confirmLoading={loading}
+  >
+    <Form>
+      <Form.Item>
+        <Typography className='category_Text'>Title:</Typography>
+        <Input type='text' value={subCategory?.title || ''} onChange={handleTitleChange} />
+      </Form.Item>
+    </Form>
+  </Modal>
   );
 };
 

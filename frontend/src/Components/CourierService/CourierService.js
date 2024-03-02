@@ -63,13 +63,13 @@ const CourierService = () => {
     <div>
     <h2>Courier Service Providers</h2>
     <Divider />
-  <div >
+  <div  >
   <List
  
       className="hoverable-list" // Add a class for styling
      
       dataSource={data}
-      renderItem={(item) => <List.Item className='list_item' >{item}</List.Item>}
+      renderItem={(item) => <List.Item className='list_item'  >{item}</List.Item>}
     />
   </div>
   </div>

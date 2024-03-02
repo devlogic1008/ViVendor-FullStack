@@ -126,10 +126,10 @@ const ShippingZonesComponent = () => {
       key: 'action',
       render: (_, record) => (
         <span>
-          <Button type='primary' onClick={() => handleAddRate()}  style={{ marginRight: '8px' }}>
+          <Button type='primary' className='primary_btn' onClick={() => handleAddRate()}  >
             Add Rate
           </Button>
-          <Button type='primary' icon={<EditOutlined />} onClick={() => handleEdit(record)} style={{ marginRight: '8px' }} />
+          <Button type='primary' className='primary_btn' icon={<EditOutlined />} onClick={() => handleEdit(record)}  />
           <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => handleDelete(record)} />
         </span>
       ),
@@ -188,7 +188,7 @@ const ShippingZonesComponent = () => {
       key: 'action',
       render: (_, record) => (
         <span>
-          <Button type='primary' icon={<EditOutlined />} style={{ marginRight: '8px' }} onClick={() => handleAddRate(record)} />
+          <Button type='primary' className='primary_btn' icon={<EditOutlined />}  onClick={() => handleAddRate(record)} />
           <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => handleDelete(record)} />
         </span>
       ),
@@ -207,12 +207,12 @@ const ShippingZonesComponent = () => {
   ];
 
   return (
-    <div>
+    <div className='shipping_main'>
       <h2>Shipping Zones</h2>
       <Divider />
 
       <Row gutter={[2, 16]} >
-        <Col  span={14}>
+        <Col  xs={24} sm={24} md={14} lg={14}>
           <Search
             placeholder="You can also paste Shewin product URL or ID here"
             allowClear
@@ -220,13 +220,13 @@ const ShippingZonesComponent = () => {
             size="default"
           />
         </Col>
-        <Col span={4}>
+        <Col xs={24} sm={24} md={4} lg={4}>
        
         <Button type="primary" danger icon={<CloseOutlined />}>
                Clear
         </Button>
         </Col>
-        <Col span={6} style={{display:'flex', justifyContent:'end'}}>
+        <Col xs={24} sm={24} md={6} lg={6} className='create_btn' >
           <Button type="primary" onClick={showModal}>
             Create Shipping Zone
           </Button>
@@ -242,13 +242,13 @@ const ShippingZonesComponent = () => {
       >
         {/* Always show the Title field */}
         <div>
-          <label style={{ marginBottom: '20px' }}>Title:</label>
-          <Input placeholder="Title" defaultValue={editRecord?.title} style={{ marginBottom: 16 }} />
+          <label className='label_mb' >Title:</label>
+          <Input placeholder="Title" defaultValue={editRecord?.title} className='input_mb'  />
         </div>
 
         {/* Rest of the modal content */}
-      <div style={{ marginBottom: '10px' }}>  <label >Select Countries:</label></div>
-        <div style={{ maxHeight: '300px', overflowY: 'auto', marginBottom: '16px' }}>
+      <div className='select_country'  >  <label >Select Countries:</label></div>
+        <div className='check_box'>
           {allCountries.map((country) => (
             <div key={country}>
               <Checkbox
@@ -272,14 +272,14 @@ const ShippingZonesComponent = () => {
         <Row gutter={16}>
           <Col span={24}>
             <div>
-              <label for='title' style={{ marginBottom: '20px' }}>Title:</label>
+              <label for='title' className='label_mb' >Title:</label>
               <Input id='title' placeholder="Title" defaultValue={editRecord?.title} style={{ marginBottom: 16 }} />
             </div>
           </Col>
           <Col span={12}>
             <div>
-              <label style={{ marginBottom: '20px' }}>Rate Type:</label>
-              <Select defaultValue="flat" style={{ width: '100%' }}>
+              <label className='label_mb'>Rate Type:</label>
+              <Select defaultValue="flat" className='flat_select'>
                 <Option value="flat">Flat Rate</Option>
                 <Option value="order">Per Order Price</Option>
                 <Option value="per_price">Per Weight</Option>
@@ -288,20 +288,20 @@ const ShippingZonesComponent = () => {
           </Col>
           <Col span={12}>
             <div>
-              <label style={{ marginBottom: '20px' }}>Price:</label>
-              <Input placeholder="Price" style={{ marginBottom: 16 }} />
+              <label className='label_mb'>Price:</label>
+              <Input placeholder="Price" className='input_mb'  />
             </div>
           </Col>
           <Col span={12}>
             <div>
-              <label style={{ marginBottom: '20px' }}>Shipping Time (Days):</label>
-              <Input placeholder="Shipping Time" style={{ marginBottom: 16 }} />
+              <label className='label_mb'>Shipping Time (Days):</label>
+              <Input placeholder="Shipping Time" className='input_mb' />
             </div>
           </Col>
           <Col span={12}>
             <div>
-              <label style={{ marginBottom: '20px' }}>Processing Time (Days):</label>
-              <Input placeholder="Processing Time" style={{ marginBottom: 16 }} />
+              <label className='label_mb' >Processing Time (Days):</label>
+              <Input placeholder="Processing Time" className='input_mb' />
             </div>
           </Col>
         </Row>
@@ -310,11 +310,13 @@ const ShippingZonesComponent = () => {
       <Divider />
 
       <Table
+      className='shipping_table'
         columns={columns}
         dataSource={data}
         expandable={{
           expandedRowRender: (record) => (
             <Table
+            className='shipping_table_sub'
               columns={expandedColumns}
               dataSource={expandedData}
               pagination={false}

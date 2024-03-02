@@ -77,35 +77,30 @@ model Token {
   userId      String // Assuming User model has id of type String
   type        TokenType
   expires     DateTime
-  blacklisted Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@map("tokens")
+  blacklisted Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
-// Define the Category model
+// schema.prisma
+
 model Category {
-  id       String  @id @unique @default(uuid())
-  title    String
-  image    String? // Assuming the image is stored as a URL
-  rank     Int? // Assuming the rank is an integer
-  parentId String? // Assuming parentId is a string
-
-  // Define the one-to-many relationship with Subcategory
-  subcategories Subcategory[]
+  id                 Int      @id @default(autoincrement())
+  title              String
+  image              String?  
+  rank               Int?     
+  parentCategoryId   Int?
+  created_at       DateTime?
+  updated_at       DateTime?
+}
+model Tag {
+  id                 Int      @id @default(autoincrement())
+  title              String
+   created_at       DateTime?
+  updated_at       DateTime?
 }
 
-// Define the Subcategory model
-model Subcategory {
-  id    String  @id @unique @default(uuid())
-  title String
-  image String? // Assuming the image is stored as a URL
 
-  // Define the many-to-one relationship with Category
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId String
-}
 
 model Product {
   id              String   @id @default(uuid())

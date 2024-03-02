@@ -45,6 +45,10 @@
   .bread_crumb{
     margin: 40px 0 20px !important;
   }
+  .product_head {
+   
+    margin-top: 35px !important;
+}
 }
 
 
@@ -89,7 +93,18 @@
   margin: 5px 0 20px;
 }
 .category_card{
-  background-color: rgba(145, 135, 135, 0.1);
+  /* background: #fbf7f7; */
+  transition: all .5s ease-in-out 0s;
+   border-radius: 0px; 
+}
+.category_card:hover{
+
+  /* border-radius: 0px; */
+  /* background: #fbf7f7; */
+  box-shadow:  10px 10px 14px #beb5f1,
+               -10px -10px 14px #ebebeb;
+               cursor: pointer;
+               transform: translateY(-10px);
 }
 .category_card_head{
   display: flex;
