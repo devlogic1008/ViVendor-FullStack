@@ -24,6 +24,9 @@ const register = catchAsync(async (req, res) => {
     }
 
     const user = await userService.createUser(req.body);
+    const userId = user.id;
+    const token = await tokenService.generateAuthTokens(userId);
+
     console.log('🚀 ~ register ~ user:', user);
 
     // Check if user creation was successful
@@ -34,7 +37,7 @@ const register = catchAsync(async (req, res) => {
     } else {
       res
         .status(httpStatus.OK)
-        .send(Helper.apiResponse(httpStatus.CREATED, user));
+        .send(Helper.apiResponse(httpStatus.CREATED, user, token));
     }
   } catch (error) {
     // Handle any errors that occur during user creation
