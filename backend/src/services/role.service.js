@@ -5,7 +5,21 @@ const ApiError = require('../utils/ApiError');
 const httpStatus = require('http-status');
 
 const createRole = async (userBody) => {
-  const { name } = userBody; // Extract name form req body
+  const { name } = userBody; // Extract name from request body
+
+  // Check if a role with the same name already exists
+  const existingRole = await prisma.role.findFirst({
+    where: {
+      name: name,
+    },
+  });
+
+  // If a role with the same name already exists, throw an error
+  if (existingRole) {
+    throw new Error(`Role "${name}" already exists.`);
+  }
+
+  // Create the role
   return prisma.role.create({
     data: { name },
   });

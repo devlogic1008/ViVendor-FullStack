@@ -15,6 +15,17 @@ const prisma = new PrismaClient();
 // Register controller method to create a new user
 const register = catchAsync(async (req, res) => {
   try {
+    // Extract the JWT from the request headers
+    const superAdminToken = req.headers.authorization.split(' ')[1];
+
+    // Verify the JWT to get the user's role or permissions
+    const decodedToken = jwt.verify(superAdminToken, process.env.JWT_SECRET);
+
+    // Check if the user is a super-admin
+    if (decodedToken.role !== 'super-admin') {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+
     // Validate request body
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -23,6 +34,7 @@ const register = catchAsync(async (req, res) => {
         .json({ success: false, msg: 'Errors', errors: errors.array() });
     }
 
+    // Proceed with creating the new user
     const user = await userService.createUser(req.body);
     const userId = user.id;
     const token = await tokenService.generateAuthTokens(userId);
@@ -47,6 +59,7 @@ const register = catchAsync(async (req, res) => {
     });
   }
 });
+
 
 // Login controller method to authenticate user and generate JWTs for user sessions
 const login = catchAsync(async (req, res) => {

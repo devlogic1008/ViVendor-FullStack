@@ -1,0 +1,92 @@
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fafafa;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-heading {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.input-container {
+  margin-bottom: 10px;
+}
+
+.input-container label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.ant-form-item {
+  margin-bottom: 10px;
+}
+
+.ant-form-item-control-input {
+  width: 100%;
+}
+
+.ant-form-item-control-input-content {
+  width: 100%;
+}
+
+.ant-input-affix-wrapper {
+  width: 100%;
+}
+
+.ant-input-affix-wrapper input {
+  width: 100%;
+}
+
+.ant-form-item-control-input-content .ant-input-affix-wrapper {
+  width: 100%;
+}
+
+.ant-form-item-control-input-content .ant-input-affix-wrapper input {
+  width: 100%;
+}
+
+.ant-form-item-control-input-content
+  .ant-input-affix-wrapper
+  input[type='password'] {
+  width: 100%;
+}
+
+.ant-checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.ant-checkbox-group .ant-checkbox {
+  flex: 0 0 50%;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 600px) {
+  .ant-checkbox-group .ant-checkbox {
+    flex: 0 0 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
+
+.ant-btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.ant-btn-primary:hover {
+  background-color: #0069d9;
+  border-color: #0062cc;
+}
+
+.ant-btn-primary:focus {
+  background-color: #0062cc;
+  border-color: #005cbf;
+}

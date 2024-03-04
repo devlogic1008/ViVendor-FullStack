@@ -45,12 +45,12 @@ CREATE TABLE "permissions" (
 );
 
 -- CreateTable
-CREATE TABLE "userPermissions" (
+CREATE TABLE "user-permissions" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "permisionId" TEXT NOT NULL,
 
-    CONSTRAINT "userPermissions_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "user-permissions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -68,84 +68,89 @@ CREATE TABLE "tokens" (
 );
 
 -- CreateTable
-CREATE TABLE "Category" (
-    "id" TEXT NOT NULL,
+CREATE TABLE "categories" (
+    "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "image" TEXT,
     "rank" INTEGER,
-    "parentId" TEXT,
+    "parentCategoryId" INTEGER,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Subcategory" (
+CREATE TABLE "tags" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "tags_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "products" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
+    "body_html" TEXT NOT NULL,
+    "status" TEXT,
+    "sortBy" TEXT,
     "image" TEXT,
-    "categoryId" TEXT NOT NULL,
+    "product_type" TEXT,
+    "vendor" TEXT,
+    "costPrice" INTEGER,
+    "cog" INTEGER,
+    "recommendedPrice" INTEGER,
+    "quantity" INTEGER,
+    "weight" INTEGER,
+    "sku" TEXT,
+    "barcode" TEXT,
+    "length" INTEGER,
+    "width" INTEGER,
+    "height" INTEGER,
+    "tags" TEXT,
+    "categories" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Subcategory_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "products_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Product" (
+CREATE TABLE "product-categories" (
     "id" TEXT NOT NULL,
     "product_id" TEXT,
-    "store_id" TEXT,
-    "parent_id" TEXT,
-    "title" TEXT,
-    "handle" TEXT,
-    "vendor" TEXT,
-    "product_type" TEXT,
-    "tags" TEXT,
-    "body_html" TEXT,
-    "template_suffix" TEXT,
-    "published_scope" TEXT,
-    "image" TEXT,
-    "images" TEXT,
-    "option1" TEXT,
-    "option2" TEXT,
-    "option3" TEXT,
-    "options" TEXT,
-    "site_url" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Product_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "product-categories_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "ProductVariant" (
+CREATE TABLE "product-tags" (
     "id" TEXT NOT NULL,
-    "store_id" TEXT NOT NULL,
+    "product_id" TEXT,
+
+    CONSTRAINT "product-tags_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "product-variant" (
+    "id" TEXT NOT NULL,
     "product_id" TEXT NOT NULL,
-    "variant_id" TEXT,
-    "parent_variant_id" TEXT,
-    "title" TEXT,
+    "title" TEXT NOT NULL,
     "sku" TEXT,
-    "cost" DOUBLE PRECISION,
-    "price" DOUBLE PRECISION,
-    "compare_at_price" DOUBLE PRECISION,
-    "position" INTEGER,
-    "inventory_policy" TEXT,
-    "fulfillment_service" TEXT,
-    "inventory_management" TEXT,
+    "cost" INTEGER,
+    "cog" INTEGER,
+    "quantity" INTEGER,
+    "price" INTEGER,
     "option1" TEXT,
     "option2" TEXT,
     "option3" TEXT,
-    "taxable" BOOLEAN,
-    "barcode" TEXT,
-    "weight" DOUBLE PRECISION,
-    "weight_unit" TEXT,
-    "inventory_item_id" TEXT,
-    "inventory_quantity" INTEGER,
-    "requires_shipping" BOOLEAN,
-    "image_id" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "ProductVariant_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "product-variant_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -164,16 +169,10 @@ CREATE UNIQUE INDEX "userRoles_id_key" ON "userRoles"("id");
 CREATE UNIQUE INDEX "permissions_id_key" ON "permissions"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "userPermissions_id_key" ON "userPermissions"("id");
+CREATE UNIQUE INDEX "user-permissions_id_key" ON "user-permissions"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "tokens_token_key" ON "tokens"("token");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Category_id_key" ON "Category"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Subcategory_id_key" ON "Subcategory"("id");
 
 -- AddForeignKey
 ALTER TABLE "userRoles" ADD CONSTRAINT "userRoles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -182,16 +181,13 @@ ALTER TABLE "userRoles" ADD CONSTRAINT "userRoles_userId_fkey" FOREIGN KEY ("use
 ALTER TABLE "userRoles" ADD CONSTRAINT "userRoles_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "roles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "userPermissions" ADD CONSTRAINT "userPermissions_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "user-permissions" ADD CONSTRAINT "user-permissions_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "userPermissions" ADD CONSTRAINT "userPermissions_permisionId_fkey" FOREIGN KEY ("permisionId") REFERENCES "permissions"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "user-permissions" ADD CONSTRAINT "user-permissions_permisionId_fkey" FOREIGN KEY ("permisionId") REFERENCES "permissions"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "tokens" ADD CONSTRAINT "tokens_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Subcategory" ADD CONSTRAINT "Subcategory_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ProductVariant" ADD CONSTRAINT "ProductVariant_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "product-variant" ADD CONSTRAINT "product-variant_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -9,10 +9,10 @@ const tagRoute = require('./tags.route');
 const router = express.Router();
 const app = express();
 const cors = require('cors');
-const bodyParser = require('body-parser');
+
 app.use(cors());
-app.use(bodyParser.urlencoded({exteded:false}));
-app.use(bodyParser.json())
+app.use(express.urlencoded({ extended: false })); // Express built-in middleware
+app.use(express.json()); // Express built-in middleware
 
 const defaultRoutes = [
   {

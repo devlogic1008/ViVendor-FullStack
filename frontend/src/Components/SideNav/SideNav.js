@@ -13,7 +13,8 @@ import {
   FileSyncOutlined,
   MenuOutlined,
   TruckOutlined,
-  ShoppingCartOutlined, LoginOutlined
+  ShoppingCartOutlined,
+  LoginOutlined,
 } from '@ant-design/icons';
 import shewin from '../../images/vlogo.png';
 import { Layout, Menu, Drawer, Button, Select, Modal } from 'antd';
@@ -30,7 +31,9 @@ import Categories from '../Categories/Categories';
 import Tags from '../Tags/Tags';
 import ShippingZones from '../ShippingZones/ShippingZones';
 import CourierService from '../CourierService/CourierService';
-import "./SideNav.css"
+import AddStaff from '../AddStaff/AddStaff';
+import StaffList from '../StaffList/StaffList';
+import './SideNav.css';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Option } = Select;
@@ -73,27 +76,21 @@ const SideNav = () => {
   }, []);
 
   return (
-
     <Layout style={{ minHeight: '100vh' }}>
- {/* Mobile Header */}
-{!siderVisible && (
-  <Header className='top_header'></Header>
-)}
+      {/* Mobile Header */}
+      {!siderVisible && <Header className="top_header"></Header>}
       {/* PC Sidebar */}
       {siderVisible && (
-        
         <Sider
           style={{
             height: '100vh',
             minWidth: '240px',
             position: 'fixed',
             overflowY: 'hidden',
-            overflowX:'auto',
+            overflowX: 'auto',
             height: '100vh',
-
           }}
         >
-          
           <div className="demo-logo-vertical">
             <img
               src={shewin}
@@ -113,7 +110,11 @@ const SideNav = () => {
             <Menu.Item key="2" icon={<DesktopOutlined />}>
               <Link to="/import-list">Import List</Link>
             </Menu.Item>
-            <Menu.SubMenu key="products" icon={<ProductOutlined />} title="Products">
+            <Menu.SubMenu
+              key="products"
+              icon={<ProductOutlined />}
+              title="Products"
+            >
               <Menu.Item key="3" icon={<UnorderedListOutlined />}>
                 <Link to="/product-list">All Products</Link>
               </Menu.Item>
@@ -123,7 +124,7 @@ const SideNav = () => {
               <Menu.Item key="5" icon={<FileSyncOutlined />}>
                 <Link to="/import-csv">Import CSV</Link>
               </Menu.Item>
-              <Menu.Item key="6" icon={< TagOutlined />}>
+              <Menu.Item key="6" icon={<TagOutlined />}>
                 <Link to="/tags">Add Tags</Link>
               </Menu.Item>
               <Menu.Item key="7" icon={<MergeOutlined />}>
@@ -134,37 +135,56 @@ const SideNav = () => {
             <Menu.Item key="8" icon={<TeamOutlined />}>
               <Link to="/order-list">Order List</Link>
             </Menu.Item>
-            <Menu.SubMenu key="shiping" icon={<ShoppingCartOutlined />} title="Shipping">
+
+            <Menu.SubMenu
+              key="shiping"
+              icon={<ShoppingCartOutlined />}
+              title="Shipping"
+            >
               <Menu.Item key="9" icon={<ShoppingCartOutlined />}>
                 <Link to="/shipping-zones">Shipping Zones</Link>
               </Menu.Item>
               <Menu.Item key="10" icon={<TruckOutlined />}>
                 <Link to="/courier-service-providers">Courier Service</Link>
               </Menu.Item>
-
             </Menu.SubMenu>
 
-            <Menu.Item style={{ marginTop: '40%' }} key="11" icon={<FileOutlined />}>
+            <Menu.Item
+              style={{ marginTop: '40%' }}
+              key="11"
+              icon={<FileOutlined />}
+            >
               <Link to="/store-settings">Store Settings</Link>
             </Menu.Item>
-            <Menu.Item key="12" icon={<TeamOutlined />}>
-              <Link to="/files">Help Center</Link>
-            </Menu.Item>
-            <Menu.Item key="13" icon={<DesktopOutlined />}>
+            {/* User Staff start */}
+
+            <Menu.SubMenu
+              key="user-staff"
+              icon={<TeamOutlined />}
+              title="Staff"
+            >
+              <Menu.Item key="12" icon={<TeamOutlined />}>
+                <Link to="/">Create Staff</Link>
+              </Menu.Item>
+              <Menu.Item key="13" icon={<TeamOutlined />}>
+                <Link to="/">Staff List</Link>
+              </Menu.Item>
+            </Menu.SubMenu>
+
+            {/* User staff End  */}
+
+            <Menu.Item key="14" icon={<DesktopOutlined />}>
               <Link>Shopify Admin</Link>
             </Menu.Item>
-            <Menu.Item key="14" icon={<UserOutlined />}>
+            <Menu.Item key="15" icon={<UserOutlined />}>
               <Link to="/user-info">Umair500</Link>
             </Menu.Item>
-            <Menu.Item key="15" icon={<LoginOutlined />}>
+            <Menu.Item key="16" icon={<LoginOutlined />}>
               <Link to="/login">Logout</Link>
             </Menu.Item>
           </Menu>
-          
         </Sider>
-        
       )}
-      
 
       {/* Mobile Drawer */}
       <Drawer
@@ -186,7 +206,11 @@ const SideNav = () => {
           <Menu.Item key="2" icon={<DesktopOutlined />}>
             <Link to="/import-list">Import List</Link>
           </Menu.Item>
-          <Menu.SubMenu key="products" icon={<ProductOutlined />} title="Products">
+          <Menu.SubMenu
+            key="products"
+            icon={<ProductOutlined />}
+            title="Products"
+          >
             <Menu.Item key="3" icon={<UnorderedListOutlined />}>
               <Link to="/product-list">All Products</Link>
             </Menu.Item>
@@ -196,7 +220,7 @@ const SideNav = () => {
             <Menu.Item key="5" icon={<FileSyncOutlined />}>
               <Link to="/import-csv">Import CSV</Link>
             </Menu.Item>
-            <Menu.Item key="6" icon={< TagOutlined />}>
+            <Menu.Item key="6" icon={<TagOutlined />}>
               <Link to="/tags">Add Tags</Link>
             </Menu.Item>
             <Menu.Item key="7" icon={<MergeOutlined />}>
@@ -207,29 +231,41 @@ const SideNav = () => {
           <Menu.Item key="8" icon={<TeamOutlined />}>
             <Link to="/order-list">Order List</Link>
           </Menu.Item>
-          <Menu.SubMenu key="shiping" icon={<ShoppingCartOutlined />} title="Shipping">
+          <Menu.SubMenu
+            key="shiping"
+            icon={<ShoppingCartOutlined />}
+            title="Shipping"
+          >
             <Menu.Item key="9" icon={<ShoppingCartOutlined />}>
               <Link to="/shipping-zones">Shipping Zones</Link>
             </Menu.Item>
             <Menu.Item key="10" icon={<TruckOutlined />}>
               <Link to="/courier-service-providers">Courier Service</Link>
             </Menu.Item>
-
           </Menu.SubMenu>
 
           <Menu.Item key="11" icon={<FileOutlined />}>
             <Link to="/store-settings">Store Settings</Link>
           </Menu.Item>
-          <Menu.Item key="12" icon={<TeamOutlined />}>
-            <Link to="/files">Help Center</Link>
-          </Menu.Item>
-          <Menu.Item key="13" icon={<DesktopOutlined />}>
+          {/* User Staff for mobile view start */}
+
+          <Menu.SubMenu key="user-staff" icon={<TeamOutlined />} title="Staff">
+            <Menu.Item key="12" icon={<TeamOutlined />}>
+              <Link to="/">Create Staff</Link>
+            </Menu.Item>
+            <Menu.Item key="13" icon={<TeamOutlined />}>
+              <Link to="/">Staff List</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
+
+          {/* User staff End  */}
+          <Menu.Item key="14" icon={<DesktopOutlined />}>
             <Link>Shopify Admin</Link>
           </Menu.Item>
-          <Menu.Item key="14" icon={<UserOutlined />}>
+          <Menu.Item key="15" icon={<UserOutlined />}>
             <Link to="/user-info">Umair500</Link>
           </Menu.Item>
-          <Menu.Item key="15" icon={<LoginOutlined />}>
+          <Menu.Item key="16" icon={<LoginOutlined />}>
             <Link to="/login">Logout</Link>
           </Menu.Item>
         </Menu>
@@ -237,7 +273,6 @@ const SideNav = () => {
 
       {/* Mobile Menu Button */}
       <Button
-
         onClick={showDrawer}
         style={{
           display: window.innerWidth <= 768 ? 'block' : 'none',
@@ -246,14 +281,13 @@ const SideNav = () => {
           left: 0,
           background: 'none',
           borderColor: 'Background',
-          zIndex: '7777'
+          zIndex: '7777',
         }}
         icon={<MenuOutlined />}
       />
 
       {/* Content */}
       <Layout className="site-layout">
-      
         <Content
           style={{
             margin: '10px 10px',
@@ -261,7 +295,7 @@ const SideNav = () => {
             padding: '10px',
           }}
         >
-          <div className='side_nav_wrapper'>
+          <div className="side_nav_wrapper">
             <Routes>
               <Route path="/find-product" element={<FindProduct />} />
               <Route path="/import-list" element={<ImportList />} />
@@ -275,7 +309,12 @@ const SideNav = () => {
               <Route path="/categories" element={<Categories />} />
               <Route path="/tags" element={<Tags />} />
               <Route path="/shipping-zones" element={<ShippingZones />} />
-              <Route path="/courier-service-providers" element={<CourierService />} />
+              <Route path="/add-staff" element={<AddStaff />} />
+              <Route path="/staff-list" element={<StaffList />} />
+              <Route
+                path="/courier-service-providers"
+                element={<CourierService />}
+              />
             </Routes>
           </div>
         </Content>
@@ -324,7 +363,6 @@ const SideNav = () => {
         </p>
       </Modal>
     </Layout>
-
   );
 };
 

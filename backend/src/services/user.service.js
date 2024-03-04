@@ -25,13 +25,13 @@ const createUser = async (userBody) => {
 
   // Get permissions based on the role
   let userPermissions = [];
-  if (role === 'admin') {
+  if (role === 'super-admin') {
     userPermissions = await prisma.permission.findMany();
-  } else if (role === 'user') {
+  } else if (role === 'admin') {
     // For a user role, assign only specific permissions (e.g., read and write)
     userPermissions = await prisma.permission.findMany({
       where: {
-        name: { in: ['create', 'read'] },
+        name: { in: ['users', 'product-create'] },
       },
     });
     console.log('🚀 ~ createUser ~ permissions:', userPermissions);
@@ -40,7 +40,6 @@ const createUser = async (userBody) => {
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Create the user with the hashed password and assigned permissions
   // Create the user with the hashed password and assigned permissions
   const user = await prisma.user.create({
     data: {
