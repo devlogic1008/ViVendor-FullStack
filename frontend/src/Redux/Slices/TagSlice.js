@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import axios from 'axios';
+const apiBaseUrl = process.env.BACKEND_URL;
 
 export const fetchTags = createAsyncThunk('tags/fetchTags', async () => {
   const response = await axios.get('http://localhost:5000/v1/tag/tags');

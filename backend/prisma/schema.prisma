@@ -57,15 +57,14 @@ model Tag {
 
   id               Int      @id @default(autoincrement())
   // product_id String
-  title     String
+  title     String 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 //  product     Product  @relation(fields: [product_id], references: [id])
  
 }
-
 model Product {
-  id          String   @id @default(uuid())
+  id               String           @id @default(uuid())
   title            String
   body_html        String
   status           String?
@@ -73,45 +72,44 @@ model Product {
   image            String?
   product_type     String?
   vendor           String?
-  costPrice        Int?
-  cog              Int?
-  recommendedPrice Int?
+  costPrice        Float?
+  cog              Float?
+  recommendedPrice Float? 
   quantity         Int?
-  weight           Int?
+  weight           Float?
   sku              String?
   barcode          String?
-  length           Int?
-  width            Int?
-  height           Int?
+  length           Float?
+  width            Float?
+  height           Float?
   tags             String?
   categories       String?
-     
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
   variants         ProductVariant[]
-  
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  images           ProductImage[]
 }
- 
- model ProductCategries {
-      id          String   @id @default(uuid())
-      product_id String?
 
- }
-  model ProductTags {
-      id          String   @id @default(uuid())
-      product_id String?
+model ProductImage {
+  id         String    @id @default(uuid())
+  url        String
+  altText    String?
+  product    Product   @relation(fields: [productId], references: [id])
+  productId  String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
 
- }
 
 model ProductVariant {
   id          String   @id @default(uuid())
   product_id  String
   title       String
   sku         String?
-  cost        Int?
-  cog         Int?
+  cost        Float?
+  cog         Float?
   quantity    Int?
-  price       Int?
+  price       Float?
   option1     String?
   option2     String?
   option3     String?

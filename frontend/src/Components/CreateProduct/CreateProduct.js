@@ -13,6 +13,7 @@ import {
   Table,
   message,
   Modal,
+  InputNumber,
 } from "antd";
 import { Upload } from "antd";
 import { InboxOutlined, PlusOutlined } from "@ant-design/icons";
@@ -21,8 +22,7 @@ import "./CreateProduct.css";
 import { TagsInput } from "react-tag-input-component";
 import { fetchCategories } from "../../Redux/Slices/CategorySlice";
 import { fetchTags } from "../../Redux/Slices/TagSlice";
-import { createProductAsync,
-} from "../../Redux/Slices/ProductSlice";
+import { createProductAsync } from "../../Redux/Slices/ProductSlice";
 import { useSelector, useDispatch } from "react-redux";
 
 const { Dragger } = Upload;
@@ -41,9 +41,10 @@ const AddNewProductPage = () => {
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.category.categories);
   const status = useSelector((state) => state.category.status);
-  const tags = useSelector((state) => state.tag.tags);
-  const data = tags.map((tag) => tag.title);
+  // const tags = useSelector((state) => state.tag.tags);
+  // const data = tags.map((tag) => tag.title);
 
+  const [organizationTags, setOrganizationTags] = useState([]);
   useEffect(() => {
     dispatch(fetchCategories()); // Dispatch the action to fetch categories
     dispatch(fetchTags()); // Dispatch the action to fetch tags
@@ -58,26 +59,64 @@ const AddNewProductPage = () => {
     try {
       // Validate the form fields
       const values = await form.validateFields();
-      if (values.costPrice ) {
-        values.costPrice = parseInt(values.costPrice);
+      if (values.title.trim() === "") {
+        notification.warning({
+          message: 'Validation Error',
+          description: 'Please enter a title',
+        });
       }
-
+      // Include the organizationTags in the payload
+      const payload = {
+        ...values,
+        tags: organizationTags, // Add this line
+      };
+  
+      if (payload.costPrice) {
+        payload.costPrice = parseInt(payload.costPrice);
+      }
+      if (payload.cog) {
+        payload.cog = parseInt(payload.cog);
+      }
+      if (payload.recommendedPrice) {
+        payload.recommendedPrice = parseInt(payload.recommendedPrice);
+      }
+      if (payload.quantity) {
+        payload.quantity = parseInt(payload.quantity);
+      }
+      if (payload.weight) {
+        payload.weight = parseInt(payload.weight);
+      }
+      if (payload.length) {
+        payload.length = parseInt(payload.length);
+      }
+      if (payload.width) {
+        payload.width = parseInt(payload.width);
+      }
+      if (payload.height) {
+        payload.height = parseInt(payload.height);
+      }
+  
       // Dispatch the createProductAsync thunk with the product data
-      await dispatch(createProductAsync(values));
-
+      await dispatch(createProductAsync(payload));
+      console.log('Variant Options:', variantOptions);
+      console.log('Table Data:', tableData);
       // Handle success, e.g., show a success message or redirect
       notification.success({
-        message: 'Product Saved',
-        description: 'Product has been successfully saved.',
+        message: "Product Saved",
+        description: "Product has been successfully saved.",
       });
     } catch (error) {
       // Handle validation error or other errors
-      notification.error('Failed to create product');
+      notification.error("Failed to create product");
     }
   };
+  
 
   const handleVariantCheckboxChange = (e) => {
     setShowVariantOptions(e.target.checked);
+  };
+  const handleOrganizationTagsChange = (tags) => {
+    setOrganizationTags(tags);
   };
 
   const addAnotherOption = () => {
@@ -147,6 +186,7 @@ const AddNewProductPage = () => {
     };
 
     generate(0, "");
+    
     return combinations;
   };
 
@@ -187,6 +227,7 @@ const AddNewProductPage = () => {
       render: (_, record) => <Input placeholder="Barcode" />,
     },
   ];
+  console.log("🚀 ~ AddNewProductPage ~ columns:", columns)
 
   const handleChange = ({ fileList }) => {
     setFileList(fileList);
@@ -219,6 +260,23 @@ const AddNewProductPage = () => {
       console.log("Uploaded Image:", file);
     }, 1000);
   };
+  const handleKeyPress = (event) => {
+    // Prevent user from typing numeric characters
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode >= 48 && charCode <= 57) {
+      event.preventDefault();
+    }
+  };
+  const handleAlphaKeyPress = (event) => {
+    // Prevent user from typing alphabetic characters
+    const charCode = event.which ? event.which : event.keyCode;
+    if (
+      (charCode >= 65 && charCode <= 90) ||
+      (charCode >= 97 && charCode <= 122)
+    ) {
+      event.preventDefault();
+    }
+  };
 
   return (
     <Form form={form} onFinish={onFinish}>
@@ -241,21 +299,23 @@ const AddNewProductPage = () => {
               <Form.Item
                 name="title"
                 type="text"
+               
                 rules={[{ message: "Please enter the product title!" }]}
               >
-                <Input placeholder="Please enter the product title!" />
+                <Input
+                  onKeyPress={handleKeyPress}
+                  placeholder="Please enter the product title!"
+                />
               </Form.Item>
               <label>Description</label>
               <Form.Item name="body_html">
                 <JoditEditor
-                  tabIndex={1}
-                  onBlur={(content) => console.log("onBlur event", content)}
-                  onChange={(content) => console.log("onChange event", content)}
+               
                 />
               </Form.Item>
             </div>
             <div className="product_images">
-              <Form.Item name='image'>
+              <Form.Item name="image">
                 <Upload
                   customRequest={customRequest}
                   beforeUpload={beforeUpload}
@@ -299,63 +359,106 @@ const AddNewProductPage = () => {
               <Row gutter={[18, 8]}>
                 <Col span={8}>
                   <label>Cost Price</label>
-                  <Form.Item name="costPrice" >
-                    <Input className="cost_input" placeholder="$ 0.00" />
+                  <Form.Item name="costPrice">
+                    <Input
+                      type="number"
+                      onKeyPress={handleAlphaKeyPress}
+                      className="cost_input"
+                      placeholder="$ 0.00"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <label>COG</label>
-                  <Form.Item name='cog' type='number'>
-                    <Input className="cost_input" placeholder="$ 0.00" />
+                  <Form.Item name="cog">
+                    <Input
+                      type="number"
+                      onKeyPress={handleAlphaKeyPress}
+                      className="cost_input"
+                      placeholder="$ 0.00"
+                    />
                   </Form.Item>
                 </Col>
 
                 <Col span={8}>
                   <label>Recommended Price</label>
-                  <Form.Item>
-                    <Input className="cost_input" placeholder="$ 0.00" />
+                  <Form.Item name="recommendedPrice">
+                    <Input
+                      type="number"
+                      onKeyPress={handleAlphaKeyPress}
+                      className="cost_input"
+                      placeholder="$ 0.00"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <label>Quantity</label>
-                  <Form.Item>
-                    <Input className="cost_input" placeholder="0" />
+                  <Form.Item name="quantity">
+                    <Input
+                      className="cost_input"
+                      onKeyPress={handleAlphaKeyPress}
+                      placeholder="0"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <label>Weight</label>
-                  <Form.Item>
-                    <Input className="cost_input" placeholder="0.0kg" />
+                  <Form.Item name="weight">
+                    <Input
+                      className="cost_input"
+                      onKeyPress={handleAlphaKeyPress}
+                      placeholder="0.0kg"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <label>SKU</label>
-                  <Form.Item>
-                    <Input className="cost_input" placeholder="SKU" />
+                  <Form.Item name="sku">
+                    <Input
+                      className="cost_input "
+                      onKeyPress={handleKeyPress}
+                      placeholder="SKU"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <label>Barcode</label>
-                  <Form.Item>
-                    <Input className="cost_input" placeholder="Barcode" />
+                  <Form.Item name="barcode">
+                    <Input
+                      className="cost_input"
+                      onKeyPress={handleKeyPress}
+                      placeholder="Barcode"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <label>Length(cm)</label>
-                  <Form.Item>
-                    <Input className="cost_input" placeholder="Length" />
+                  <Form.Item name="length">
+                    <Input
+                      className="cost_input"
+                      onKeyPress={handleAlphaKeyPress}
+                      placeholder="Length"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <label>Width(cm)</label>
-                  <Form.Item>
-                    <Input className="cost_input" placeholder="Width" />
+                  <Form.Item name="width">
+                    <Input
+                      className="cost_input"
+                      onKeyPress={handleAlphaKeyPress}
+                      placeholder="Width"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <label>Height(cm)</label>
-                  <Form.Item>
-                    <Input className="cost_input" placeholder="Height" />
+                  <Form.Item name="height">
+                    <Input
+                      className="cost_input"
+                      onKeyPress={handleAlphaKeyPress}
+                      placeholder="Height"
+                    />
                   </Form.Item>
                 </Col>
               </Row>
@@ -404,20 +507,18 @@ const AddNewProductPage = () => {
               </label>
               <div className="status">
                 <Form.Item name="categories" initialValue={[]} noStyle>
-                  <div className="new-line-checkbox ">
-                    <Checkbox.Group>
-                      {categories
-                        .filter((category) => !category.parentCategoryId)
-                        .map((parentCategory) => (
-                          <Checkbox
-                            key={parentCategory.id}
-                            value={parentCategory.id}
-                          >
-                            {parentCategory.title}
-                          </Checkbox>
-                        ))}
-                    </Checkbox.Group>
-                  </div>
+                  <Checkbox.Group style={{ width: "100%" }}>
+                    {categories
+                      .filter((category) => !category.parentCategoryId)
+                      .map((parentCategory) => (
+                        <Checkbox
+                          key={parentCategory.id}
+                          value={parentCategory.title}
+                        >
+                          {parentCategory.title}
+                        </Checkbox>
+                      ))}
+                  </Checkbox.Group>
                 </Form.Item>
               </div>
             </div>
@@ -429,25 +530,22 @@ const AddNewProductPage = () => {
               <div className="status">
                 <label>Product Type</label>
                 <Form.Item name="product_type">
-                  <Input placeholder="eg. Shirts" />
+                  <Input onKeyPress={handleKeyPress} placeholder="eg. Shirts" />
                 </Form.Item>
                 <label>Vendor</label>
                 <Form.Item name="vendor">
-                  <Input placeholder="eg. Nike" />
+                  <Input onKeyPress={handleKeyPress} placeholder="eg. Nike" />
                 </Form.Item>
                 <label>Add Tags</label>
-                <Form.Item  name="tags" initialValue={[]}>
-                  <Select
-                    mode="multiple"
-                    style={{ width: "100%" }}
-                    placeholder="Select filters"
-                  >
-                    {data.map((item) => (
-                      <Option key={item} value={item}>
-                        {item}
-                      </Option>
-                    ))}
-                  </Select>
+                <Form.Item name="tags" initialValue={[]}>
+                  <div>
+                    <TagsInput
+                      className="add_tags"
+                      placeHolder="eg. tags"
+                      value={organizationTags}
+                      onChange={handleOrganizationTagsChange}
+                    />
+                  </div>
                 </Form.Item>
               </div>
             </div>
@@ -455,28 +553,25 @@ const AddNewProductPage = () => {
 
           <Col xs={24} sm={24} md={18} lg={18}>
             <div className="product_status">
-             
-               <label><strong>VARIANT</strong></label>
-               <div className="status">
-               <Form.Item name="variants" initialValue={[]} valuePropName="" >
-                    <Checkbox onChange={handleVariantCheckboxChange}>
-                      This product has multiple options, like different sizes or
-                      colors
-                    </Checkbox>
-                  </Form.Item>
-               </div>
-                
-               
-            
+              <label>
+                <strong>VARIANT</strong>
+              </label>
+              <div className="status">
+                <Form.Item name="variants" initialValue={[]} valuePropName="">
+                  <Checkbox onChange={handleVariantCheckboxChange}>
+                    This product has multiple options, like different sizes or
+                    colors
+                  </Checkbox>
+                </Form.Item>
+              </div>
+
               <Divider />
               {showVariantOptions && (
                 <div className="variant_options">
-                <div className="status">
-
-               
+                  <div className="status">
                     {variantOptions.map((option, index) => (
                       <Form.Item
-                      name='attribute'
+                        name="attribute"
                         key={index}
                         label={<strong>{`Option${index + 1}`}</strong>}
                       >
@@ -504,7 +599,6 @@ const AddNewProductPage = () => {
                             handleOptionChange={(field, value) =>
                               handleOptionChange(index, field, value)
                             }
-                            style={{ borderColor: "#1677ff" }}
                           />
                         </div>
                       </Form.Item>

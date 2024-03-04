@@ -1,9 +1,15 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({ 
+  cloud_name: 'dvkeelhmh', 
+  api_key: '685198765693854', 
+  api_secret: '_lOdyb5XDhgVzXVtiQne6vXn9nQ' 
+});
 
 const createProduct = async (req, res) => {
   try {
-    // Extract product data from the request body
     const {
       title,
       body_html,
@@ -23,10 +29,25 @@ const createProduct = async (req, res) => {
       width,
       height,
       tags,
-      categories
+      categories,
     } = req.body;
 
-    // Assume you have a Product model
+    const tagsString = Array.isArray(tags) ? tags.join(',') : '';
+    const categoriesString = Array.isArray(categories) ? categories.join(',') : '';
+
+    let imageUrl = ''; // Variable to store the Cloudinary image URL
+
+    if (req.files && req.files.image) {
+      const file = req.files.image;
+
+      // Upload image to Cloudinary
+      const cloudinaryResponse = await cloudinary.uploader.upload(file.tempFilePath);
+
+      // Get the image URL from the Cloudinary response
+      imageUrl = cloudinaryResponse.url;
+    }
+
+    // Create a new product including the image URL
     const newProduct = await prisma.product.create({
       data: {
         title,
@@ -45,9 +66,9 @@ const createProduct = async (req, res) => {
         length,
         width,
         height,
-        tags,
-        categories,
-        // ... other product fields ...
+        tags: tagsString,
+        categories: categoriesString,
+        image: imageUrl, // Include the Cloudinary image URL
         variants: variants
           ? {
               create: variants.map((variant) => ({
@@ -57,7 +78,7 @@ const createProduct = async (req, res) => {
           : undefined,
       },
       include: {
-        variants: true, // Include the created variants in the response
+        variants: true,
       },
     });
 

@@ -2,7 +2,7 @@
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
+const apiBaseUrl = process.env.BACKEND_URL;
 
 export const createProductAsync = createAsyncThunk('products/createProduct', async (productData) => {
   const response = await axios.post('http://localhost:5000/v1/product/products', productData);

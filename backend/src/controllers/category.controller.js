@@ -1,20 +1,17 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient(); 
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
+const cloudinary = require("cloudinary").v2;
 
-const cloudinary=require('cloudinary').v2;
-
-          
-cloudinary.config({ 
-  cloud_name: 'dvkeelhmh', 
-  api_key: '685198765693854', 
-  api_secret: '_lOdyb5XDhgVzXVtiQne6vXn9nQ' 
+cloudinary.config({
+  cloud_name: "dvkeelhmh",
+  api_key: "685198765693854",
+  api_secret: "_lOdyb5XDhgVzXVtiQne6vXn9nQ",
 });
 
 const createCategory = async (req, res) => {
   try {
-    const { title} = req.body;
-
+    const { title } = req.body;
 
     const newCategory = await prisma.category.create({
       data: {
@@ -25,7 +22,7 @@ const createCategory = async (req, res) => {
     res.status(201).json(newCategory);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -44,22 +41,20 @@ const createSubCategory = async (req, res) => {
       });
     }
 
-    res.status(201).json({ message: 'Subcategories created successfully' });
+    res.status(201).json({ message: "Subcategories created successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-
 
 const getAllCategories = async (req, res) => {
   try {
     const categories = await prisma.category.findMany();
     res.status(200).json(categories);
-  } catch (error) { 
+  } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -71,17 +66,15 @@ const getCategoryById = async (req, res) => {
     });
 
     if (!category) {
-      return res.status(404).json({ error: 'Category not found' });
+      return res.status(404).json({ error: "Category not found" });
     }
 
     res.status(200).json(category);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
-}; 
-  
-
+};
 
 const updateCategory = async (req, res) => {
   try {
@@ -96,11 +89,13 @@ const updateCategory = async (req, res) => {
 
       cloudinary.uploader.upload(file.tempFilePath, async (err, result) => {
         if (err) {
-          console.error('Error uploading image to Cloudinary:', err);
-          return res.status(500).json({ error: 'Error uploading image to Cloudinary' });
+          console.error("Error uploading image to Cloudinary:", err);
+          return res
+            .status(500)
+            .json({ error: "Error uploading image to Cloudinary" });
         }
 
-        updateData.image = result.url || '';
+        updateData.image = result.url || "";
 
         try {
           const updatedCategory = await prisma.category.update({
@@ -112,8 +107,8 @@ const updateCategory = async (req, res) => {
 
           res.status(200).json(updatedCategory);
         } catch (error) {
-          console.error('Error updating category in database:', error);
-          res.status(500).json({ error: 'Internal Server Error' });
+          console.error("Error updating category in database:", error);
+          res.status(500).json({ error: "Internal Server Error" });
         }
       });
     } else {
@@ -128,8 +123,8 @@ const updateCategory = async (req, res) => {
       res.status(200).json(updatedCategory);
     }
   } catch (error) {
-    console.error('Error processing request:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error processing request:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 const updateSubCategory = async (req, res) => {
@@ -145,11 +140,13 @@ const updateSubCategory = async (req, res) => {
 
       cloudinary.uploader.upload(file.tempFilePath, async (err, result) => {
         if (err) {
-          console.error('Error uploading image to Cloudinary:', err);
-          return res.status(500).json({ error: 'Error uploading image to Cloudinary' });
+          console.error("Error uploading image to Cloudinary:", err);
+          return res
+            .status(500)
+            .json({ error: "Error uploading image to Cloudinary" });
         }
 
-        updateData.image = result.url || '';
+        updateData.image = result.url || "";
 
         try {
           const updatedSubCategory = await prisma.category.update({
@@ -161,8 +158,8 @@ const updateSubCategory = async (req, res) => {
 
           res.status(200).json(updatedSubCategory);
         } catch (error) {
-          console.error('Error updating subcategory in database:', error);
-          res.status(500).json({ error: 'Internal Server Error' });
+          console.error("Error updating subcategory in database:", error);
+          res.status(500).json({ error: "Internal Server Error" });
         }
       });
     } else {
@@ -177,16 +174,12 @@ const updateSubCategory = async (req, res) => {
       res.status(200).json(updatedSubCategory);
     }
   } catch (error) {
-    console.error('Error processing request:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error processing request:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-
-
 // Export the asynchronous function
-
-
 
 const deleteCategory = async (req, res) => {
   try {
@@ -199,7 +192,7 @@ const deleteCategory = async (req, res) => {
     res.status(204).send();
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 const deleteSubCategory = async (req, res) => {
@@ -213,7 +206,7 @@ const deleteSubCategory = async (req, res) => {
     res.status(204).send();
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -225,8 +218,5 @@ module.exports = {
   deleteCategory,
   createSubCategory,
   deleteSubCategory,
-  updateSubCategory
+  updateSubCategory,
 };
-
-
-
