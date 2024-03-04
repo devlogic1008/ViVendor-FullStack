@@ -4,6 +4,7 @@ const categoryRoute = require('./category.route');
 const userRoute = require('./user.route');
 const roleRoute = require('./role.route');
 const permissionRoute = require('./permission.route');
+const productRoute = require('./product.route');
 const tagRoute = require('./tags.route');
 const router = express.Router();
 const app = express();
@@ -37,6 +38,10 @@ const defaultRoutes = [
   {
     path: '/tag',
     route: tagRoute,
+  },
+  {
+    path: '/product',
+    route: productRoute,
   },
 ];
 defaultRoutes.forEach((route) => {

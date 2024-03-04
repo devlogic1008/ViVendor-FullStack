@@ -23,11 +23,19 @@ const Categories = () => {
   const [subCategories, setSubCategories] = useState([]);
   const [newSubCategory, setNewSubCategory] = useState('');
   const [loadingModal, setLoadingModal] = useState(false);
+  const [subCategoryError, setSubCategoryError] = useState('');
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [editSubCategoryModalVisible, setEditSubCategoryModalVisible] = useState(false);
   const [editingSubCategory, setEditingSubCategory] = useState(null);
+  const [categoryError, setCategoryError] = useState('');
 
   useEffect(() => {
+    // Fetch categories when component mounts or when the status changes to 'idle'
+    if (status === 'idle') {
+      dispatch(fetchCategories());
+    }
+
+    // Update tableData based on categories
     setTableData(
       categories
         .filter(category => !category.parentCategoryId)
@@ -38,64 +46,93 @@ const Categories = () => {
           rank: category.rank,
           subCategories: categories.filter(subCategory => subCategory.parentCategoryId === category.id),
         }))
+        .sort((a, b) => a.rank - b.rank)
     );
-  }, [categories]);
-
-  useEffect(() => {
-    setTableData((prevTableData) =>
-      [...prevTableData].sort((a, b) => a.rank - b.rank)
-    );
-  }, [categories]);
+  }, [categories, status, dispatch]);
 
   const parentCategoriesList = categories
-    .filter(category => !category.parentCategoryId)
-    .map(category => ({
-      id: category.id,
-      title: category.title,
-    }));
+  .filter(category => !category.parentCategoryId)
+  .map(category => ({
+    id: category.id,
+    title: category.title,
+  }));
 
-  const handleSelectCategoryChange = (value) => {
-    setSelectCategory(value);
-  };
-
-  useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchCategories());
-    }
-  }, [status, dispatch]);
+const handleSelectCategoryChange = (value) => {
+  setSelectCategory(value);
+};
 
   const handleSaveCategory = async () => {
     if (category.trim() !== '') {
-      try {
-        await dispatch(addCategory({ title: category }));
+      // Check if the category starts with a letter
+      if (/^[a-zA-Z]/.test(category)) {
+        // Check if the category starts with a special character or number
+        if (/^[^a-zA-Z]/.test(category)) {
+          notification.warning({
+            message: 'Validation Error',
+            description: 'Category cannot start with a special character or number.',
+          });
+        } else if (categories.some(cat => cat.title.trim().toLowerCase() === category.trim().toLowerCase())) {
+          // Check for duplicate category
+          notification.warning({
+            message: 'Validation Error',
+            description: 'Category already exists.',
+          });
+        } else {
+          try {
+            await dispatch(addCategory({ title: category }));
 
-        notification.success({
-          message: 'Category Saved',
-          description: 'Category has been successfully saved.',
-        });
-        setCategory('');
-      } catch (error) {
-        console.error('Error saving category:', error);
-        notification.error({
-          message: 'Error',
-          description: 'Failed to save category. Please try again.',
+            notification.success({
+              message: 'Category Saved',
+              description: 'Category has been successfully saved.',
+            });
+            setCategory('');
+          } catch (error) {
+            console.error('Error saving category:', error);
+            notification.error({
+              message: 'Error',
+              description: 'Failed to save category. Please try again.',
+            });
+          }
+        }
+      } else {
+        notification.warning({
+          message: 'Validation Error',
+          description: 'Category must start with a letter.',
         });
       }
     }
   };
 
+
   const handleEditCategory = (record) => {
     setEditingCategory(record);
     setModalVisible(true);
   };
-
   const handleDeleteCategory = async (record) => {
     try {
-      await dispatch(deleteCategory(record.key));
-      notification.success({
-        message: 'Category Deleted',
-        description: 'Category has been successfully deleted.',
-      });
+      // Check if the category has subcategories
+      const hasSubcategories = categories.some(subCategory => subCategory.parentCategoryId === record.key);
+  
+      if (hasSubcategories) {
+        notification.warning({
+          message: 'Validation Error',
+          description: 'Cannot delete category with subcategories. Delete subcategories first.',
+        });
+      } else {
+        // No subcategories, proceed with deletion
+        await dispatch(deleteCategory(record.key));
+        // Fetch categories after deleting a category
+        await dispatch(fetchCategories());
+  
+        notification.success({
+          message: 'Category Deleted',
+          description: 'Category has been successfully deleted.',
+        });
+  
+        // Reset selectCategory to default value
+        setSelectCategory('');
+      }
+  
     } catch (error) {
       console.error('Error deleting category:', error);
       notification.error({
@@ -104,6 +141,8 @@ const Categories = () => {
       });
     }
   };
+  
+  
 
   const handleModalOk = async () => {
     try {
@@ -111,6 +150,25 @@ const Categories = () => {
 
       if (editingCategory) {
         const { key, category, rank } = editingCategory;
+
+        // Check if an image file is selected
+        if (image) {
+          // Validate file extension
+          const allowedExtensions = ["png", "jpg", "jpeg"];
+          const fileNameParts = image.name.split(".");
+          const fileExtension = fileNameParts[fileNameParts.length - 1].toLowerCase();
+
+          if (!allowedExtensions.includes(fileExtension)) {
+            notification.warning({
+              message: 'Validation Error',
+              description: 'Please select a valid image file with PNG, JPG, or JPEG extension.',
+            });
+
+            setLoadingModal(false);
+            return;
+          }
+        }
+
         const formData = new FormData();
         formData.append('title', category);
         formData.append('rank', rank);
@@ -147,22 +205,45 @@ const Categories = () => {
 
   const handleGenerateSubCategory = () => {
     if (newSubCategory.trim() !== '') {
-      setSubCategories(prevSubCategories => [...prevSubCategories, newSubCategory]);
-      setNewSubCategory('');
+      // Check for duplicate subcategory
+      if (subCategories.some(subCat => subCat.trim().toLowerCase() === newSubCategory.trim().toLowerCase())) {
+        setSubCategoryError('Subcategory already exists.');
+      } else {
+        // Check if the subcategory starts with a letter
+        if (/^[a-zA-Z]/.test(newSubCategory)) {
+          setSubCategories(prevSubCategories => [...prevSubCategories, newSubCategory.trim()]);
+          setNewSubCategory('');
+          setSubCategoryError('');
+        } else {
+          setSubCategoryError('Subcategory must start with a letter.');
+        }
+      }
+    } else {
+      setSubCategoryError('Subcategory cannot be empty.');
     }
   };
 
   const handleSaveSubCategory = async () => {
-    if (subCategories.length > 0 && selectCategory) {
+    if (subCategories.length >= 0 && selectCategory) {
       try {
-        await dispatch(createSubCategory({ title: subCategories, parentCategoryId: selectCategory }));
+        // Check if all subcategories start with a letter
+        if (subCategories.every(subCat => /^[a-zA-Z]/.test(subCat))) {
+          await dispatch(createSubCategory({ title: subCategories, parentCategoryId: selectCategory }));
+          // Fetch categories after creating a subcategory
+          dispatch(fetchCategories());
 
-        notification.success({
-          message: 'Sub Category Saved',
-          description: 'Sub Category has been successfully saved.',
-        });
-        setSubCategories([]);
-        setNewSubCategory('');
+          notification.success({
+            message: 'Sub Category Saved',
+            description: 'Sub Category has been successfully saved.',
+          });
+          setSubCategories([]);
+          setNewSubCategory('');
+        } else {
+          notification.warning({
+            message: 'Validation Error',
+            description: 'All subcategories must start with a letter.',
+          });
+        }
       } catch (error) {
         console.error('Error saving subcategory:', error);
         notification.error({
@@ -177,10 +258,14 @@ const Categories = () => {
       });
     }
   };
+  
 
   const handleDeleteSubCategory = async (parentCategory, subCategory) => {
     try {
       await dispatch(deleteSubCategory(subCategory.id));
+      // Fetch categories after deleting a subcategory
+      dispatch(fetchCategories());
+
       notification.success({
         message: 'Subcategory Deleted',
         description: 'Subcategory has been successfully deleted.',
@@ -193,7 +278,6 @@ const Categories = () => {
       });
     }
   };
-
   const showEditSubCategoryModal = (subCategory) => {
     setEditingSubCategory(subCategory);
     setEditSubCategoryModalVisible(true);
@@ -300,15 +384,26 @@ const Categories = () => {
         <Col span={12} xs={24} sm={24} md={12} lg={12} >
           <div className='category'>
             <Form layout="vertical" >
-              <Form.Item className='add_category' >
-                <Typography className='category_Text'  >Add Category:</Typography>
-                <Input placeholder='Category' type='text' className='category_input' value={category} onChange={(e) => setCategory(e.target.value)} />
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" onClick={handleSaveCategory}>
-                  Save
-                </Button>
-              </Form.Item>
+            <Form.Item className='add_category'>
+            <Typography className='category_Text'>Add Category :</Typography>
+            <Input
+              placeholder='Category'
+              type='text'
+              className='category_input'
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            />
+          </Form.Item>
+          {categoryError && (
+            <div className="error-message">
+              <Typography.Text type="danger">{categoryError}</Typography.Text>
+            </div>
+          )}
+          <Form.Item>
+            <Button type="primary" onClick={handleSaveCategory}>
+              Save
+            </Button>
+          </Form.Item>
             </Form>
           </div>
         </Col>
@@ -328,16 +423,22 @@ const Categories = () => {
               <label>Sub Category :</label>
               {subCategories.map((subCategory, index) => (
                 <Form.Item key={index} className='title'>
-                  <Input type='text' value={subCategory} style={{width:'50%'}} />
+                  <Input type='text'  value={subCategory} style={{width:'50%'}} />
                 </Form.Item>
               ))}
-              <Form.Item className='title'>
-                <Input type='text' value={newSubCategory} onChange={(e) => setNewSubCategory(e.target.value)} style={{ width: '50%' }} />
-                <Button type='primary' className='delete_btn' icon={<PlusOutlined />} onClick={handleGenerateSubCategory}></Button>
-              </Form.Item>
-              <Button type="primary" loading={loading} onClick={handleSaveSubCategory}>
-                Save 
-              </Button>
+            <Form.Item className='title'>
+            <Input type='text' value={newSubCategory} onChange={(e) => setNewSubCategory(e.target.value)} style={{ width: '50%' }} />
+            <Button type='primary' className='delete_btn' icon={<PlusOutlined />} onClick={handleGenerateSubCategory}></Button>
+          </Form.Item>
+        
+          {subCategoryError && (
+            <div className="error-message">
+              <Typography.Text type="danger">{subCategoryError}</Typography.Text>
+            </div>
+          )}
+          <Button type="primary" loading={loading} onClick={handleSaveSubCategory}>
+            Save
+          </Button>
             </Form>
           </div>
         </Col>
