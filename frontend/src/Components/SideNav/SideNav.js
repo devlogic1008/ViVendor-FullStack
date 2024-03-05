@@ -46,7 +46,7 @@ const SideNav = () => {
 
   const handleMenuClick = ({ key }) => {
     setSelectedKeys([key]);
-    if (key === '13') {
+    if (key === '14') {
       setModalVisible(true);
     }
   };
@@ -164,10 +164,10 @@ const SideNav = () => {
               title="Staff"
             >
               <Menu.Item key="12" icon={<TeamOutlined />}>
-                <Link to="/">Create Staff</Link>
+                <Link to="/add-staff">Create Staff</Link>
               </Menu.Item>
               <Menu.Item key="13" icon={<TeamOutlined />}>
-                <Link to="/">Staff List</Link>
+                <Link to="/staff-list">Staff List</Link>
               </Menu.Item>
             </Menu.SubMenu>
 
@@ -251,10 +251,10 @@ const SideNav = () => {
 
           <Menu.SubMenu key="user-staff" icon={<TeamOutlined />} title="Staff">
             <Menu.Item key="12" icon={<TeamOutlined />}>
-              <Link to="/">Create Staff</Link>
+              <Link to="/add-staff">Create Staff</Link>
             </Menu.Item>
             <Menu.Item key="13" icon={<TeamOutlined />}>
-              <Link to="/">Staff List</Link>
+              <Link to="/staff-list">Staff List</Link>
             </Menu.Item>
           </Menu.SubMenu>
 

@@ -11,27 +11,27 @@ const prisma = new PrismaClient();
  */
 
 const createUser = async (userBody) => {
-  const { email, password, role, ...userData } = userBody;
+  const { email, password, roles, ...userData } = userBody;
 
   // Find the requested role from the role model
   const selectedRole = await prisma.role.findFirst({
     where: {
-      name: role,
+      name: roles,
     },
   });
   if (!selectedRole) {
-    throw new ApiError(`Role "${role}" not found.`);
+    throw new ApiError(`Role "${roles}" not found.`);
   }
 
   // Get permissions based on the role
   let userPermissions = [];
-  if (role === 'super-admin') {
+  if (roles === 'admin') {
     userPermissions = await prisma.permission.findMany();
-  } else if (role === 'admin') {
+  } else if (roles === 'user') {
     // For a user role, assign only specific permissions (e.g., read and write)
     userPermissions = await prisma.permission.findMany({
       where: {
-        name: { in: ['users', 'product-create'] },
+        name: { in: ['orders', 'users', 'product-create'] },
       },
     });
     console.log('🚀 ~ createUser ~ permissions:', userPermissions);

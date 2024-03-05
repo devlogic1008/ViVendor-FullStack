@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const Helper = require('../utils/Helper');
+const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const {
   authService,
@@ -21,8 +22,24 @@ const register = catchAsync(async (req, res) => {
     // Verify the JWT to get the user's role or permissions
     const decodedToken = jwt.verify(superAdminToken, process.env.JWT_SECRET);
 
+    // Fetch the user record with its roles
+    const user = await prisma.user.findUnique({
+      where: {
+        id: decodedToken.sub,
+      },
+      include: {
+        roles: true,
+      },
+    });
+    console.log('🚀 ~ register ~ user:', user);
+
     // Check if the user is a super-admin
-    if (decodedToken.role !== 'super-admin') {
+    const isSuperAdmin = user.roles.some(
+      (role) => role.roleId === 'c82b6f5e-6215-4ec6-9af5-86f0a394ae67'
+    );
+    console.log('🚀 ~ register ~ isSuperAdmin:', isSuperAdmin);
+
+    if (!isSuperAdmin) {
       return res.status(403).json({ message: 'Unauthorized' });
     }
 
@@ -35,21 +52,21 @@ const register = catchAsync(async (req, res) => {
     }
 
     // Proceed with creating the new user
-    const user = await userService.createUser(req.body);
-    const userId = user.id;
+    const newUser = await userService.createUser(req.body);
+    const userId = newUser.id;
     const token = await tokenService.generateAuthTokens(userId);
 
-    console.log('🚀 ~ register ~ user:', user);
+    console.log('🚀 ~ register ~ newUser:', newUser);
 
     // Check if user creation was successful
-    if (!user) {
+    if (!newUser) {
       res
         .status(httpStatus.BAD_REQUEST)
         .send(Helper.apiResponse(httpStatus.BAD_REQUEST, api.user.storeError));
     } else {
       res
         .status(httpStatus.OK)
-        .send(Helper.apiResponse(httpStatus.CREATED, user, token));
+        .send(Helper.apiResponse(httpStatus.CREATED, newUser, token));
     }
   } catch (error) {
     // Handle any errors that occur during user creation
