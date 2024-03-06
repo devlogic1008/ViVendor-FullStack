@@ -1,14 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-const apiBaseUrl = process.env.BACKEND_URL;
+const apiBaseUrl = process.env.REACT_APP_BACKEND_URL;
 
 export const fetchCategories = createAsyncThunk('category/fetchCategories', async () => {
-  const response = await axios.get('http://localhost:5000/v1/category/categories');
+  const response = await axios.get(`${apiBaseUrl}/v1/category/categories`);
   return response.data;
 });
 
 export const addCategory = createAsyncThunk('category/addCategory', async (categoryData) => {
-  const response = await axios.post('http://localhost:5000/v1/category/categories', categoryData);
+  const response = await axios.post(`${apiBaseUrl}/v1/category/categories`, categoryData);
   return response.data;
 });
 

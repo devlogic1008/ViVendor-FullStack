@@ -30,9 +30,11 @@ const { Option } = Select;
 
 const AddNewProductPage = () => {
   const [form] = Form.useForm();
+  const [saving, setSaving] = useState(false);
   const [showVariantOptions, setShowVariantOptions] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [previewVisible, setPreviewVisible] = useState(false);
+  const [imageList, setImageList] = useState([]);
   const [previewImage, setPreviewImage] = useState("");
   const [variantOptions, setVariantOptions] = useState([
     { attributeName: "", tags: [] },
@@ -55,61 +57,71 @@ const AddNewProductPage = () => {
     generateTableData();
   }, [variantOptions]);
 
+
+  
+  const handleFileChange = ({ fileList }) => {
+    setFileList(fileList);
+  };
+
+  const handlePreview = async (file) => {
+    setPreviewImage(file.url || file.preview);
+    setPreviewVisible(true);
+  };
+
+  const beforeUpload = (file) => {
+    setFileList([...fileList, file]);
+    return false; // Prevent default upload behavior
+  };
+
   const onFinish = async () => {
     try {
-      // Validate the form fields
+      setSaving(true); // Set loading state to true
       const values = await form.validateFields();
+  
       if (values.title.trim() === "") {
         notification.warning({
-          message: 'Validation Error',
-          description: 'Please enter a title',
+          message: "Validation Error",
+          description: "Please enter a title",
         });
-      }
-      // Include the organizationTags in the payload
-      const payload = {
-        ...values,
-        tags: organizationTags, // Add this line
-      };
-  
-      if (payload.costPrice) {
-        payload.costPrice = parseInt(payload.costPrice);
-      }
-      if (payload.cog) {
-        payload.cog = parseInt(payload.cog);
-      }
-      if (payload.recommendedPrice) {
-        payload.recommendedPrice = parseInt(payload.recommendedPrice);
-      }
-      if (payload.quantity) {
-        payload.quantity = parseInt(payload.quantity);
-      }
-      if (payload.weight) {
-        payload.weight = parseInt(payload.weight);
-      }
-      if (payload.length) {
-        payload.length = parseInt(payload.length);
-      }
-      if (payload.width) {
-        payload.width = parseInt(payload.width);
-      }
-      if (payload.height) {
-        payload.height = parseInt(payload.height);
+        return;
       }
   
-      // Dispatch the createProductAsync thunk with the product data
-      await dispatch(createProductAsync(payload));
-      console.log('Variant Options:', variantOptions);
-      console.log('Table Data:', tableData);
-      // Handle success, e.g., show a success message or redirect
+      const formData = new FormData();
+  
+      // Append regular form fields
+      Object.entries(values).forEach(([key, value]) => {
+        if (key === "categories") {
+          // If key is "categories", append each category individually
+          value.forEach((category) => {
+            formData.append("categories", category);
+          });
+        } else {
+          formData.append(key, value);
+        }
+      });
+  
+      // Append organizationTags as a comma-separated string
+      formData.append("tags", organizationTags.join(','));
+  
+      // Append images
+      fileList.forEach((file) => {
+        formData.append("images", file.originFileObj);
+      });
+  
+      // Dispatch the createProductAsync thunk with the FormData
+      await dispatch(createProductAsync(formData));
+  
       notification.success({
         message: "Product Saved",
         description: "Product has been successfully saved.",
       });
     } catch (error) {
-      // Handle validation error or other errors
       notification.error("Failed to create product");
+    } finally {
+      setSaving(false); // Reset loading state to false
     }
   };
+  
   
 
   const handleVariantCheckboxChange = (e) => {
@@ -141,6 +153,7 @@ const AddNewProductPage = () => {
 
       // Preserve the existing table data and update it with the new combinations
       const existingData = [...tableData];
+      console.log("🚀 ~ addAnotherOption ~ existingData:", existingData)
       const newData = generateCombinations([
         ...variantOptions,
         { attributeName: "", tags: [] },
@@ -186,7 +199,7 @@ const AddNewProductPage = () => {
     };
 
     generate(0, "");
-    
+
     return combinations;
   };
 
@@ -227,39 +240,10 @@ const AddNewProductPage = () => {
       render: (_, record) => <Input placeholder="Barcode" />,
     },
   ];
-  console.log("🚀 ~ AddNewProductPage ~ columns:", columns)
+  console.log("🚀 ~ AddNewProductPage ~ columns:", columns);
 
-  const handleChange = ({ fileList }) => {
-    setFileList(fileList);
-  };
 
-  const handlePreview = async (file) => {
-    if (file.url || file.preview) {
-      setPreviewImage(file.url || file.preview);
-      setPreviewVisible(true);
-    }
-  };
 
-  const handleCancel = () => setPreviewVisible(false);
-
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
-    }
-    return isJpgOrPng;
-  };
-
-  const customRequest = ({ onSuccess, file }) => {
-    // Simulating file upload success
-    setTimeout(() => {
-      onSuccess();
-      message.success("Image uploaded successfully.");
-
-      // Log the image information to the console
-      console.log("Uploaded Image:", file);
-    }, 1000);
-  };
   const handleKeyPress = (event) => {
     // Prevent user from typing numeric characters
     const charCode = event.which ? event.which : event.keyCode;
@@ -287,7 +271,7 @@ const AddNewProductPage = () => {
             <Button type="primary" className="discard_btn" ghost>
               Discard
             </Button>
-            <Button type="primary" onClick={() => form.submit()}>
+            <Button type="primary" onClick={() => form.submit()} loading={saving}>
               Save
             </Button>
           </div>
@@ -299,7 +283,6 @@ const AddNewProductPage = () => {
               <Form.Item
                 name="title"
                 type="text"
-               
                 rules={[{ message: "Please enter the product title!" }]}
               >
                 <Input
@@ -309,49 +292,36 @@ const AddNewProductPage = () => {
               </Form.Item>
               <label>Description</label>
               <Form.Item name="body_html">
-                <JoditEditor
-               
-                />
+                <JoditEditor />
               </Form.Item>
             </div>
             <div className="product_images">
-              <Form.Item name="image">
-                <Upload
-                  customRequest={customRequest}
-                  beforeUpload={beforeUpload}
-                  fileList={fileList}
-                  onChange={handleChange}
-                  onPreview={handlePreview}
-                  listType="picture-card"
-                  showUploadList={{
-                    showPreviewIcon: true,
-                    showRemoveIcon: true,
-                    showDownloadIcon: false,
-                  }}
-                  maxCount={5} // Set your desired count limitation here
-                  multiple
-                >
-                  {fileList.length >= 5 ? null : (
-                    <div>
-                      <PlusOutlined />
-                      <div style={{ marginTop: 8 }}>Upload</div>
-                    </div>
-                  )}
-                </Upload>
-
-                <Modal
-                  visible={previewVisible}
-                  title="Preview"
-                  footer={null}
-                  onCancel={handleCancel}
-                >
-                  <img
-                    alt="Preview"
-                    style={{ width: "100%" }}
-                    src={previewImage}
-                  />
-                </Modal>
-              </Form.Item>
+              <Upload
+                listType="picture-card"
+                fileList={fileList}
+                onPreview={handlePreview}
+                onChange={handleFileChange}
+                beforeUpload={beforeUpload}
+              >
+                {fileList.length >= 8 ? null : (
+                  <div>
+                    <PlusOutlined />
+                    <div className="ant-upload-text">Upload</div>
+                  </div>
+                )}
+              </Upload>
+              <Modal
+                visible={previewVisible}
+                title="Preview"
+                footer={null}
+                onCancel={() => setPreviewVisible(false)}
+              >
+                <img
+                  alt="Preview"
+                  style={{ width: "100%" }}
+                  src={previewImage}
+                />
+              </Modal>
             </div>
 
             <h4 className="pricing">PRICING / SHIPPING / INVENTORY</h4>
@@ -501,11 +471,11 @@ const AddNewProductPage = () => {
                 </Form.Item>
               </div>
             </div>
-            <div className="product_status">
+            <div className="product_categories">
               <label>
                 <strong>PRODUCT CATEGORY</strong>
               </label>
-              <div className="status">
+              <div className="category_status ">
                 <Form.Item name="categories" initialValue={[]} noStyle>
                   <Checkbox.Group style={{ width: "100%" }}>
                     {categories
@@ -639,7 +609,7 @@ const AddNewProductPage = () => {
           >
             Discard
           </Button>
-          <Button type="primary" onClick={() => form.submit()}>
+          <Button type="primary" onClick={() => form.submit()} loading={saving}>
             Save
           </Button>
         </div>

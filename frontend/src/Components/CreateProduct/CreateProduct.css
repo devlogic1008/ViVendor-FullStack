@@ -133,3 +133,16 @@
         color: rgb(222, 211, 211) !important; /* Replace with the desired color */
     }
 }
+
+.product_categories{
+    background-color: white;
+    padding: 20px;
+    margin-top: 20px;
+    
+}
+
+.category_status{
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 10px;
+}

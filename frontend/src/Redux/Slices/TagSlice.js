@@ -1,22 +1,23 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import axios from 'axios';
-const apiBaseUrl = process.env.BACKEND_URL;
+
+const apiBaseUrl = process.env.REACT_APP_BACKEND_URL;
 
 export const fetchTags = createAsyncThunk('tags/fetchTags', async () => {
-  const response = await axios.get('http://localhost:5000/v1/tag/tags');
+  const response = await axios.get(`${apiBaseUrl}/v1/tag/tags`);
   return response.data;
 });
 
 export const addTag = createAsyncThunk('tag/addTag', async (TagData) => {
-  const response = await axios.post('http://localhost:5000/v1/tag/tags', TagData);
+  const response = await axios.post(`${apiBaseUrl}/v1/tag/tags`, TagData);
   return response.data;
 });
 
 
 
 export const deleteTag = createAsyncThunk('tag/deleteTag', async (key) => {
-    await axios.delete(`http://localhost:5000/v1/tag/tags/${key}`);
+    await axios.delete(`${apiBaseUrl}/v1/tag/tags/${key}`);
     return key;
   });
 

@@ -1,3 +1,4 @@
+// controllers/category.controller.js
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -29,7 +30,6 @@ const createCategory = async (req, res) => {
 const createSubCategory = async (req, res) => {
   try {
     const { title, parentCategoryId } = req.body;
-    console.log("🚀 ~ createSubCategory ~ title:", title);
 
     // Assuming title is an array, create a new row for each element
     for (const name of title) {
@@ -62,7 +62,7 @@ const getCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
     const category = await prisma.category.findUnique({
-      where: { id: parseInt(id) },
+      where: { id },
     });
 
     if (!category) {
@@ -100,7 +100,7 @@ const updateCategory = async (req, res) => {
         try {
           const updatedCategory = await prisma.category.update({
             where: {
-              id: parseInt(id),
+              id,
             },
             data: updateData,
           });
@@ -115,7 +115,7 @@ const updateCategory = async (req, res) => {
       // If image is not provided, update category without image
       const updatedCategory = await prisma.category.update({
         where: {
-          id: parseInt(id),
+          id,
         },
         data: updateData,
       });
@@ -127,6 +127,7 @@ const updateCategory = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const updateSubCategory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -151,7 +152,7 @@ const updateSubCategory = async (req, res) => {
         try {
           const updatedSubCategory = await prisma.category.update({
             where: {
-              id: parseInt(id),
+              id,
             },
             data: updateData,
           });
@@ -166,7 +167,7 @@ const updateSubCategory = async (req, res) => {
       // If image is not provided, update subcategory without image
       const updatedSubCategory = await prisma.category.update({
         where: {
-          id: parseInt(id),
+          id,
         },
         data: updateData,
       });
@@ -179,14 +180,12 @@ const updateSubCategory = async (req, res) => {
   }
 };
 
-// Export the asynchronous function
-
 const deleteCategory = async (req, res) => {
   try {
     const { id } = req.params;
 
     await prisma.category.delete({
-      where: { id: parseInt(id) },
+      where: { id },
     });
 
     res.status(204).send();
@@ -195,12 +194,13 @@ const deleteCategory = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const deleteSubCategory = async (req, res) => {
   try {
     const { id } = req.params;
 
     await prisma.category.delete({
-      where: { id: parseInt(id) },
+      where: { id },
     });
 
     res.status(204).send();

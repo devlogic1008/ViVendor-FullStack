@@ -33,21 +33,21 @@ const createProduct = async (req, res) => {
     } = req.body;
 
     const tagsString = Array.isArray(tags) ? tags.join(',') : '';
-    const categoriesString = Array.isArray(categories) ? categories.join(',') : '';
 
-    let imageUrl = ''; // Variable to store the Cloudinary image URL
+    let productImages = [];
 
-    if (req.files && req.files.image) {
-      const file = req.files.image;
+    if (req.files && req.files.images) {
+      const files = Array.isArray(req.files.images) ? req.files.images : [req.files.images];
 
-      // Upload image to Cloudinary
-      const cloudinaryResponse = await cloudinary.uploader.upload(file.tempFilePath);
-
-      // Get the image URL from the Cloudinary response
-      imageUrl = cloudinaryResponse.url;
+      productImages = await Promise.all(files.map(async (file) => {
+        const cloudinaryResponse = await cloudinary.uploader.upload(file.tempFilePath);
+        return {
+          url: cloudinaryResponse.url,
+          altText: 'Image Alt Text',
+        };
+      }));
     }
 
-    // Create a new product including the image URL
     const newProduct = await prisma.product.create({
       data: {
         title,
@@ -67,20 +67,32 @@ const createProduct = async (req, res) => {
         width,
         height,
         tags: tagsString,
-        categories: categoriesString,
-        image: imageUrl, // Include the Cloudinary image URL
+        images: {
+          create: productImages,
+        },
         variants: variants
           ? {
-              create: variants.map((variant) => ({
-                ...variant,
-              })),
+              create: variants.map((variant) => ({ ...variant })),
             }
           : undefined,
       },
       include: {
         variants: true,
+        images: true,
       },
     });
+
+    // Create ProductCategories entries for each category
+    await Promise.all(
+      categories.map(async (category) => {
+        await prisma.productCategories.create({
+          data: {
+            title: category,
+            product_id: newProduct.id,
+          },
+        });
+      })
+    );
 
     return res.status(201).json({
       success: true,
@@ -95,6 +107,98 @@ const createProduct = async (req, res) => {
   }
 };
 
+
+
+
+
+
+const getAllProducts = async (req, res) => {
+  try {
+    // Fetch all products from the database
+    const allProducts = await prisma.product.findMany({
+      include: {
+        variants: true,
+        images: true,
+        categories: true,
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: allProducts,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: 'Internal Server Error',
+    });
+  }
+};
+
+const deleteProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+
+    // Delete product images from Cloudinary
+    const productImages = await prisma.productImage.findMany({
+      where: {
+        product_id: productId,
+      },
+    });
+
+    await Promise.all(
+      productImages.map(async (image) => {
+        if (image.publicId) {
+          // Ensure 'publicId' property exists in the image object
+          await cloudinary.uploader.destroy(image.publicId);
+        }
+      })
+    );
+
+    // Delete product and related entries from the database
+    await prisma.productCategories.deleteMany({
+      where: {
+        product_id: productId,
+      },
+    });
+
+    await prisma.productImage.deleteMany({
+      where: {
+        product_id: productId,
+      },
+    });
+
+    await prisma.variant.deleteMany({
+      where: {
+        product_id: productId,
+      },
+    });
+
+    await prisma.product.delete({
+      where: {
+        id: productId,
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Product deleted successfully',
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: 'Internal Server Error',
+    });
+  }
+};
+
+
+
+
 module.exports = {
   createProduct,
+  getAllProducts,
+  deleteProduct
 };
