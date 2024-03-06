@@ -10,33 +10,23 @@ const prisma = new PrismaClient();
  * @returns {Promise<User>}
  */
 
-const createUser = async (userBody) => {
-  const { email, password, roles, ...userData } = userBody;
+const createUser = async (userBody, isSuperAdmin) => {
+  const { email, password, permissions, ...userData } = userBody;
 
   // Find the requested role from the role model
-  const selectedRole = await prisma.role.findFirst({
-    where: {
-      name: roles,
-    },
-  });
-  if (!selectedRole) {
-    throw new ApiError(`Role "${roles}" not found.`);
-  }
-
-  // Get permissions based on the role
-  let userPermissions = [];
-  if (roles === 'admin') {
-    userPermissions = await prisma.permission.findMany();
-  } else if (roles === 'user') {
-    // For a user role, assign only specific permissions (e.g., read and write)
-    userPermissions = await prisma.permission.findMany({
+  if (isSuperAdmin) {
+    var assignRoles = await prisma.role.findFirst({
       where: {
-        name: { in: ['orders', 'users', 'product-create'] },
+        name: 'admin',
       },
     });
-    console.log('🚀 ~ createUser ~ permissions:', userPermissions);
   }
-
+  const userPermissions = await prisma.permission.findMany({
+    where: {
+      name: { in: ['orders', 'users', 'product-create'] },
+    },
+  });
+ 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -47,7 +37,7 @@ const createUser = async (userBody) => {
       email,
       password: hashedPassword,
       roles: {
-        create: [{ role: { connect: { id: selectedRole.id } } }],
+        create: [{ role: { connect: { id: assignRoles.id } } }],
       },
       permissions: {
         create: userPermissions.map((permission) => ({
@@ -55,9 +45,8 @@ const createUser = async (userBody) => {
         })),
       },
     },
+  
   });
-
-  // console.log('Here is new user data:', user);
 
   return user;
 };

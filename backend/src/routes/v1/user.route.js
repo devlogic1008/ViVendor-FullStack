@@ -4,15 +4,8 @@ const authMiddleware = require('../../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.get('/me', authMiddleware, (req, res) => {
-  const userRole = req.userRole;
-  if (userRole.permissions.includes('read')) {
-    // User has read permission
-    // Handle further logic based on user role and permissions
-    res.json({ user: req.user });
-  } else {
-    // User does not have read permission
-    res.status(403).json({ error: 'Unauthorized' });
-  }
-});
+router.get('/me', authMiddleware);
+router
+  .route('/', createUser)
+  // .get(auth('all'), validate(userValidation.getUsers), userController.getUsers);
 module.exports = router;

@@ -31,13 +31,13 @@ const register = catchAsync(async (req, res) => {
         roles: true,
       },
     });
-    console.log('🚀 ~ register ~ user:', user);
+    // console.log('🚀 ~ register ~ user:', user);
 
     // Check if the user is a super-admin
     const isSuperAdmin = user.roles.some(
       (role) => role.roleId === 'c82b6f5e-6215-4ec6-9af5-86f0a394ae67'
     );
-    console.log('🚀 ~ register ~ isSuperAdmin:', isSuperAdmin);
+    // console.log('🚀 ~ register ~ isSuperAdmin:', isSuperAdmin);
 
     if (!isSuperAdmin) {
       return res.status(403).json({ message: 'Unauthorized' });
@@ -52,11 +52,11 @@ const register = catchAsync(async (req, res) => {
     }
 
     // Proceed with creating the new user
-    const newUser = await userService.createUser(req.body);
+    const newUser = await userService.createUser(req.body, isSuperAdmin);
     const userId = newUser.id;
     const token = await tokenService.generateAuthTokens(userId);
 
-    console.log('🚀 ~ register ~ newUser:', newUser);
+    // console.log('🚀 ~ register ~ newUser:', newUser);
 
     // Check if user creation was successful
     if (!newUser) {
