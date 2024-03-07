@@ -122,7 +122,7 @@ model ProductImage {
 model ProductVariant {
   id         String   @id @default(uuid())
   product_id String
-  title      String
+  title      String?
   sku        String?
   cost       String?
   cog        String?

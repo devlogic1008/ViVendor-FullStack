@@ -21,7 +21,6 @@ import JoditEditor from "jodit-react";
 import "./CreateProduct.css";
 import { TagsInput } from "react-tag-input-component";
 import { fetchCategories } from "../../Redux/Slices/CategorySlice";
-import { fetchTags } from "../../Redux/Slices/TagSlice";
 import { createProductAsync } from "../../Redux/Slices/ProductSlice";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -43,13 +42,11 @@ const AddNewProductPage = () => {
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.category.categories);
   const status = useSelector((state) => state.category.status);
-  // const tags = useSelector((state) => state.tag.tags);
-  // const data = tags.map((tag) => tag.title);
+
 
   const [organizationTags, setOrganizationTags] = useState([]);
   useEffect(() => {
     dispatch(fetchCategories()); // Dispatch the action to fetch categories
-    dispatch(fetchTags()); // Dispatch the action to fetch tags
   }, [dispatch]);
 
   useEffect(() => {
@@ -75,7 +72,8 @@ const AddNewProductPage = () => {
 
   const onFinish = async () => {
     try {
-      setSaving(true); // Set loading state to true
+      setSaving(true);
+  
       const values = await form.validateFields();
   
       if (values.title.trim() === "") {
@@ -86,12 +84,20 @@ const AddNewProductPage = () => {
         return;
       }
   
+     
+  
       const formData = new FormData();
   
+
+if(showVariantOptions){
+  const variantCombinations = generateVariantCombinations();
+
+  formData.append("variants", JSON.stringify(variantCombinations));
+}
+
       // Append regular form fields
       Object.entries(values).forEach(([key, value]) => {
         if (key === "categories") {
-          // If key is "categories", append each category individually
           value.forEach((category) => {
             formData.append("categories", category);
           });
@@ -108,6 +114,9 @@ const AddNewProductPage = () => {
         formData.append("images", file.originFileObj);
       });
   
+      // Append variants in the desired format
+   
+  
       // Dispatch the createProductAsync thunk with the FormData
       await dispatch(createProductAsync(formData));
   
@@ -118,7 +127,7 @@ const AddNewProductPage = () => {
     } catch (error) {
       notification.error("Failed to create product");
     } finally {
-      setSaving(false); // Reset loading state to false
+      setSaving(false);
     }
   };
   
@@ -153,7 +162,6 @@ const AddNewProductPage = () => {
 
       // Preserve the existing table data and update it with the new combinations
       const existingData = [...tableData];
-      console.log("🚀 ~ addAnotherOption ~ existingData:", existingData)
       const newData = generateCombinations([
         ...variantOptions,
         { attributeName: "", tags: [] },
@@ -184,10 +192,19 @@ const AddNewProductPage = () => {
     const combinations = [];
     const generate = (index, currentCombination) => {
       if (index === options.length) {
-        combinations.push({
+        const combinationObj = {
           key: combinations.length,
           title: currentCombination,
+        };
+  
+        // Initialize other properties with empty strings
+        columns.forEach((column) => {
+          if (column.dataIndex !== 'title') {
+            combinationObj[column.dataIndex] = '';
+          }
         });
+  
+        combinations.push(combinationObj);
         return;
       }
       for (const tag of options[index].tags) {
@@ -197,11 +214,40 @@ const AddNewProductPage = () => {
         );
       }
     };
-
+  
     generate(0, "");
-
+  
     return combinations;
   };
+  
+  const generateVariantCombinations = () => {
+    const variantCombinations = tableData.map((item) => ({
+      title: item.title,
+      price: item.price || "",
+      cog: item.cog || "",
+      quantity: item.quantity || "",
+      sku: item.sku || "",
+      barcode: item.barcode || "",
+    }));
+  
+    return variantCombinations;
+  };
+  
+  
+  const handleInputChange = (key, field, value) => {
+    setTableData((prevData) =>
+      prevData.map((item) => {
+        if (item.key === key) {
+          const updatedItem = { ...item, [field]: value };
+          // console.log("Updated Item:", updatedItem);
+          return updatedItem;
+        } else {
+          return item;
+        }
+      })
+    );
+  };
+  
 
   const columns = [
     {
@@ -213,35 +259,66 @@ const AddNewProductPage = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (_, record) => <Input placeholder="$0.00" />,
+      render: (_, record) => (
+        <Input
+        name="price"
+          placeholder="$0.00"
+          value={record.price}
+          onChange={(e) => handleInputChange(record.key, "price", e.target.value)}
+        />
+      ),
     },
     {
       title: "COG",
       dataIndex: "cog",
       key: "cog",
-      render: (_, record) => <Input placeholder="$0.00" />,
+      
+      render: (_, record) => (
+        <Input
+        name="cog"
+          placeholder="$0.00"
+          value={record.cog}
+          onChange={(e) => handleInputChange(record.key, "cog", e.target.value)}
+        />
+      ),
     },
     {
       title: "Quantity",
       dataIndex: "quantity",
       key: "quantity",
-      render: (_, record) => <Input placeholder="0" />,
+      render: (_, record) => (
+        <Input
+          placeholder="0"
+          value={record.quantity}
+          onChange={(e) => handleInputChange(record.key, "quantity", e.target.value)}
+        />
+      ),
     },
     {
       title: "SKU",
       dataIndex: "sku",
       key: "sku",
-      render: (_, record) => <Input placeholder="SKU" />,
+      render: (_, record) => (
+        <Input
+          placeholder="SKU"
+          value={record.sku}
+          onChange={(e) => handleInputChange(record.key, "sku", e.target.value)}
+        />
+      ),
     },
     {
       title: "Barcode",
       dataIndex: "barcode",
       key: "barcode",
-      render: (_, record) => <Input placeholder="Barcode" />,
+      render: (_, record) => (
+        <Input
+          placeholder="Barcode"
+          value={record.barcode}
+          onChange={(e) => handleInputChange(record.key, "barcode", e.target.value)}
+        />
+      ),
     },
   ];
-  console.log("🚀 ~ AddNewProductPage ~ columns:", columns);
-
 
 
   const handleKeyPress = (event) => {
@@ -277,7 +354,7 @@ const AddNewProductPage = () => {
           </div>
         </div>
         <Row gutter={[18, 8]}>
-          <Col xs={24} sm={24} md={18} lg={18}>
+        <Col xs={24} sm={24} md={18} lg={18}>
             <div className="product_title">
               <label>Title</label>
               <Form.Item
@@ -543,7 +620,7 @@ const AddNewProductPage = () => {
                       <Form.Item
                         name="attribute"
                         key={index}
-                        label={<strong>{`Option${index + 1}`}</strong>}
+                        // label={<label>{`Option${index + 1}`}</label>}
                       >
                         <div className="attribtes">
                           <Input
