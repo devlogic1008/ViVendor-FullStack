@@ -1,4 +1,3 @@
-// schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -43,26 +42,21 @@ model Token {
 
 model Tag {
    id              String  @id @default(uuid())
-  // product_id String
   title     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  //  product     Product  @relation(fields: [product_id], references: [id])
 }
 
 model Category {
   id              String  @id @default(uuid())
-  // product_id      String
   title            String
   image            String?
   rank             Int?
   parentCategoryId String?
   
-  // productCategories ProductCategories[]
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  //  product     Product  @relation(fields: [product_id], references: [id])
 }
 model Product {
   id              String  @id @default(uuid())
@@ -78,23 +72,24 @@ model Product {
 
   product_type     String?
   vendor           String?
-  costPrice        String?
-  cog              String?
-  recommendedPrice String?
-  quantity         String?
-  weight           String?
   sku              String?
-  barcode          String?
-  length           String?
-  width            String?
-  height           String?
   tags             String?
+  barcode          String?
+  quantity         Int?
+  cog              Float?
+  costPrice        Float?
+  recommendedPrice Float?
+  weight           Float?
+
+  length           Float?
+  width            Float?
+  height           Float?
 
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
   variants         ProductVariant[]
   images           ProductImage[]
-  categories      ProductCategories[]
+  categories       ProductCategories[]
 }
 model ProductCategories {
   id          String     @id @default(uuid())
@@ -102,12 +97,9 @@ model ProductCategories {
   product_id  String
   category_id String?
   product     Product    @relation(fields: [product_id], references: [id])
-  // category    Category?   @relation(fields: [category_id], references: [id])
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 }
-
-
 
 model ProductImage {
   id        String   @id @default(uuid())
@@ -124,10 +116,11 @@ model ProductVariant {
   product_id String
   title      String?
   sku        String?
-  cost       String?
-  cog        String?
-  quantity   String?
-  price      String?
+  cost       Float?
+  cog        Float?
+  quantity   Int?
+  price      Float?
+  barcode    String?
   option1    String?
   option2    String?
   option3    String?

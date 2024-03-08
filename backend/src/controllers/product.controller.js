@@ -13,7 +13,6 @@ const createProduct = async (req, res) => {
     const {
       title,
       body_html,
-      variants,
       status,
       sortBy,
       product_type,
@@ -30,7 +29,20 @@ const createProduct = async (req, res) => {
       height,
       tags,
       categories,
+      variants
     } = req.body;
+
+    // Parse quantity to integer
+    const parsedQuantity = parseInt(quantity, 10);
+
+    // Parse other numeric values to float
+    const parsedCostPrice = parseFloat(costPrice);
+    const parsedCog = parseFloat(cog);
+    const parsedRecommendedPrice = parseFloat(recommendedPrice);
+    const parsedWeight = parseFloat(weight);
+    const parsedLength = parseFloat(length);
+    const parsedWidth = parseFloat(width);
+    const parsedHeight = parseFloat(height);
 
     const tagsString = Array.isArray(tags) ? tags.join(',') : '';
 
@@ -48,6 +60,24 @@ const createProduct = async (req, res) => {
       }));
     }
 
+    let variantsArray = [];
+
+    if (variants && typeof variants[0] === 'string' && variants[0].trim() !== '') {
+      variantsArray = JSON.parse(variants[0]);
+
+      // Parse numeric values in the variants array
+      variantsArray = variantsArray.map((variant) => ({
+        ...variant,
+        // Parse numeric fields in each variant
+        price: parseFloat(variant.price),
+        quantity: parseInt(variant.quantity),
+        cog: parseFloat(variant.cog),
+       
+        cost: parseFloat(variant.cost),
+        // Add additional fields to parse as needed
+      }));
+    }
+
     const newProduct = await prisma.product.create({
       data: {
         title,
@@ -56,23 +86,23 @@ const createProduct = async (req, res) => {
         sortBy,
         product_type,
         vendor,
-        costPrice,
-        cog,
-        recommendedPrice,
-        quantity,
-        weight,
+        costPrice: parsedCostPrice,
+        cog: parsedCog,
+        recommendedPrice: parsedRecommendedPrice,
+        quantity: parsedQuantity,
+        weight: parsedWeight,
         sku,
         barcode,
-        length,
-        width,
-        height,
+        length: parsedLength,
+        width: parsedWidth,
+        height: parsedHeight,
         tags: tagsString,
         images: {
           create: productImages,
         },
-        variants: variants
+        variants: variantsArray
           ? {
-              create: variants.map((variant) => ({ ...variant })),
+              create: variantsArray,
             }
           : undefined,
       },
@@ -96,6 +126,7 @@ const createProduct = async (req, res) => {
 
     return res.status(201).json({
       success: true,
+      message: 'Product created successfully',
       data: newProduct,
     });
   } catch (error) {
@@ -103,9 +134,14 @@ const createProduct = async (req, res) => {
     return res.status(500).json({
       success: false,
       error: 'Internal Server Error',
+      message: 'Failed to create product',
     });
   }
 };
+
+
+
+
 
 
 

@@ -7,25 +7,22 @@ import {
   Radio,
   Button,
   Checkbox,
-  Select,
+
   Divider,
   notification,
   Table,
   message,
   Modal,
-  InputNumber,
+
 } from "antd";
 import { Upload } from "antd";
-import { InboxOutlined, PlusOutlined } from "@ant-design/icons";
+import {PlusOutlined } from "@ant-design/icons";
 import JoditEditor from "jodit-react";
 import "./CreateProduct.css";
 import { TagsInput } from "react-tag-input-component";
 import { fetchCategories } from "../../Redux/Slices/CategorySlice";
 import { createProductAsync } from "../../Redux/Slices/ProductSlice";
 import { useSelector, useDispatch } from "react-redux";
-
-const { Dragger } = Upload;
-const { Option } = Select;
 
 const AddNewProductPage = () => {
   const [form] = Form.useForm();
@@ -84,17 +81,16 @@ const AddNewProductPage = () => {
         return;
       }
   
-     
-  
       const formData = new FormData();
   
-
-if(showVariantOptions){
-  const variantCombinations = generateVariantCombinations();
-
-  formData.append("variants", JSON.stringify(variantCombinations));
-}
-
+      if (showVariantOptions) {
+        const variantCombinations = generateVariantCombinations();
+        const variantsString = JSON.stringify(variantCombinations);
+  
+        formData.append("variants", variantsString);
+        console.log("🚀 ~ onFinish ~ variantsString:", variantsString)
+      }
+  
       // Append regular form fields
       Object.entries(values).forEach(([key, value]) => {
         if (key === "categories") {
@@ -114,22 +110,31 @@ if(showVariantOptions){
         formData.append("images", file.originFileObj);
       });
   
-      // Append variants in the desired format
-   
-  
       // Dispatch the createProductAsync thunk with the FormData
-      await dispatch(createProductAsync(formData));
+      const response = await dispatch(createProductAsync(formData));
   
-      notification.success({
-        message: "Product Saved",
-        description: "Product has been successfully saved.",
-      });
+      if (response && response.payload && response.payload.success) {
+        notification.success({
+          message: "Product Saved",
+          description: "Product has been successfully saved.",
+        });
+      } else {
+        notification.error({
+          message: "Failed to create product",
+          description: (response && response.payload && response.payload.message) || "An error occurred while saving the product.",
+        });
+      }
     } catch (error) {
-      notification.error("Failed to create product");
+      console.error(error);
+      notification.error({
+        message: "Failed to create product",
+        description: "An unexpected error occurred.",
+      });
     } finally {
       setSaving(false);
     }
   };
+  
   
   
 
@@ -139,17 +144,11 @@ if(showVariantOptions){
   const handleOrganizationTagsChange = (tags) => {
     setOrganizationTags(tags);
   };
-
   const addAnotherOption = () => {
-    const emptyFields = variantOptions.some(
-      (option) => !option.attributeName || option.tags.length === 0
-    );
-
-    if (emptyFields) {
+    if (variantOptions.length >= 3) {
       notification.warning({
-        message: "Empty Fields",
-        description:
-          "Please fill in all variant fields before adding another option.",
+        message: "Limit Exceeded",
+        description: "You can only add up to three variant options.",
         duration: 2,
         placement: "bottomRight",
         style: {
@@ -158,25 +157,59 @@ if(showVariantOptions){
         },
       });
     } else {
-      setVariantOptions([...variantOptions, { attributeName: "", tags: [] }]);
+      const emptyFields = variantOptions.some(
+        (option) => !option.attributeName || option.tags.length === 0
+      );
 
-      // Preserve the existing table data and update it with the new combinations
-      const existingData = [...tableData];
-      const newData = generateCombinations([
-        ...variantOptions,
-        { attributeName: "", tags: [] },
-      ]);
-      setTableData([...existingData, ...newData]);
+      if (emptyFields) {
+        notification.warning({
+          message: "Empty Fields",
+          description:
+            "Please fill in all variant fields before adding another option.",
+          duration: 2,
+          placement: "bottomRight",
+          style: {
+            backgroundColor: "#ff4d4f",
+            color: "white",
+          },
+        });
+      } else {
+        setVariantOptions([
+          ...variantOptions,
+          { attributeName: "", tags: [] },
+        ]);
+
+        // Preserve the existing table data and update it with the new combinations
+        const existingData = [...tableData];
+        const newData = generateCombinations([
+          ...variantOptions,
+          { attributeName: "", tags: [] },
+        ]);
+        setTableData([...existingData, ...newData]);
+      }
     }
   };
+
 
   const handleOptionChange = (index, field, value) => {
     setVariantOptions((prevOptions) => {
       const updatedOptions = [...prevOptions];
       updatedOptions[index][field] = value;
+
+      // Update table data when attributeName changes
+      if (field === "attributeName") {
+        const existingData = [...tableData];
+        const newData = generateCombinations([
+          ...updatedOptions,
+          { attributeName: "", tags: [] },
+        ]);
+        setTableData([...existingData, ...newData]);
+      }
+
       return updatedOptions;
     });
   };
+
 
   const handleTagChange = (index, tags) => {
     handleOptionChange(index, "tags", tags);
@@ -221,17 +254,30 @@ if(showVariantOptions){
   };
   
   const generateVariantCombinations = () => {
-    const variantCombinations = tableData.map((item) => ({
-      title: item.title,
-      price: item.price || "",
-      cog: item.cog || "",
-      quantity: item.quantity || "",
-      sku: item.sku || "",
-      barcode: item.barcode || "",
-    }));
+    const variantCombinations = tableData.map((item) => {
+      const combination = {
+        title: item.title,
+        price: item.price || "",
+        cog: item.cog || "",
+        quantity: item.quantity || "",
+        sku: item.sku || "",
+        cost: item.cost || "",
+        barcode: item.barcode || "",
+      };
+  
+      // Include attributeName options
+      for (let i = 0; i < variantOptions.length; i++) {
+        const attributeName = variantOptions[i].attributeName;
+        const optionKey = `option${i + 1}`;
+        combination[optionKey] = attributeName || null;
+      }
+  
+      return combination;
+    });
   
     return variantCombinations;
   };
+  
   
   
   const handleInputChange = (key, field, value) => {
@@ -263,7 +309,9 @@ if(showVariantOptions){
         <Input
         name="price"
           placeholder="$0.00"
+        
           value={record.price}
+          onKeyPress={handleAlphaKeyPress}
           onChange={(e) => handleInputChange(record.key, "price", e.target.value)}
         />
       ),
@@ -278,6 +326,7 @@ if(showVariantOptions){
         name="cog"
           placeholder="$0.00"
           value={record.cog}
+          onKeyPress={handleAlphaKeyPress}
           onChange={(e) => handleInputChange(record.key, "cog", e.target.value)}
         />
       ),
@@ -290,6 +339,7 @@ if(showVariantOptions){
         <Input
           placeholder="0"
           value={record.quantity}
+          onKeyPress={handleAlphaKeyPress}
           onChange={(e) => handleInputChange(record.key, "quantity", e.target.value)}
         />
       ),
@@ -302,7 +352,21 @@ if(showVariantOptions){
         <Input
           placeholder="SKU"
           value={record.sku}
+      
           onChange={(e) => handleInputChange(record.key, "sku", e.target.value)}
+        />
+      ),
+    },
+    {
+      title: "Cost",
+      dataIndex: "cost",
+      key: "cost",
+      render: (_, record) => (
+        <Input
+          placeholder="$0.00"
+          value={record.cost}
+          onKeyPress={handleAlphaKeyPress}
+          onChange={(e) => handleInputChange(record.key, "cost", e.target.value)}
         />
       ),
     },
