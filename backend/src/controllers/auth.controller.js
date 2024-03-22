@@ -28,14 +28,18 @@ const register = catchAsync(async (req, res) => {
         id: decodedToken.sub,
       },
       include: {
-        roles: true,
+        roles: {
+          include: {
+            role: true,
+          },
+        },
       },
     });
     // console.log('🚀 ~ register ~ user:', user);
 
     // Check if the user is a super-admin
-    const isSuperAdmin = user.roles.some(
-      (role) => role.roleId === 'c82b6f5e-6215-4ec6-9af5-86f0a394ae67'
+    const isSuperAdmin = user.roles.find(
+      (role) => role.role.name === 'super-admin'
     );
     // console.log('🚀 ~ register ~ isSuperAdmin:', isSuperAdmin);
 
@@ -76,7 +80,6 @@ const register = catchAsync(async (req, res) => {
     });
   }
 });
-
 
 // Login controller method to authenticate user and generate JWTs for user sessions
 const login = catchAsync(async (req, res) => {

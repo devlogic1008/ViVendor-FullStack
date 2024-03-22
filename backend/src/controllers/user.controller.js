@@ -17,6 +17,36 @@ const createUser = async (req, res) => {
       .json({ error: 'Internal Server Error' });
   }
 };
+const getStaff = async (req, res) => {
+  try {
+    // Query all staff from the database
+    const users = await prisma.user.findMany({
+      include: {
+        roles: {
+          include: {
+            role: true,
+          },
+        },
+        permissions: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+
+    // Count the number of staff
+    const staffCount = await prisma.user.count();
+
+    // Return the staff list and count
+    res.json({ count: staffCount, staff: users });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ error: 'Internal Server Error' });
+  }
+};
 
 const getUsers = async (req, res) => {
   try {
@@ -151,6 +181,7 @@ module.exports = {
   countUsers,
   createUser,
   getUsers,
+  getStaff,
   getUser,
   updateUser,
   deleteUser,

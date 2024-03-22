@@ -26,16 +26,6 @@ app.use(fileUload({
   useTempFiles:true
 }))
 
-
-
-
-
-
-
-
-
-
-
 // set security HTTP headers
 app.use(helmet());
 

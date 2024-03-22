@@ -5,39 +5,54 @@ const roles = require('../config/roles');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const authMiddleware = async (req, res, next) => {
-  const token = req.header('Authorization').replace('Bearer ', '');
-  console.log('🚀 ~ authMiddleware ~ token:', token);
-
+const getUserDataWithRole = async (req, res) => {
   try {
+    const token = req.header('Authorization').replace('Bearer ', '');
+    // console.log('🚀 ~ getUserDataWithRole ~ token:', token);
+
     const decoded = jwt.verify(token, config.jwt.secret);
-    console.log('🚀 ~ authMiddleware ~ decoded:', decoded);
+    // console.log('🚀 ~ getUserDataWithRole ~ decoded:', decoded);
+
     const user = await prisma.user.findUnique({
       where: {
         id: decoded.sub,
       },
+      include: {
+        roles: {
+          include: {
+            role: true,
+          },
+        },
+      },
     });
-    console.log('🚀 ~ authMiddleware ~ user:', user);
+    // console.log('🚀 ~ getUserDataWithRole ~ user:', user);
 
     if (!user) {
       return res.status(401).json({ error: 'User not found' });
     }
 
-    // Convert the user role to uppercase
-    const userRole = user.role.toLowerCase();
-    console.log('🚀 ~ authMiddleware ~ userRole:', userRole);
-
-    // Check if the user role exists in the roles configuration
-    if (!roles[userRole]) {
-      return res.status(401).json({ error: 'Invalid user role' });
+    // Check if user has roles
+    if (!user.roles || user.roles.length === 0) {
+      return res.status(401).json({ error: 'User has no roles assigned' });
     }
 
-    req.user = user; // Attach user object to request for further use
-    req.userRole = roles[userRole]; // Attach user role object to request for further use
-    next();
+    // Check if any role matches the desired role
+    const desiredRole = 'super-admin'; // Change to your desired role
+    const userRole = user.roles.find((role) => role.role.name === desiredRole);
+
+    if (!userRole) {
+      return res
+        .status(401)
+        .json({ error: 'User does not have the required role' });
+    }
+
+    // Include role name directly in the user data object
+    user.role = userRole.role.name;
+
+    return res.json(user);
   } catch (error) {
     return res.status(401).json({ error: 'Invalid token' });
   }
 };
 
-module.exports = authMiddleware;
+module.exports = getUserDataWithRole;
